@@ -22,12 +22,15 @@ key <- as.integer(unlist(stringr::str_split(key,"")))
 
 ## -----------------------------------------------------------------------------
 noption <- rep(4,n)
-for (j in 1:n) {
-  if (any(U[,j] > noption[j])) {
-    noption[j]  <- noption[j] + 1 # Add one option for invalid responses
-    U[U[,j] > noption[j],j] <- noption[j]
+for (i in 1:n) {
+  if (any(U[,i] > noption[i])) {
+    noption[i]  <- noption[i] + 1 # Add one option for invalid responses
+    U[U[,i] > noption[i],i] <- noption[i]
   }
 }
+
+## -----------------------------------------------------------------------------
+grbg <- noption 
 
 ## -----------------------------------------------------------------------------
 ScoreList <- list() # option scores
@@ -41,7 +44,7 @@ for (item in 1:n){
 optList <- list(itemLab=NULL, optLab=NULL, optScr=ScoreList)
 
 ## -----------------------------------------------------------------------------
-Quant_dataList <- TestGardener::make.dataList(U, key, optList)
+Quant_dataList <- TestGardener::make.dataList(U, key, optList, grbg)
 names(Quant_dataList)
 
 ## -----------------------------------------------------------------------------
@@ -51,8 +54,7 @@ hist(Quant_dataList$scrvec, Quant_dataList$scrrng[2], xlab="Sum Score",
 ## -----------------------------------------------------------------------------
 theta     <- Quant_dataList$percntrnk
 thetaQnt  <- Quant_dataList$thetaQnt
-chartList <- Quant_dataList$chartList
-WfdResult <- TestGardener::Wbinsmth(theta, Quant_dataList, thetaQnt, chartList)
+WfdResult <- TestGardener::Wbinsmth(theta, Quant_dataList)
 
 ## -----------------------------------------------------------------------------
 WfdList <- WfdResult$WfdList

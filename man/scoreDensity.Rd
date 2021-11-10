@@ -40,7 +40,7 @@ Journal of Educational and Behavioral Statistics, 45, 297-315.
 Ramsay, J. O., Li J. and Wiberg, M. (2020) Better rating scale scores with 
 information-based psychometrics. Psych, 2, 347-360.
 
-http://www.testgardener.azurewebsites.net
+http://testgardener.azurewebsites.net
 }
 \author{Juan Li and James Ramsay}
 \seealso{
@@ -52,8 +52,8 @@ http://www.testgardener.azurewebsites.net
 \examples{
 #  Example 1.  Display probability density curves for the 
 #  short SweSAT multiple choice test with 24 items and 1000 examinees
-WfdList <- Quant_parListi$WfdList
-theta   <- Quant_parListi$theta
+WfdList <- Quant_parList$WfdList
+theta   <- Quant_parList$theta
 #  plot the density for the score indices within interval c(0,100)
 theta.scrrng <- c(0,100)
 theta_int <- theta[0 < theta & theta < 100]

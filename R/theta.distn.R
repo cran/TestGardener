@@ -23,7 +23,7 @@ theta.distn <- function(thetadens, logdensbasis, nfine = 101) {
   
   logdensfd    <- fda::fd(matrix(0,logdensbasis$nbasis,1), logdensbasis)
   logdensfdPar <- fda::fdPar(logdensfd)
-  rsList       <- fda::density.fd(thetadens, logdensfdPar, dbglev=0)
+  rsList       <- TG_density.fd(thetadens, logdensfdPar, dbglev=0)
   logdensfd    <- rsList$Wfdobj
   C            <- rsList$C
 

@@ -10,10 +10,9 @@
   respondent for a specific question.
 }
 \usage{
-Usimulate(n, theta.pop, WfdList)
+Usimulate(theta.pop, WfdList)
 }
 \arguments{
-  \item{n}{The number questions in the examination or scale.}
   \item{theta.pop}{A vector containing population score index values at which data
   are to be simulated.}
   \item{WfdList}{
@@ -33,9 +32,6 @@ Usimulate(n, theta.pop, WfdList)
       surprisal curves over fine mesh.}
       \item{D2Wmatfine:}{A matrix of the values of the second derivative of 
       surprisal curves over fine mesh.}
-      \item{chartList:}{A list vector of length \code{n}.  Each list contains the
-      \code{K} by \code{M-1} matrix of initial values for the surprisal curves for
-      the corresponding item.}
     }
   }
 }
@@ -51,5 +47,5 @@ Journal of Educational and Behavioral Statistics, 45, 297-315.
 Ramsay, J. O., Li J. and Wiberg, M. (2020) Better rating scale scores with 
 information-based psychometrics.  Psych, 2, 347-360.
 
-http://www.testgardener.azurewebsites.net
+http://testgardener.azurewebsites.net
 }

@@ -1,13 +1,13 @@
-# ----------- preliminaries ----------- 
+#  -------------  preliminaries  -----------------
 
 library(TestGardener)
-
-#  Set working directory to TestGardener
+#  set working directory to TestGardener
 
 # ----------- read in data ----------- 
 
 titlestr  <- "Symptom Distress Scale"
-U         <- scan(paste(getwd(),"/data/SDS.txt",sep=""),"o")
+U         <- scan("../data/SDS.txt", "o") # used from TestGardener/R
+# U         <- scan("inst/SDS.txt", "o")
 U         <- matrix(U,473,2,byrow=TRUE)
 U         <- U[,2]
 N         <- length(U) # Number of examinees
@@ -29,6 +29,8 @@ for (i in 1:n)
   }
 }
 
+grbg <- noption  # assumed that the last option is always a garbage option
+
 # summary count for each option
 for (i in 1:n)
 {
@@ -49,23 +51,21 @@ for (item in 1:n){
 
 optList <- list(itemLab=NULL, optLab=NULL, optScr=optList)
 
-SDS_dataList <- make.dataList(U, key, optList, scrrng = c(0,37))
+SDS_dataList <- make.dataList(U, key, optList, grbg, scrrng = c(0,37))
+
+#  save this list object in the data folder
+
+save(SDS_dataList, file="data/SDS_dataList.rda")
 
 #  --------- Set initial values that are required in the later analysis --------- 
-
-#  plot the sum scores as a histogram 
-
-hist(SDS_dataList$scrvec, SDS_dataList$scrrng[2], xlab="Sum Score",
-     main=titlestr)
 
 #  compute the initial option surprisal curves using the 
 #  percentage ranks as initial estimates of theta
 
 theta     <- SDS_dataList$percntrnk
 thetaQnt  <- SDS_dataList$thetaQnt
-chartList <- SDS_dataList$chartList
 
-WfdResult <- Wbinsmth(theta, SDS_dataList, thetaQnt, chartList)
+WfdResult <- Wbinsmth(theta, SDS_dataList)
 
 #  Plot the initial option proability and surprisal curves
 
@@ -89,10 +89,10 @@ ncycle=10
 #                      Proceed through the cycles
 #  ----------------------------------------------------------------------------
 
-AnalyzeResult <- Analyze(theta, thetaQnt, SDS_dataList, ncycle=ncycle, itdisp=FALSE) 
+AnalyzeResult <- Analyze(theta, thetaQnt, SDS_dataList, ncycle, itdisp=FALSE) 
 
-parList  <- AnalyzeResult$parList
-meanHvec <- AnalyzeResult$meanHvec
+parList   <- AnalyzeResult$parList
+meanHsave <- AnalyzeResult$meanHsave
 
 #  ----------------------------------------------------------------------------
 #              Plot meanHsave and choose cycle for plotting
@@ -100,20 +100,24 @@ meanHvec <- AnalyzeResult$meanHvec
 
 cycleno <- 1:ncycle
 par(mfrow=c(1,1))
-plot(cycleno,meanHvec, type="b", lwd=2, xlab="Cycle Number")
+plot(cycleno,meanHsave, type="b", lwd=2, xlab="Cycle Number")
 
 #  select cycle for plotting
 
 icycle <- 10
 
-SDS_parListi  <- parList[[icycle]]
+SDS_parList  <- parList[[icycle]]
 
-WfdList    <- SDS_parListi$WfdList
-Qvec       <- SDS_parListi$Qvec
-binctr     <- SDS_parListi$binctr
-theta      <- SDS_parListi$theta
-arclength  <- SDS_parListi$arclength
-alfine     <- SDS_parListi$alfine
+WfdList    <- SDS_parList$WfdList
+Qvec       <- SDS_parList$Qvec
+binctr     <- SDS_parList$binctr
+theta      <- SDS_parList$theta
+arclength  <- SDS_parList$arclength
+alfine     <- SDS_parList$alfine
+
+#  save this list object in the data folder
+
+save(SDS_parList, file="../data/SDS_parList.rda")
 
 #  ----------------------------------------------------------------------------
 #                   Plot surprisal curves for each test question
@@ -139,14 +143,14 @@ indden10   <- scoreDensity(theta_in, edges, 15, ttlstr=ttllab)
 #  ----------------------------------------------------------------------------
 
 mu <- testscore(theta, WfdList, optList)
-ttllab    <- paste(titlestr,": expected score", sep="")
+ttllab <- paste(titlestr,": expected score", sep="")
 scrrng <- c(0,37)
 muden  <- scoreDensity(mu, scrrng, ttlstr=ttllab) 
 
 #  compute expected score for each value in the fine mesh of theta values
 
 indfine <- seq(0,100,len=101)
-mufine <- testscore(indfine, WfdList, optList)
+mufine  <- testscore(indfine, WfdList, optList)
 mu.plot(mufine, SDS_dataList$scrrng, ttllab)
 
 #  ----------------------------------------------------------------------------

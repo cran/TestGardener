@@ -33,9 +33,6 @@ option characteristic curves.
       surprisal curves over fine mesh.}
       \item{D2Wmatfine:}{A matrix of the values of the second derivative of 
       surprisal curves over fine mesh.}
-      \item{chartList:}{A list vector of length \code{n}.  Each list contains the
-      \code{K} by \code{M-1} matrix of initial values for the surprisal curves for
-      the corresponding item.}
     }
   }
   \item{dataList}{A list that contains the objects needed to analyse the test or 
@@ -53,10 +50,6 @@ option characteristic curves.
        	where the right answer is scored 1 and the wrong answers 0, this is 
        	a numeric vector of length n containing the indices the right answers.  
        	Otherwise, it is NULL.}
-      \item{chartList:}{A list vector length n each member of which is a 
-      matrix of parameters values defining a set of M surprisal curves.  
-      The matrix has K rows and M - 1 columns where K is the number of basis 
-      functions defining the curves and M is the number curves.}
       \item{WfdPar:}{An fdPar object for the defining the surprisal curves.}
       \item{noption:}{A numeric vector of length n containing the numbers of 
       options for each item.}
@@ -104,7 +97,7 @@ specified in the call to the function.
   Ramsay, J. O., Li J. and Wiberg, M. (2020) Better rating scale scores with 
   information-based psychometrics.  Psych, 2, 347-360.
 
-  http://www.testgardener.azurewebsites.net
+  http://testgardener.azurewebsites.net
 }
 \author{Juan Li and James Ramsay}
 \seealso{
@@ -117,9 +110,9 @@ specified in the call to the function.
 \examples{
 #  Example 1.  Display the item surprisal curves for the 
 #  short SweSAT multiple choice test with 24 items and 1000 examinees
-WfdList  <- Quant_parListi$WfdList
-Qvec     <- Quant_parListi$Qvec
-binctr   <- Quant_parListi$binctr
+WfdList  <- Quant_parList$WfdList
+Qvec     <- Quant_parList$Qvec
+binctr   <- Quant_parList$binctr
 titlestr <- NULL
 #  plot the curves for the first question
 Wbinsmth.plot(binctr, Qvec, WfdList, Quant_dataList, plotindex=1)

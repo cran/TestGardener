@@ -30,9 +30,6 @@ arbitrarily close to this state.}
       surprisal curves over fine mesh.}
       \item{D2Wmatfine:}{A matrix of the values of the second derivative of 
       surprisal curves over fine mesh.}
-      \item{chartList:}{A list vector of length \code{n}.  Each list contains the
-      \code{K} by \code{M-1} matrix of initial values for the surprisal curves for
-      the corresponding item.}
     }
   }
   \item{Qvec}{The five marker percentile values.}
@@ -69,7 +66,7 @@ Journal of Educational and Behavioral Statistics, 45, 297-315.
 Ramsay, J. O., Li J. and Wiberg, M. (2020) Better rating scale scores with 
 information-based psychometrics.  Psych, 2, 347-360.
 
-http://www.testgardener.azurewebsites.net
+http://testgardener.azurewebsites.net
 }
 \author{Juan Li and James Ramsay}
 \seealso{
@@ -83,8 +80,8 @@ http://www.testgardener.azurewebsites.net
 #  Example 1.  Display the item entropy curves for the 
 #  short SweSAT multiple choice test with 24 items and 1000 examinees
 #  plot the entropy curve for the first item
-WfdList <- Quant_parListi$WfdList
-Qvec    <- Quant_parListi$Qvec
+WfdList <- Quant_parList$WfdList
+Qvec    <- Quant_parList$Qvec
 Entropy.plot(WfdList, Qvec, Quant_dataList, plotindex=1)
 #  Example 2.  Display the item entropy curves for the 
 #  Symptom Distress Scale with 13 items and 473 respondents

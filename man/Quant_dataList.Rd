@@ -24,10 +24,8 @@
        	where the right answer is scored 1 and the wrong answers 0, this is 
        	a numeric vector of length n containing the indices the right answers.  
        	Otherwise, it is NULL.}
-      \item{chartList:}{A list vector length n each member of which is a 
-      matrix of parameters values defining a set of M surprisal curves.  
-      The matrix has K rows and M - 1 columns where K is the number of basis 
-      functions defining the curves and M is the number curves.}
+      \item{grbg:}{A vector of length indicating which option for each item contains 
+        missing or illegal choice values.  If 0, there is no such option.}
       \item{WfdPar:}{An fdPar object for the defining the surprisal curves.}
       \item{noption:}{A numeric vector of length n containing the numbers of 
       options for each item.}

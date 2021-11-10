@@ -27,7 +27,7 @@ the calling statement.
   Ramsay, J. O., Li J. and Wiberg, M. (2020) Better rating scale scores with 
   information-based psychometrics.  Psych, 2, 347-360.
   
-  http://www.testgardener.azurewebsites.net
+  http://testgardener.azurewebsites.net
 }
 \author{Juan Li and James Ramsay}
 \seealso{

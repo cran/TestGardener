@@ -22,6 +22,8 @@
     by the test designer.  For multiple choice questions, these scores are usually 0 for 
     wrong answers and 1 for the right answer.  For rating scales they are often a 
     sequence of signed integers indicating intensity of some experience.}
+    \item{grbg:}{A vector of length indicating which option for each item contains 
+    missing or illegal choice values.  If 0, there is no such option.}
     \item{WfdPar:}{A functional parameter object that is required to represent the 
     surprisal curves. The number of basis functions should be small for smaller sizes and
     larger for large samples.  For example, 7 for N <= 500, 11 for N in [500,2000], 24 

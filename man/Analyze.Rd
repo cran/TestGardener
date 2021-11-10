@@ -12,7 +12,7 @@
    length of the \code{parList} list vector.
 }
 \usage{
-  Analyze(theta, thetaQnt, dataList, ncycle=10, itdisp=FALSE) 
+  Analyze(theta, thetaQnt, dataList, ncycle=10, itdisp=FALSE, verbose=FALSE) 
 }
 \arguments{
   \item{theta}{A vector of \code{N} score index values for the examinees or respondents.
@@ -34,10 +34,6 @@
       \item{key:}{If the data are from a test of the multiple choices type
        	where the right answer is scored 1 and the wrong answers 0, this is a numeric vector 
        	of length n containing the indices the right answers.  Otherwise, it is NULL.}
-      \item{chartList:}{A list vector length n each member of which is a matrix of 
-      	parameters values defining a set of M surprisal curves.  The matrix has K rows
-      	and M - 1 columns where K is the number of basis functions defining the curves and
-      	M is the number curves.}
       \item{WfdPar:}{An fdPar object for the defining the surprisal curves.}
       \item{noption:}{A numeric vector of length n containing the numbers of options for 
       	each item.}
@@ -54,8 +50,10 @@
       \item{PcntMarkers:}{The marker percentages for plotting: 5, 25, 50, 75 and 95.}
     }
   }
-  \item{ncycle}{The number of cycles executed by Analyze.}
+  \item{ncycle}{The number of cycles executed by \code{Analyze}.}
   \item{itdisp}{If TRUE, the progress of the iterations within each cycle for estimating
+  	theta are reported.}
+  \item{verbose}{If TRUE, the stages of analysis within each cycle for estimating
   	theta are reported.}
 }
 \details{
@@ -115,12 +113,12 @@
   Ramsay, J. O., Li J. and Wiberg, M. (2020) Better rating scale scores with 
   information-based psychometrics.  Psych, 2, 347-360.
   
-  http://www.testgardener.azurewebsites.net
+  http://testgardener.azurewebsites.net
 }
 \author{Juan Li and James Ramsay}
 \seealso{
   \code{\link{make.dataList},
-        \link{dataSimulation},
+        \link{ConditionalSimulation},
         \link{Power.plot},
         \link{scoreDensity},
         \link{Sensitivity.plot},
@@ -133,30 +131,4 @@
         \link{Wpca.plot}
   }
 }
-\examples{
-\donttest{
-#  Use of Analyze() presumes that make.data() has already been executed
-#  Here we ask for only one iteration of Analyze, but a proper analysis
-#  would involve 10 to 20 or so iterations.
-#  Example 1:  Analysis of multiple choice test, 24 items, 1000 examinees
-theta     <- Quant_dataList$percntrnk
-thetaQnt  <- Quant_dataList$thetaQnt
-chartList <- Quant_dataList$chartList
-AnalyzeResult <- Analyze(theta, thetaQnt, Quant_dataList, ncycle=1) 
-#  extract the two objects returned by Analyze:
-parList  <- AnalyzeResult$parList
-meanHvec <- AnalyzeResult$meanHvec
-#  The next step would be to select the cycle for which you wish to
-#  display results.
-#  Example 2:  analysis of rating scale, 13 items, 483 respondents
-theta     <- SDS_dataList$percntrnk
-thetaQnt  <- SDS_dataList$thetaQnt
-chartList <- SDS_dataList$chartList
-AnalyzeResult <- Analyze(theta, thetaQnt, SDS_dataList, ncycle=1) 
-#  extract the two objects returned by Analyze:
-parList  <- AnalyzeResult$parList
-meanHvec <- AnalyzeResult$meanHvec
-#  The next step would be to select the cycle for which you wish to
-#  display results.
-}
-}
+

@@ -27,9 +27,6 @@ at a single value theta.
       surprisal curves over fine mesh.}
       \item{D2Wmatfine:}{A matrix of the values of the second derivative of 
       surprisal curves over fine mesh.}
-      \item{chartList:}{A list vector of length \code{n}.  Each list contains the
-      \code{K} by \code{M-1} matrix of initial values for the surprisal curves for
-      the corresponding item.}
     }
   }
   \item{Umat}{An \code{N} by \code{n} matrix of responses or, for a single examinee,
@@ -45,7 +42,7 @@ Journal of Educational and Behavioral Statistics, 45, 297-315.
 Ramsay, J. O., Li J. and Wiberg, M. (2020) Better rating scale scores with 
 information-based psychometrics.  Psych, 2, 347-360.
 
-http://www.testgardener.azurewebsites.net
+http://testgardener.azurewebsites.net
 }
 \author{Juan Li and James Ramsay}
 \seealso{
@@ -58,8 +55,8 @@ http://www.testgardener.azurewebsites.net
 #  Example 1:  Compute the values of the objective function for locating each  
 #  examinee or respondent for the 24-item short form of the SweSAT quantitative  
 # test on the percentile score index continuum [0,100].
-WfdList <- Quant_parListi$WfdList
-theta   <- Quant_parListi$theta
+WfdList <- Quant_parList$WfdList
+theta   <- Quant_parList$theta
 U       <- Quant_dataList$U
 Hval    <- Hfun(theta, WfdList, U)
 print(paste("Mean               of objective function =",round(mean(Hval),2)))

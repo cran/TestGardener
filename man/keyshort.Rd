@@ -14,7 +14,7 @@
   keyshort
 }
 \details{
-  The code above inputs the contents of the file using the scan() function into
+  The code above inputs the contents of the file using the scan function into
   a single character vector of length 48.  The strings are converted
   to integers by the second command, and the integer vector is then
   reformatted into a 2 by 24 matrix.  

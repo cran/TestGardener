@@ -29,9 +29,6 @@ The analysis is within the closed interval [0,100].
       surprisal curves over fine mesh.}
       \item{D2Wmatfine:}{A matrix of the values of the second derivative of 
       surprisal curves over fine mesh.}
-      \item{chartList:}{A list vector of length \code{n}.  Each list contains the
-      \code{K} by \code{M-1} matrix of initial values for the surprisal curves for
-      the corresponding item.}
     }
   }
   \item{Umat}{An \code{N} by \code{n} matrix of responses.  If \code{N} = 1, it 
@@ -53,7 +50,7 @@ Journal of Educational and Behavioral Statistics, 45, 297-315.
 Ramsay, J. O., Li J. and Wiberg, M. (2020) Better rating scale scores with 
 information-based psychometrics.  Psych, 2, 347-360.
 
-http://www.testgardener.azurewebsites.net
+http://testgardener.azurewebsites.net
 }
 \author{Juan Li and James Ramsay}
 \seealso{
@@ -67,8 +64,8 @@ http://www.testgardener.azurewebsites.net
 #  Compute the first and second derivative values of the objective function for 
 #  locating each examinee for the 24-item short form of the SweSAT quantitative  
 #  test on thepercentile score index continuum.
-WfdList <- Quant_parListi$WfdList
-theta   <- Quant_parListi$theta
+WfdList <- Quant_parList$WfdList
+theta   <- Quant_parList$theta
 U       <- Quant_dataList$U
 DHfunResult <- DHfun(theta, WfdList, U)
 DHval  <- DHfunResult$DH

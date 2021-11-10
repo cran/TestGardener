@@ -29,11 +29,6 @@
        	where the right answer is scored 1 and the wrong answers 0, this is 
        	a numeric vector of length n containing the indices the right answers.  
        	Otherwise, it is NULL.}
-      \item{chartList:}{A list vector length n each member of which is a 
-      matrix of parameter values defining a set of M surprisal curves.  
-      The matrix has \code{K} rows and \code{M - 1} columns where \code{K} 
-      is the number of basis functions defining the curves and \code{M} is the 
-      number curves.}
       \item{WfdPar:}{An fdPar object for the defining the surprisal curves.}
       \item{noption:}{A numeric vector of length n containing the numbers of 
       options for each item.}
@@ -104,5 +99,5 @@ Journal of Educational and Behavioral Statistics, 45, 297-315.
 Ramsay, J. O., Li J. and Wiberg, M. (2020) Better rating scale scores with 
 information-based psychometrics.  Psych, 2, 347-360.
 
-http://www.testgardener.azurewebsites.net
+http://testgardener.azurewebsites.net
 }

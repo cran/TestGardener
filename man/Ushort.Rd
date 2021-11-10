@@ -16,7 +16,7 @@
   associated with the row.
 }
 \details{
-  The code above inputs the contents of the file using the scan() function into
+  The code above inputs the contents of the file using the scan function into
   a single character vector of length 24,000.  The strings are converted
   to integers by the third command, and the integer vector is then
   reformatted into a 1000 by 24 matrix containing choice indices.

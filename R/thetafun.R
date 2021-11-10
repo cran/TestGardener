@@ -1,14 +1,10 @@
-thetafun <- function(theta, WfdList, dataList, 
+thetafun <- function(theta, WfdList, U, 
                      itermax = 20, crit = 1e-3, itdisp=FALSE) {
   
 # Last modified 8 February 2021 by Jim Ramsay
 
-  if (!inherits(WfdList,"list") || !inherits(dataList,"list"))
-    stop("One or both of arguments WfdList and dataList are not list objects.")
-  
-  # extract data objects from dataList
-  
-  U      <- dataList$U
+  if (!inherits(WfdList,"list"))
+    stop("Arguments WfdList is not list object.")
   
   N <- nrow(U)
   n <- ncol(U)
@@ -35,25 +31,33 @@ thetafun <- function(theta, WfdList, dataList,
   # use minimum over a 26-value grid
   ngrid <- 26
   
-  nonposD2H <- which(D2Hval <= 0)
-  if (length(nonposD2H) > 0)
+  jneg <- which(D2Hval <= 0)
+  if (length(jneg) > 0)
   {
     if (itdisp) {
-      print(paste("Number of nonpositive D2H =",length(nonposD2H)))
+      print(paste("Number of nonpositive D2H =",length(jneg)))
     }
     thetatry <- seq(0,100,length.out=ngrid)
-    for (j in 1:length(nonposD2H))
+    for (j in 1:length(jneg))
     {
-      jind        <- nonposD2H[j]
+      jind        <- jneg[j]
       Uj          <- matrix(U[jind,], 1)[rep(1,ngrid), ]
       Htry        <- Hfun(thetatry, WfdList, Uj)
       Hmin        <- min(Htry)
       kmin        <- which(Htry == Hmin)
       theta[jind] <- thetatry[kmin[1]]
     }
+    Hvalnonpos   <-  Hfun(theta[jneg], WfdList, U[jneg,])
+    result       <- DHfun(theta[jneg], WfdList, U[jneg,])
+    DHvalnonpos  <- result$DH
+    D2Hvalnonpos <- result$D2H
+    Hval[jneg]   <- Hvalnonpos
+    DHval[jneg]  <- DHvalnonpos
+    D2Hval[jneg] <- D2Hvalnonpos
   }
+  
   if (itdisp) {
-    print(paste("mean adjusted values =",round(mean(theta[nonposD2H]),2)))
+    print(paste("mean adjusted values =",round(mean(theta[jneg]),2)))
   }
   
   if (itermax == 0)
@@ -146,11 +150,11 @@ thetafun <- function(theta, WfdList, dataList,
     theta[active] <- thetaanew
     
     # accept current value of H and also compute two derivatives
-    Ha               <- Hanew
-    DHLista          <- DHfun(theta[active], WfdList, as.matrix(U[active,]))
-    DHa              <- DHLista$DH
-    D2Ha             <- DHLista$D2H
-    nonposD2H        <- which(D2Ha <= 0)
+    Ha      <- Hanew
+    DHLista <- DHfun(theta[active], WfdList, as.matrix(U[active,]))
+    DHa     <- DHLista$DH
+    D2Ha    <- DHLista$D2H
+    jneg    <- which(D2Ha <= 0)
     
     Hval[active]   <- Ha
     DHval[active]  <- DHa

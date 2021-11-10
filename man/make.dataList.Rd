@@ -8,9 +8,10 @@
   in the value section below.
 }
 \usage{
-make.dataList(U, key, optList, scrrng=NULL, titlestr=NULL, nbin=nbinDefault(N), 
-              NumBasis=NumBasisDefault(N),
-              jitterwrd=TRUE, PcntMarkers=c( 5, 25, 50, 75, 95))
+make.dataList(U, key, optList, grbg=rep(0,n), scrrng=NULL, titlestr=NULL,  
+              nbin=nbinDefault(N),NumBasis=NULL,  WfdPar=NULL,
+              jitterwrd=TRUE, PcntMarkers=c( 5, 25, 50, 75, 95),
+              verbose=FALSE)
 }
 \arguments{
   \item{U}{A matrix with rows corresponding to examinees or respondents, 
@@ -21,6 +22,8 @@ make.dataList(U, key, optList, scrrng=NULL, titlestr=NULL, nbin=nbinDefault(N),
   \item{optList}{A list vector of length number of questions. A member 
   contains a vector of score values assigned to each answer or option by the 
   test designer.}
+  \item{grbg}{A vector of length indicating which option for each item contains 
+  missing or illegal choice values.  If 0, there is no such option.}
   \item{scrrng}{A vector of length two containing the initial and final values  
   for the interval over which test scores are to be plotted.  Default is 
   minimum and maximum sum score.}
@@ -31,10 +34,16 @@ make.dataList(U, key, optList, scrrng=NULL, titlestr=NULL, nbin=nbinDefault(N),
   \item{NumBasis}{The number of spline basis functions used to represent 
   surprisal curves. The default is computed by a function that uses the 
   number of examinees.}
+  \item{WfdPar}{A functional parameter object specifying a basis, a linear 
+  differential operator, a smoothing parameter, a boolian constant
+  indicating estimation, and a penalty matrix.  The default object defines
+  an order 5 spline with operator \code{Lfd = 3} and smoothing parameter
+  \code{1e4}. The number of basis functions depends on the size of N.}
   \item{jitterwrd}{A boolian constant: TRUE implies adding a small random value 
   to each sum score value prior to computing percent rank values.}
   \item{PcntMarkers}{Used in plots of curves to display marker or reference 
   percentage points for abscissa values in plots.}
+  \item{verbose}{If TRUE details of calcultions are displayed.}
 }
 \details{
   The score range defined \code{scrrng} should contain all of the sum score 
@@ -81,10 +90,6 @@ A named list with named members as follows:
        	where the right answer is scored 1 and the wrong answers 0, this is 
        	a numeric vector of length n containing the indices the right answers.  
        	Otherwise, it is NULL.}
-      \item{chartList:}{A list vector length n each member of which is a 
-      matrix of parameters values defining a set of M surprisal curves.  
-      The matrix has K rows and M - 1 columns where K is the number of basis 
-      functions defining the curves and M is the number curves.}
       \item{WfdPar:}{An fdPar object for the defining the surprisal curves.}
       \item{noption:}{A numeric vector of length n containing the numbers of 
       options for each item.}
@@ -113,7 +118,7 @@ Journal of Educational and Behavioral Statistics, 45, 297-315.
 Ramsay, J. O., Li J. and Wiberg, M. (2020) Better rating scale scores with 
 information-based psychometrics.  Psych, 2, 347-360.
 
-http://www.testgardener.azurewebsites.net
+http://testgardener.azurewebsites.net
 }
 \author{Juan Li and James Ramsay}
 \seealso{
@@ -125,18 +130,22 @@ http://www.testgardener.azurewebsites.net
 #  input the choice data as 1000 strings of length 24
 N <- dim(Quant_U)[1]
 n <- dim(Quant_U)[2]
+
 optList <- list()
+grbg = matrix(0,n,1)
 for (item in 1:n){
   noptioni <- length(unique(Quant_U[,item]))
   scorei <- rep(0,noptioni)
   scorei[Quant_key[item]] <- 1
   optList[[item]] <- scorei
+  grbg[item] <- length(scorei)
 }
 optList <- list(itemLab=NULL, optLab=NULL, optScr=optList)
 
 #  Set up the dataList object containing the objects necessary
 #  for further display and analyses
-Quant_dataList <- make.dataList(Quant_U, Quant_key, optList)
+
+Quant_dataList <- make.dataList(Quant_U, Quant_key, optList, grbg)
 
 #  Example 2:  Input choice data and key for the Symptom Distress Scale 
 #  with 13 items and 473 examinees.
@@ -145,12 +154,14 @@ N <- dim(SDS_U)[1]
 n <- dim(SDS_U)[2]
 # --------- Define the option score values for each item ---------
 optList <- list()
+grbg <- matrix(0,n,1)
 for (item in 1:n){
   scorei <- c(0:4,0)
-  optList[[item]]<- scorei
+  optList[[item]] <- scorei
+  grbg[item] <- length(scorei)
 }
 optList <- list(itemLab=NULL, optLab=NULL, optScr=optList)
 #  largest observed sum score is 37 
 scrrng <- c(0,37)
-dataList <- make.dataList(SDS_U, SDS_key, optList, scrrng)
+dataList <- make.dataList(SDS_U, SDS_key, optList, grbg, scrrng)
 }

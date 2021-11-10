@@ -203,7 +203,7 @@ plotP   <- function(Mi, binctr, indfine, Pbini, Pfitfinei,
         pp <- pp +
           ggplot2::geom_point(data=dfpts_w, ggplot2::aes(binctr,value,fill=variable), 
                               shape = 21, size = ptssize, na.rm = TRUE)+
-          ggplot2::scale_fill_hue(guide = FALSE)#,palette=scales::hue_pal(direction = -1)
+          ggplot2::scale_fill_hue(guide = "none")#,palette=scales::hue_pal(direction = -1)
       }
     } else {
       
@@ -219,7 +219,7 @@ plotP   <- function(Mi, binctr, indfine, Pbini, Pfitfinei,
       pp <- pp +
         ggplot2::geom_point(data=dfpts, ggplot2::aes(binctr,value,fill=variable),
                             shape = 21, size = ptssize, na.rm = TRUE)+
-        ggplot2::scale_fill_hue(guide = FALSE)#, palette=scales::hue_pal(direction = -1)
+        ggplot2::scale_fill_hue(guide = "none")#, palette=scales::hue_pal(direction = -1)
     }
   }
   
@@ -345,7 +345,7 @@ plotW   <- function(Mi, binctr, indfine,
         wp <- wp +
           ggplot2::geom_point(data=dfpts_w, ggplot2::aes(binctr,value,fill=variable), 
                               shape = 21, size = ptssize, na.rm = TRUE)+
-          ggplot2::scale_fill_hue(guide = FALSE)#,palette=scales::hue_pal(direction = -1)
+          ggplot2::scale_fill_hue(guide = "none")#,palette=scales::hue_pal(direction = -1)
       }
     } else
     {
@@ -357,7 +357,7 @@ plotW   <- function(Mi, binctr, indfine,
       wp <- wp +
         ggplot2::geom_point(data=dfpts, ggplot2::aes(binctr,value,fill=variable), 
                             shape = 21, size = ptssize, na.rm = TRUE)+
-        ggplot2::scale_fill_hue(guide = FALSE)#,palette=scales::hue_pal(direction = -1)
+        ggplot2::scale_fill_hue(guide = "none")#,palette=scales::hue_pal(direction = -1)
     }
   }
   

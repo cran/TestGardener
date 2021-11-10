@@ -8,7 +8,8 @@ library(TestGardener)
 
 titlestr  <- "SweSAT-Q: 24 math analysis items"
 
-U         <- scan("data/Ushort.txt", "o")
+# U         <- scan("../data/Ushort.txt", "o") # used from TestGardener/R
+U         <- scan("inst/Ushort.txt", "o")
 N         <- length(U) # Number of examinees
 Umat      <- as.integer(unlist(stringr::str_split(U,"")))
 n         <- length(Umat)/N # Number of items
@@ -16,7 +17,8 @@ U         <- matrix(Umat,N,n,byrow=TRUE)
 
 Quant_U <- U
 
-knostring <- scan("data/keyshort.txt", "o")
+knostring <- scan("../data/keyshort.txt", "o") # used from TestGardener/R
+# knostring <- scan("data/keyshort.txt", "o")
 key       <- as.integer(unlist(stringr::str_split(knostring,"")))
 
 Quant_key <- key
@@ -29,6 +31,8 @@ for (i in 1:n)
 {
   noption[i]  <- length(unique(U[,i]))
 }
+
+grbg <- noption  # assumed that the last option is always a garbage option
 
 # summary count for each option
 
@@ -54,7 +58,12 @@ optList <- list(itemLab=NULL, optLab=NULL, optScr=ScoreList)
 
 # ----------------  Initialization Steps  ------------------------
 
-Quant_dataList <- make.dataList(U, key, optList, titlestr=titlestr)
+Quant_dataList <- make.dataList(U, key, optList, grbg, titlestr=titlestr)
+
+#  save this list object in the data folder
+
+save(Quant_dataList, file="../data/Quant_dataList.rda")
+load(Quant_dataList, file="../data/Quant_dataList.rda")
 
 #  plot the sum scores as a histogram 
 
@@ -66,9 +75,8 @@ hist(Quant_dataList$scrvec, Quant_dataList$scrrng[2], xlab="Sum Score",
 
 theta     <- Quant_dataList$percntrnk
 thetaQnt  <- Quant_dataList$thetaQnt
-chartList <- Quant_dataList$chartList
 
-WfdResult <- Wbinsmth(theta, Quant_dataList, thetaQnt, chartList)
+WfdResult <- Wbinsmth(theta, Quant_dataList)
 
 #  Plot the initial option proability and surprisal curves
 
@@ -88,7 +96,7 @@ ncycle=10
 #                      Proceed through the cycles
 #  ----------------------------------------------------------------------------
 
-AnalyzeResult <- Analyze(theta, thetaQnt, Quant_dataList, ncycle=ncycle, itdisp=FALSE) 
+AnalyzeResult <- Analyze(theta, thetaQnt, Quant_dataList, ncycle, itdisp=FALSE) 
 
 parList  <- AnalyzeResult$parList
 meanHvec <- AnalyzeResult$meanHvec
@@ -104,15 +112,19 @@ plot(cycleno,meanHvec[cycleno], type="b", lwd=2, xlab="Cycle Number")
 
 icycle <- 10
 
-Quant_parListi  <- parList[[icycle]]
+Quant_parList  <- parList[[icycle]]
 
-WfdList    <- Quant_parListi$WfdList
-Qvec       <- Quant_parListi$Qvec
-binctr     <- Quant_parListi$binctr
-theta      <- Quant_parListi$theta
-theta_al   <- Quant_parListi$theta_al
-arclength  <- Quant_parListi$arclength
-alfine     <- Quant_parListi$alfine
+WfdList    <- Quant_parList$WfdList
+Qvec       <- Quant_parList$Qvec
+binctr     <- Quant_parList$binctr
+theta      <- Quant_parList$theta
+theta_al   <- Quant_parList$theta_al
+arclength  <- Quant_parList$arclength
+alfine     <- Quant_parList$alfine
+
+#  save this list object in the data folder
+
+save(Quant_parList, file="../data/Quant_Result.rda")
 
 #  ----------------------------------------------------------------------------
 #                   Plot surprisal curves for each test question
@@ -142,8 +154,7 @@ muden  <- scoreDensity(mu, Quant_dataList$scrrng, ttlstr=ttllab)
 #  compute expected score for each value in the fine mesh of theta values
 
 indfine <- seq(0,100,len=101)
-mufine <- testscore(indfine, WfdList, optList)
-
+mufine  <- testscore(indfine, WfdList, optList)
 mu.plot(mufine, Quant_dataList$scrrng, titlestr)
 
 #  ----------------------------------------------------------------------------
@@ -201,5 +212,5 @@ Hfuns.plot(theta, WfdList, Quant_dataList$U, plotindex=1:5)
 #             simulate data samples and analyze simulated samples
 #  ----------------------------------------------------------------------------
 
-simList <- dataSimulation(Quant_dataList, Quant_parListi, nsample=500)
+simList <- dataSimulation(Quant_dataList, Quant_parList, nsample=500)
 dataSimulation.plot(simList, Qvec)

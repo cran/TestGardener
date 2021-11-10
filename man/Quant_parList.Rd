@@ -1,14 +1,16 @@
-\name{SDS_parListi}
-\alias{SDS_parListi}
-%- Also NEED an '\alias' for EACH other topic documented here.
+\name{Quant_parList}
+\alias{Quant_parList}
+\docType{data}
 \title{
-  List of objects essential for an analysis of the Symptom Distress Scale.
+  List vector containing results for an analysis of the abbreviated 
+  SweSAT Quantitative multiple choice test.
 }
 \description{
-  The data are for 473 respondents to the Symptom Distress Scale.  Each question has
-  rating scores 0, 1, 2, 3, and 4.
+  The data are for 1000 randomly selected examinees taking 24 math analysis multiple choice questions.
+  The results are for each of 10 cycles of alternating between estimating surprisal curves and 
+  estimating percentile score index values.
 }
-\usage{SDS_parListi}
+\usage{Quant_parList}
 \format{A named list.}
 \value{
   The object \code{SDS_dataList} is a list vector with length equal to the number of analysis cycles.  
@@ -58,5 +60,4 @@
     respondent on the test information curve.}
   }
 }
-
 \keyword{datasets}

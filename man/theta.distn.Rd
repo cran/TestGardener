@@ -41,7 +41,7 @@ Journal of Educational and Behavioral Statistics, 45, 297-315.
 Ramsay, J. O., Li J. and Wiberg, M. (2020) Better rating scale scores with 
 information-based psychometrics.  Psych, 2, 347-360.
 
-http://www.testgardener.azurewebsites.net
+http://testgardener.azurewebsites.net
 }
 \author{Juan Li and James Ramsay}
 \seealso{
@@ -55,12 +55,12 @@ http://www.testgardener.azurewebsites.net
 #  short SweSAT multiple choice test with 24 items and 1000 examinees
 #  Assemble information for estimating theta density
 indfine   <- seq(0,100,len=101)
-WfdList   <- Quant_parListi$WfdList
-theta     <- Quant_parListi$theta
+WfdList   <- Quant_parList$WfdList
+theta     <- Quant_parList$theta
 N         <- length(theta)
 #  Define the density for only interior theta values
 inside    <- theta > 0 & theta < 100
-logdensbasis    <- Quant_parListi$logdensfd$basis
+logdensbasis    <- Quant_parList$logdensfd$basis
 theta.distnList <- theta.distn(theta[inside], logdensbasis)
 theta.densfine  <- theta.distnList$densfine
 #  Add number of values at each boundary

@@ -28,10 +28,6 @@ There are five distinct stages to the processing of the data:
 4.  Producing desired graphs and other displays.
 5.  Simulating data in order to assess the accuracy of estimated quantities.
 
-```{r}
-library(TestGardener)
-```
-
 ## Reading in the data
 
 Here the data required for the analysis are entered.  There are up to five objects to enter:  
@@ -107,6 +103,12 @@ for (i in 1:n)
 }
 ```
 
+These data encode missing or illegal choices for each item as choices for the last option, which is added on to the options coding legitimate choices.  We call this option the garbage option, , which is named grbg in the code.  Here we indicate which option this is.
+
+```{r}
+grbg <- noption 
+```
+
 Now we turn to code that sets up objects that are essential to the analysis but that the analyst may want to set up using code rather than inputting.  The first of these is a list vector of length `n` where each member contains a numeric vector of length `M` containing the designed scores assigned to each option.  For multiple choice tests, that is easily done using the following code:
 
 ```{r}
@@ -116,6 +118,8 @@ for (item in 1:n){
   optScore[[item]] <- scorei
 }
 ```
+
+Note that the last option for each item is the garbage option, and we assign a designed score of zero to it.
 
 There is also the possibility of inputting strings for each question and each option within each question.  We won't use this feature in this analysis.
 
@@ -153,7 +157,7 @@ scrrng = c(0,37)
 We're now finished with the data input and setup phase.  From these objects we have a function `make_dataList` that completes the set up:
 
 ```{r}
-SDS_dataList <- TestGardener::make.dataList(U, key, optList, scrrng=scrrng)
+SDS_dataList <- TestGardener::make.dataList(U, key, optList, grbg, scrrng=scrrng)
 ```
 
 The result is a named list with many members whose values may be required in the analysis phase.  Consult the documentation using `help("make.dataList.R")`.
@@ -184,8 +188,11 @@ The initializing of the surprisal curves is achieved as follows using the import
 ```{r}
 theta     <- SDS_dataList$percntrnk
 thetaQnt  <- SDS_dataList$thetaQnt
-chartList <- SDS_dataList$chartList
-WfdResult <- TestGardener::Wbinsmth(theta, SDS_dataList, thetaQnt, chartList)
+WfdResult <- TestGardener::Wbinsmth(theta, SDS_dataList)
+# Wbinsmth <- function(theta, dataList, WfdList=dataList$WfdList, 
+#                      thetaQnt=seq(0,100, len=2*nbin+1), wtvec=matrix(1,n,1),
+#                      iterlim=20, conv=1e-4, dbglev=0) {
+# WfdResult <- Wbinsmth(theta, SDS_dataList)
 ```
 
 One may well want to plot these initial surprisal curves in terms of both probability and surprisal, this is achieved in this way:
@@ -242,7 +249,7 @@ All the results generated in this cycle are bundled together in a named list obj
 Here is the single command that launches the analysis:
 
 ```{r}  
-AnalyzeResult <- TestGardener::Analyze(theta, thetaQnt, SDS_dataList, ncycle=ncycle, itdisp=TRUE) 
+AnalyzeResult <- TestGardener::Analyze(theta, thetaQnt, SDS_dataList, ncycle, itdisp=TRUE) 
 ```
 
 The following two lines set up a list vector object of length 10 containing the results on each cycle, and also a numeric vector of the same length containing averages of the fitting criterion values for each examinee.  
@@ -328,7 +335,7 @@ Sure enough, there are four distinct clusters of score index values.  Within eac
 The expected score for an examinee are determined by his value `theta` for the question and by the score values assigned by the test designer to each option.  We use a plotting interval defined by the range of the sum scores, but as a rule the density of expected scores is positive only over a shorter interval.
 
 ```{r}  
-mu <- testscore(theta, WfdList, optList)
+mu <- TestGardener::testscore(theta, WfdList, optList)
 ttllab <- paste(titlestr,": expected score", sep="")
 muden  <- TestGardener::scoreDensity(mu, SDS_dataList$scrrng, ttlstr=ttllab) 
 ```

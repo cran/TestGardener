@@ -1,6 +1,8 @@
-Wbinsmth <- function(theta, dataList, thetaQnt=seq(0,100, len=2*nbin+1), chartList) {
+Wbinsmth <- function(theta, dataList, WfdList=dataList$WfdList, 
+                     thetaQnt=seq(0,100, len=2*nbin+1), wtvec=matrix(1,n,1),
+                     iterlim=20, conv=1e-4, dbglev=0) {
   
-#' Last modified 19 February 2021 by Jim Ramsay
+# Last modified 19 October 2021 by Jim Ramsay
 
   #  -----------------------------------------------------------------------------
   #  Step 1.       Set up  objects required for subsequent steps
@@ -15,17 +17,18 @@ Wbinsmth <- function(theta, dataList, thetaQnt=seq(0,100, len=2*nbin+1), chartLi
   
   indfine <- seq(0,100,len=101)
   nbin    <- dataList$nbin
-  nitem   <- length(dataList$optList)
+  nitem   <- length(dataList$optList$optScr)
   WfdPar  <- dataList$WfdPar
   U       <- dataList$U
   noption <- dataList$noption
-  
+  grbg    <- dataList$grbg
+  key     <- dataList$key
+
   #  check objects from dataList
   
   if (is.null(U))       stop("U is null.") 
   if (is.null(indfine)) stop("indfine is null.")
   if (is.null(noption)) stop("noption is null.")
-  if (is.null(WfdPar))  stop("WfdPar is null.") 
   if (is.null(nbin))    stop("nbin is null.")
   
   #  -----------------------------------------------------------------------------
@@ -56,9 +59,7 @@ Wbinsmth <- function(theta, dataList, thetaQnt=seq(0,100, len=2*nbin+1), chartLi
   
   meanfreq <- mean(freq)
   
-  dbglev <- 0
-  
-  #  set up objects for required defining WfdPari for each item
+  #  set up objects for required defining WfdPar for each item
   
   Wbasis    <- WfdPar$fd$basis
   Wnbasis   <- Wbasis$nbasis
@@ -67,16 +68,11 @@ Wbinsmth <- function(theta, dataList, thetaQnt=seq(0,100, len=2*nbin+1), chartLi
   Westimate <- WfdPar$estimate
   Wpenmat   <- WfdPar$penmat
   
-  
   #  -----------------------------------------------------------------------------
   #  Step 3.  Loop through the items to define the negative-surprisal W-curves
   #           for each question.
   #  -----------------------------------------------------------------------------
   
-  Wmax  <- 0
-  nitem <- length(noption)
-  key   <- dataList$key
-  WfdList <- vector("list",nitem)
   for (item in 1:nitem) {
     if (dbglev > 0) {
       print(paste("Item",item))
@@ -95,7 +91,6 @@ Wbinsmth <- function(theta, dataList, thetaQnt=seq(0,100, len=2*nbin+1), chartLi
     #  Step 3.1  loop through the bins to compute binned P values and their
     #  transformation(s) to binned W values
     #  --------------------------------------------------------------------
-    indpts <- c(1:nbin)
     for (k in 1:nbin) {
       #  index of theta values within this bin
       indk   <- theta >= bdry[k] & theta <= bdry[k+1]
@@ -122,8 +117,8 @@ Wbinsmth <- function(theta, dataList, thetaQnt=seq(0,100, len=2*nbin+1), chartLi
     #  Step 3.2 Smooth the binned W values
     #  --------------------------------------------------------------------
     
-    #  First use unrestricted smoothing
-    #  unrestricted smoothing for (the multi-option case
+    #  Set up SurprisalMax to replace NA's
+    
     maxWbin <- 0
     for (m in 1:Mi) {
       Wmis.na <- is.na(Pbin[,m])
@@ -131,14 +126,19 @@ Wbinsmth <- function(theta, dataList, thetaQnt=seq(0,100, len=2*nbin+1), chartLi
       if (length(indm) > 0) maxWbin <- max(c(maxWbin,max(Wbin[indm,m])))
     }
     SurprisalMax <- min(c(-log(1/(meanfreq*2))/logMi, maxWbin))
+    
+    #  process NA values in Wbin associated with zero probabilities
+    
     for (m in 1:Mi) {
-      Wmis.na <- is.na(Pbin[,m])
-      indm <- (1:nbin)[!Wmis.na]
-      #  Here we deal with NaN cases by setting to a large surprisal
-      
-      if (m < Mi) {
+      if (!is.null(grbg) && m != grbg[item]) {
+        #  normal non-garbage choice, change NA values to SurprisalMax
+        Wmis.na <- is.na(Pbin[,m])
         Wbin[Wmis.na,m] <- SurprisalMax
       } else {
+        #  garbage choices: compute sparse numeric values into 
+        #  linear approximationsand NA values to SurprisalMax
+        Wmis.na <- is.na(Pbin[,m])
+        indm <- (1:nbin)[!Wmis.na]
         indmlen <- length(indm)
         if (indmlen > 3) {
           WY <- Wbin[indm,m];
@@ -147,23 +147,19 @@ Wbinsmth <- function(theta, dataList, thetaQnt=seq(0,100, len=2*nbin+1), chartLi
           Wbin[indm,m] <- WX %*% BX
           Wbin[Wmis.na,m] <- SurprisalMax
         } else {
-          #if (indmlen)
           Wbin[Wmis.na,m] <- SurprisalMax
         }
       }
     }
-    
+      
     #  apply surprisal smoothing
     
-    Bmat0   <- chartList[[item]]
-    Wfdi    <- fd(Bmat0,Wbasis)
-    Wlambda = 0
-    WfdPari <- fdPar(Wfdi, WLfd, Wlambda, Westimate, Wpenmat)
-    result  <- smooth.surp(aves, Wbin, Bmat0, WfdPari, dbglev=dbglev)
-    
-    Wfdi  <- result$Wfd
-    Bmati <- result$Bmat
-    chartList[[item]] <- Bmati
+    WListi  <- WfdList[[item]]
+    Wfdi    <- WListi$Wfd
+    Bmat0   <- Wfdi$coefs
+    result  <- smooth.surp(aves, Wbin, Bmat0, WfdPar)
+    Wfdi    <- result$Wfd
+    Bmati   <- result$Bmat
    
     #  --------------------------------------------------------------------
     #  Step 4  Compute W and P values for bin point and each mesh point
@@ -179,12 +175,7 @@ Wbinsmth <- function(theta, dataList, thetaQnt=seq(0,100, len=2*nbin+1), chartLi
     #  of step 4 for this single item.  WfdCell[item} <- WStr
     #  --------------------------------------------------------------------
     
-    Wmaxi <- max(Wbin)
-    if (Wmaxi > Wmax)
-    {
-      Wmax <- Wmaxi
-    }
-    WList  <- list(
+    WListi  <- list(
       Wfd        = Wfdi,       #  functional data object for (options
       M          = Mi,         #  the number of options
       Pbin       = Pbin,       # proportions at each bin
@@ -192,16 +183,14 @@ Wbinsmth <- function(theta, dataList, thetaQnt=seq(0,100, len=2*nbin+1), chartLi
       Pmatfine   = Pmatfine,   # Probabilities over fine mesh
       Wmatfine   = Wmatfine,   # W functions over fine mesh
       DWmatfine  = DWmatfine,  # 1st derivative of W functions over fine mesh
-      D2Wmatfine = D2Wmatfine, # 2nd derivative of W functions over fine mesh
-      chartList  = chartList
+      D2Wmatfine = D2Wmatfine  # 2nd derivative of W functions over fine mesh
     )
 
-    WfdList[[item]] = WList
+    WfdList[[item]] = WListi
     
   }
 
-  return(list(WfdList=WfdList, aves=aves, bdry=bdry, freq=freq, Wmax=ceiling(Wmax),
-              chartList=chartList))
+  return(list(WfdList=WfdList, aves=aves, bdry=bdry, freq=freq))
 
 }
 

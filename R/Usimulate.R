@@ -1,4 +1,4 @@
-Usimulate <- function(n, theta.pop, WfdList) {
+Usimulate <- function(theta.pop, WfdList) {
 #  USIMULATE generates an Ntheta.pop by N matrix of random score index
 #  values for N test questions and Ntheta.pop values of theta.pop
 #  located at the score index values in SCRFINE.
@@ -6,9 +6,10 @@ Usimulate <- function(n, theta.pop, WfdList) {
 #  over the score values in SCRFINE of the probabilities in the MI
 #  columns of matrix Pmati.
 
-#  Last modified on 5 February 2021 by Jim Ramsay
+#  Last modified on 3 October 2021 by Jim Ramsay
 
   nfine   <- 101
+  n       <- length(WfdList)
   indfine <- seq(0,100,len=101)
   ntheta.pop <- length(theta.pop)
   WList1 <- WfdList[[1]]
@@ -21,8 +22,8 @@ Usimulate <- function(n, theta.pop, WfdList) {
   Umat <- matrix(0,ntheta.pop,n)
   for (i in 1:n) {
     WListi <- WfdList[[i]]
-    Mi    <- WListi$M
-    Pmati <- WListi$Pmatfine
+    Mi     <- WListi$M
+    Pmati  <- WListi$Pmatfine
     for (j in 1:ntheta.pop) {
       prob = matrix(0,1,Mi)
       for (m in 1:Mi) {

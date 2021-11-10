@@ -39,7 +39,7 @@ Journal of Educational and Behavioral Statistics, 45, 297-315.
 Ramsay, J. O., Li J. and Wiberg, M. (2020) Better rating scale scores with 
 information-based psychometrics.  Psych, 2, 347-360.
 
-http://www.testgardener.azurewebsites.net
+http://testgardener.azurewebsites.net
 }
 \author{Juan Li and James Ramsay}
 \seealso{
@@ -51,8 +51,8 @@ http://www.testgardener.azurewebsites.net
 #  Example 1.  Display fit criterion values and derivatives for the 
 #  short SweSAT multiple choice test with 24 items and 1000 examinees
 index <- 1
-theta    <- Quant_parListi$theta
-WfdList  <- Quant_parListi$WfdList
+theta    <- Quant_parList$theta
+WfdList  <- Quant_parList$WfdList
 U        <- Quant_dataList$U
 Hval     <-  Hfun(theta[index], WfdList, U[index,])
 DHResult <- DHfun(theta[index], WfdList, U[index,])

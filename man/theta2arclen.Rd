@@ -32,9 +32,6 @@ curve are subject to the same strict properties that apply to physical measureme
       surprisal curves over fine mesh.}
       \item{D2Wmatfine:}{A matrix of the values of the second derivative of 
       surprisal curves over fine mesh.}
-      \item{chartList:}{A list vector of length \code{n}.  Each list contains the
-      \code{K} by \code{M-1} matrix of initial values for the surprisal curves for
-      the corresponding item.}
     }
   }
   \item{Wdim}{The total number of options in the test or scale.}
@@ -54,7 +51,7 @@ Journal of Educational and Behavioral Statistics, 45, 297-315.
 Ramsay, J. O., Li J. and Wiberg, M. (2020) Better rating scale scores with 
 information-based psychometrics.  Psych, 2, 347-360.
 
-http://www.testgardener.azurewebsites.net
+http://testgardener.azurewebsites.net
 }
 \author{Juan Li and James Ramsay}
 \seealso{
@@ -64,8 +61,8 @@ http://www.testgardener.azurewebsites.net
 #  Example 1.  Display the arc length curve for the 
 #  short SweSAT multiple choice test with 24 items and 1000 examinees
 indfine       <- seq(0,100,len=101)
-WfdList       <- Quant_parListi$WfdList
-theta         <- Quant_parListi$theta
+WfdList       <- Quant_parList$WfdList
+theta         <- Quant_parList$theta
 arclenList    <- theta2arclen(theta, WfdList, Quant_dataList$Wdim)
 names(arclenList)
 ArcLength.plot(arclenList$arclength, arclenList$arclengthfine)

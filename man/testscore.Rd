@@ -26,9 +26,6 @@ Binary items assumed coded as two choice items.}
       surprisal curves over fine mesh.}
       \item{D2Wmatfine:}{A matrix of the values of the second derivative of 
       surprisal curves over fine mesh.}
-      \item{chartList:}{A list vector of length \code{n}.  Each list contains the
-      \code{K} by \code{M-1} matrix of initial values for the surprisal curves for
-      the corresponding item.}
     }
   }
   \item{optList}{A numbered list of length n.  Each member contains the weights
@@ -48,7 +45,7 @@ Journal of Educational and Behavioral Statistics, 45, 297-315.
 Ramsay, J. O., Li J. and Wiberg, M. (2020) Better rating scale scores with 
 information-based psychometrics.  Psych, 2, 347-360.
 
-http://www.testgardener.azurewebsites.net
+http://testgardener.azurewebsites.net
 }
 \seealso{
   \code{\link{scoreDensity}}
@@ -56,8 +53,8 @@ http://www.testgardener.azurewebsites.net
 \examples{
 #  Example 1.  Compute expected sum score values for the 
 #  short SweSAT multiple choice test with 24 items and 1000 examinees
-WfdList <- Quant_parListi$WfdList
-theta   <- Quant_parListi$theta
+WfdList <- Quant_parList$WfdList
+theta   <- Quant_parList$theta
 mu      <- testscore(theta, WfdList, Quant_dataList$optList)
 par(c(1,1))
 hist(mu,11)

@@ -3,9 +3,6 @@ knitr::opts_chunk$set(collapse=TRUE, comment="#", out.width='//textwidth')
 system.file(package="TestGardener")
 
 ## -----------------------------------------------------------------------------
-library(TestGardener)
-
-## -----------------------------------------------------------------------------
 titlestr  <- "Symptom Distress"
 
 ## -----------------------------------------------------------------------------
@@ -31,6 +28,9 @@ for (i in 1:n)
     U[U[,i] >= noption[i],i] <- noption[i]
   }
 }
+
+## -----------------------------------------------------------------------------
+grbg <- noption 
 
 ## -----------------------------------------------------------------------------
 optScore <- list() # option scores
@@ -60,7 +60,7 @@ optList <- list(itemLab=itemVec, optLab=optLab, optScr=optScore)
 scrrng = c(0,37)
 
 ## -----------------------------------------------------------------------------
-SDS_dataList <- TestGardener::make.dataList(U, key, optList, scrrng=scrrng)
+SDS_dataList <- TestGardener::make.dataList(U, key, optList, grbg, scrrng=scrrng)
 
 ## -----------------------------------------------------------------------------
 hist(SDS_dataList$scrvec, SDS_dataList$scrrng[2], xlab="Sum Score",
@@ -69,8 +69,11 @@ hist(SDS_dataList$scrvec, SDS_dataList$scrrng[2], xlab="Sum Score",
 ## -----------------------------------------------------------------------------
 theta     <- SDS_dataList$percntrnk
 thetaQnt  <- SDS_dataList$thetaQnt
-chartList <- SDS_dataList$chartList
-WfdResult <- TestGardener::Wbinsmth(theta, SDS_dataList, thetaQnt, chartList)
+WfdResult <- TestGardener::Wbinsmth(theta, SDS_dataList)
+# Wbinsmth <- function(theta, dataList, WfdList=dataList$WfdList, 
+#                      thetaQnt=seq(0,100, len=2*nbin+1), wtvec=matrix(1,n,1),
+#                      iterlim=20, conv=1e-4, dbglev=0) {
+# WfdResult <- Wbinsmth(theta, SDS_dataList)
 
 ## -----------------------------------------------------------------------------
 WfdList <- WfdResult$WfdList
@@ -82,7 +85,7 @@ TestGardener::Wbinsmth.plot(binctr, Qvec, WfdList, SDS_dataList, Wrng=c(0,3), pl
 ncycle <- 10
 
 ## -----------------------------------------------------------------------------
-AnalyzeResult <- TestGardener::Analyze(theta, thetaQnt, SDS_dataList, ncycle=ncycle, itdisp=TRUE) 
+AnalyzeResult <- TestGardener::Analyze(theta, thetaQnt, SDS_dataList, ncycle, itdisp=TRUE) 
 
 ## -----------------------------------------------------------------------------
 parList  <- AnalyzeResult$parList
@@ -114,7 +117,7 @@ theta_in   <- theta[theta > 0 & theta < 100]
 indden10   <- TestGardener::scoreDensity(theta_in, scrrng, ttlstr=ttllab)
 
 ## -----------------------------------------------------------------------------
-mu <- testscore(theta, WfdList, optList)
+mu <- TestGardener::testscore(theta, WfdList, optList)
 ttllab <- paste(titlestr,": expected score", sep="")
 muden  <- TestGardener::scoreDensity(mu, SDS_dataList$scrrng, ttlstr=ttllab) 
 

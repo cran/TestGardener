@@ -1,11 +1,18 @@
-Analyze <- function(theta, thetaQnt, dataList, ncycle=10, itdisp=FALSE) {
+Analyze <- function(theta, thetaQnt, dataList, ncycle=10, itdisp=FALSE, verbose=FALSE) {
   
-  parList  <- vector("list",ncycle)  
-  meanHvec <- rep(0,ncycle)
+  # Last modified 29 October 2021 by Jim Ramsay
+
+  parList   <- vector("list",ncycle)  
+  meanHsave <- rep(0,ncycle)
   
-  logdensbasis <- dataList$WfdPar$fd$basis
+  # logdensbasis <- dataList$WfdPar$fd$basis
+  logdensbasis <- create.bspline.basis(c(0,100), 15)
   
-  chartList <- dataList$chartList
+  WfdList <- dataList$WfdList
+  
+  parList <- vector("list", ncycle)
+  
+  U <- dataList$U
   
   for (icycle in 1:ncycle) {
     
@@ -15,26 +22,30 @@ Analyze <- function(theta, thetaQnt, dataList, ncycle=10, itdisp=FALSE) {
     #  Step 1:  Bin the data, and smooth the binned data
     #  ----------------------------------------------------------
     
-    WfdResult <- Wbinsmth(theta, dataList, thetaQnt, chartList)
+    if (verbose) print("Wbinsmth:")
+    
+    WfdResult <- Wbinsmth(theta, dataList, WfdList, thetaQnt)
     WfdList   <- WfdResult$WfdList
     binctr    <- WfdResult$aves
     bdry      <- WfdResult$bdry
     freq      <- WfdResult$freq
-    Wmax      <- WfdResult$Wmax
-    chartList <- WfdResult$chartList
     
     #  compute current mean value of objective function H
     
-    H <- Hfun(theta, WfdList, dataList$U)
+    if (verbose) print("Hfun:")
+    
+    H <- Hfun(theta, WfdList, U)
     meanH <- mean(H)
-    meanHvec[icycle] <- meanH
+    meanHsave[icycle] <- meanH
     print(paste('Mean surprisal = ', round(meanH,3)))
     
     #  ----------------------------------------------------------
     #  Step 2:  Compute optimal score index values
     #  ----------------------------------------------------------
     
-    thetafunList <- thetafun(theta, WfdList, dataList, 20, 1e-3, itdisp)
+    if (verbose) print("thetafun:")
+
+    thetafunList <- thetafun(theta, WfdList, U, 20, 1e-3, itdisp)
     theta    <- thetafunList$theta_out
     Hval     <- thetafunList$Hval
     DHval    <- thetafunList$DHval
@@ -44,6 +55,8 @@ Analyze <- function(theta, thetaQnt, dataList, ncycle=10, itdisp=FALSE) {
     #  ----------------------------------------------------------
     #  Step 3:  Estimate the score density for score index values
     #  ----------------------------------------------------------
+    
+    if (verbose) print("theta.distn:")
     
     thetadens <- theta[0 < theta & theta < 100]
     theta.distnList <- theta.distn(thetadens, logdensbasis)
@@ -64,6 +77,8 @@ Analyze <- function(theta, thetaQnt, dataList, ncycle=10, itdisp=FALSE) {
     #  Step 4.  Compute arc length and its measures
     #  ----------------------------------------------------------
       
+    if (verbose) print("theta2arclen:")
+    
     theta2arclenList <- theta2arclen(theta, WfdList, dataList$Wdim);
     theta_al      <- theta2arclenList$theta_al 
     arclength     <- theta2arclenList$arclength 
@@ -74,6 +89,8 @@ Analyze <- function(theta, thetaQnt, dataList, ncycle=10, itdisp=FALSE) {
     #  ----------------------------------------------------------
     #  Step 5:  set up ParameterCell arrays
     #  ----------------------------------------------------------
+    
+    if (verbose) print("parList:")
     
     parListi <- list(
       theta      = theta,
@@ -99,13 +116,8 @@ Analyze <- function(theta, thetaQnt, dataList, ncycle=10, itdisp=FALSE) {
     
     parList[[icycle]] <- parListi
     
-    # titlestr <- NULL
-    # key      <- NULL
-    # Wbinsmth.plot(binctr, titlestr, Qvec, WfdList, key, dataList, 
-    #               plotindex=c(5,10,15,19,30))
-    
   }
   
-  return(list(parList=parList, meanHvec=meanHvec))
+  return(list(parList=parList, meanHsave=meanHsave))
   
 } 

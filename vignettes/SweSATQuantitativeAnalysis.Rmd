@@ -107,12 +107,18 @@ All questions for these 24 questions in the test have four answers, but in case 
 
 ```{r}
 noption <- rep(4,n)
-for (j in 1:n) {
-  if (any(U[,j] > noption[j])) {
-    noption[j]  <- noption[j] + 1 # Add one option for invalid responses
-    U[U[,j] > noption[j],j] <- noption[j]
+for (i in 1:n) {
+  if (any(U[,i] > noption[i])) {
+    noption[i]  <- noption[i] + 1 # Add one option for invalid responses
+    U[U[,i] > noption[i],i] <- noption[i]
   }
 }
+```
+
+These data encode missing or illegal choices for each item as choices for the last option, which is added on to the options coding legitimate choices.  We call this option the garbage option, , which is named grbg in the code.  Here we indicate which option this is.
+
+```{r}
+grbg <- noption 
 ```
 
 Now we turn to code that sets up objects that are essential to the analysis but that the analyst may want to set up using code rather than inputting.  The first of these is a list vector of length `n` where each member contains a numeric vector of length `M` containing the designed scores assigned to each option.  For multiple choice tests, that is easily done using the following code:
@@ -137,7 +143,7 @@ optList <- list(itemLab=NULL, optLab=NULL, optScr=ScoreList)
 We're now finished with the data input and setup phase.  From these objects we have a function `make_dataList` that completes the set up:
 
 ```{r}
-Quant_dataList <- TestGardener::make.dataList(U, key, optList)
+Quant_dataList <- TestGardener::make.dataList(U, key, optList, grbg)
 names(Quant_dataList)
 ```
 
@@ -165,8 +171,7 @@ The initializing of the surprisal curves is achieved as follows using the import
 ```{r}
 theta     <- Quant_dataList$percntrnk
 thetaQnt  <- Quant_dataList$thetaQnt
-chartList <- Quant_dataList$chartList
-WfdResult <- TestGardener::Wbinsmth(theta, Quant_dataList, thetaQnt, chartList)
+WfdResult <- TestGardener::Wbinsmth(theta, Quant_dataList)
 ```
 
 One may well want to plot these initial surprisal curves in terms of both probability and surprisal, this is achieved in this way:

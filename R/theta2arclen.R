@@ -20,16 +20,13 @@ theta2arclen <- function(theta, WfdList, Wdim) {
     DWfinei <- eval.surp(indfine, Wfdi, 1)
     DWfine[,m1:m2] <- DWfinei
   }
-   
   # accumulate arclength values
-  delta           <- 0.1
-  arclengthfine   <- delta * as.numeric(pracma::cumtrapz(sqrt(rowSums(DWfine^2))))
+  delta         <- 0.1
+  arclengthfine <- delta * as.numeric(pracma::cumtrapz(sqrt(rowSums(DWfine^2))))
   # add zero to complete the mesh and arc length values
   arclength     <- max(arclengthfine)
   theta_al      <- pracma::interp1(indfine, arclengthfine, theta)
-  
   Qvec_al <- pracma::interp1(indfine, arclengthfine, c(5,25,50,75,95))
-  
   arclengthfine <- arclengthfine[seq(1,1001,10)]
   return(list(theta_al=theta_al, arclength=arclength, arclengthfine=arclengthfine, 
               Qvec_al=Qvec_al))
