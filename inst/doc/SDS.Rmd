@@ -1,17 +1,21 @@
 ---
 title: "Symptom Distress Analysis"
 author: "Juan Li and Jim Ramsay"
-date: "03/13/2021"
+date: "05/07/2022"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Symptom Distress Analysis}
   %\VignetteEngine{knitr::rmarkdown}
-  \usepackage[utf8]{inputenc}
+  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r, echo = FALSE}
 knitr::opts_chunk$set(collapse=TRUE, comment="#", out.width='//textwidth')
 system.file(package="TestGardener")
+```
+
+```{r setup}
+library(TestGardener)
 ```
 
 
@@ -177,7 +181,7 @@ hist(SDS_dataList$scrvec, SDS_dataList$scrrng[2], xlab="Sum Score",
 
 We see that, on the whole, most patients do not experience great distress.  A patient who rated all symptoms as 1 would be at about the 75% level, for example.  The histogram indicates that the most popular score is 8, which is about half-and-half 0 and 1.  The distribution is rather highly skewed in the positive direction.
 
-From here on, the commands and text are essentially the same as those for the SweSAT math data, except for comments what we see in the figures.
+From here on, the commands and text are essentially the same as those for the SweSAT SMS data, except for comments what we see in the figures.
 
 The next steps are optional.  The analysis can proceed without them, but the analyst may want to look at preliminary results that are associated with the the objects in the set up phase.
 
@@ -189,10 +193,6 @@ The initializing of the surprisal curves is achieved as follows using the import
 theta     <- SDS_dataList$percntrnk
 thetaQnt  <- SDS_dataList$thetaQnt
 WfdResult <- TestGardener::Wbinsmth(theta, SDS_dataList)
-# Wbinsmth <- function(theta, dataList, WfdList=dataList$WfdList, 
-#                      thetaQnt=seq(0,100, len=2*nbin+1), wtvec=matrix(1,n,1),
-#                      iterlim=20, conv=1e-4, dbglev=0) {
-# WfdResult <- Wbinsmth(theta, SDS_dataList)
 ```
 
 One may well want to plot these initial surprisal curves in terms of both probability and surprisal, this is achieved in this way:
@@ -201,10 +201,11 @@ One may well want to plot these initial surprisal curves in terms of both probab
 WfdList <- WfdResult$WfdList
 binctr  <- WfdResult$aves
 Qvec    <- c(5,25,50,75,95)
-TestGardener::Wbinsmth.plot(binctr, Qvec, WfdList, SDS_dataList, Wrng=c(0,3), plotindex=1)
+indfine <- seq(0,100,len=101)
+TestGardener::ICC.plot(indfine, WfdList, SDS_dataList, Qvec, binctr,  Wrng=c(0,3), plotindex=1)
 ```
 
-Here here and elsewhere we only plot the probability and surprisal curves for the first time in order to allow this vignette to be displayed compactly.  There are comments on how to interpret these plots in the call to function `Wbinsmth.plot()` after the analysis step.
+Here here and elsewhere we only plot the probability and surprisal curves for the first time in order to allow this vignette to be displayed compactly.  There are comments on how to interpret these plots in the call to function `ICC.plot()` after the analysis step.
 
 ## Cycling through the estimation steps
 
@@ -249,14 +250,14 @@ All the results generated in this cycle are bundled together in a named list obj
 Here is the single command that launches the analysis:
 
 ```{r}  
-AnalyzeResult <- TestGardener::Analyze(theta, thetaQnt, SDS_dataList, ncycle, itdisp=TRUE) 
+AnalyzeResult <- TestGardener::Analyze(theta, thetaQnt, SDS_dataList, ncycle, itdisp=FALSE) 
 ```
 
 The following two lines set up a list vector object of length 10 containing the results on each cycle, and also a numeric vector of the same length containing averages of the fitting criterion values for each examinee.  
 
 ```{r}  
 parList  <- AnalyzeResult$parList
-meanHvec <- AnalyzeResult$meanHvec
+meanHsave <- AnalyzeResult$meanHsave
 ```
 
 ##  Displaying the results of the analysis cycles
@@ -268,7 +269,7 @@ approach optimal estimations of important model objects, such as optimal percent
 
 ```{r}  
 cycleno <- 1:ncycle
-plot(cycleno,meanHvec[cycleno], type="b", lwd=2, xlab="Cycle Number")
+plot(cycleno,meanHsave[cycleno], type="b", lwd=2, xlab="Cycle Number")
 ```
 
 This plot shows a nice exponential-like decline in the average fitting criterion `meanHvec` over ten iterations.  It does look like we could derive a small benefit from a few more iterations, but the changes in what we estimate using super precision in the minimization will be too small to be of any practical interest.
@@ -277,26 +278,45 @@ Here we choose to display results for the last cycle:
 
 ```{r}  
 icycle <- 10
-SDS_parListi  <- parList[[icycle]]
+SDS_parList  <- parList[[icycle]]
 ```
 
 The list object `SDS_parListi` contains a large number of objects, but in our exploration of results, we will only need these results:
 
 ```{r}  
-WfdList    <- SDS_parListi$WfdList
-theta      <- SDS_parListi$theta
-Qvec       <- SDS_parListi$Qvec
-binctr     <- SDS_parListi$binctr
-arclength  <- SDS_parListi$arclength
-alfine     <- SDS_parListi$alfine
+WfdList    <- SDS_parList$WfdList
+theta      <- SDS_parList$theta
+Qvec       <- SDS_parList$Qvec
+binctr     <- SDS_parList$binctr
 ```
 
 - `WfdList`: List object of length `n` that contains information about the surprisal and   probability curves 
 - `theta`:  A vector of length N of values of what we call "score index", which are real numbers between 0 and 100.  These values are used for computing various score values such as expected sum scores.
 - `Qvec`:  Values within the range 0 to 100 below which these percentages of examinees fall: 5, 25, 50, 75 and 95.
 - `binctr`:  The surprisal curves are estimated by first binning the values in vector `theta` and then using the surprisal values within each bin.  `binctr` contains the values at the centres of the bins.
-- `arclength`:  This is the total length of the curve traced out by the surprisal scores as `theta` moves from 0 to 100.
-`alfine`:  An equally spaced set of values along this space curved, used for plotting purposes.
+
+###  Compute objects needed for plotting as a function of arc length or information
+
+First we compute the quantities that we will need and save them in a named list:
+
+```{r}
+SMS_infoList <- TestGardener::theta2arclen(theta, Qvec, WfdList, binctr)
+```
+
+Then we retrieve these quantities:
+
+```{r}
+arclength     <- SMS_infoList$arclength
+arclengthvec  <- SMS_infoList$arclengthvec
+arclengthfd   <- SMS_infoList$arclengthfd
+theta_al      <- SMS_infoList$theta_al
+thetafine_al  <- SMS_infoList$thetafine.rng
+Qvec_al       <- SMS_infoList$Qvec_al
+binctr_al     <- SMS_infoList$binctr_al
+Wfd_info      <- SMS_infoList$Wfd_info
+Wdim          <- SMS_infoList$Wdim
+```
+
 
 ###  Plot surprisal curves for test questions
 
@@ -304,7 +324,7 @@ Well, here we just plot the probability and surprisal curves for just symptom ei
 illustration, namely `Frequency of nausea`.  If argument `plotindex` is omitted, curves for all questions would be plotted.
 
 ```{r}  
-TestGardener::Wbinsmth.plot(binctr, Qvec, WfdList, SDS_dataList, Wrng=c(0,3), plotindex=8)
+TestGardener::ICC.plot(indfine, WfdList, SDS_dataList, Qvec, binctr,  Wrng=c(0,3), plotindex=1)
 ```
 
 Let's make a few observations on what we see in these two plots.
@@ -317,39 +337,25 @@ We call the rate of increase or decrease the "sensitivity" of an option.  We hav
 
 The dots in the plot are the surprisal values for examinees in each of the 20 bins used in this analysis.  The points are on the whole close their corresponding curves, suggesting that 473 examinees gives us a pretty fair idea of the shape of a surprisal or probability curve.
 
-##  Plot the probability density of percentile ranks
+##  Plot the probability density of percentile rank score index
 
 The density of the percentile ranks will no longer be a flat line.  This is because examinees tend to cluster at various score levels, no matter how the score is defined.  Certain groups of items will tend to be correctly answered by the middle performance folks and other by only the top performers.  Among the weakest examinees, there will still be a subset of questions that they can handle.  We want to see these clusters emerge.
 
 ```{r}  
-ttllab     <- paste(titlestr,": percent rank", sep="")
-scrrng     <- c(0,100)
-theta_in   <- theta[theta > 0 & theta < 100]
-indden10   <- TestGardener::scoreDensity(theta_in, scrrng, ttlstr=ttllab)
+theta_in <- theta[theta > 0 & theta < 100]
+dens.plot <- TestGardener::scoreDensity(theta_in, ttlstr=titlestr)
+print(dens.plot)
 ```
 
 Sure enough, there are four distinct clusters of score index values.  Within each of these clusters there are strong similarities in examinee's choice patterns, whether right or wrong.  We have only plotted score indices which are away from the two boundaries, because there are significant tendencies to have estimated score index values at 0 and 100.
 
-##  Compute expected test scores and plot their density function for all examinees
-
-The expected score for an examinee are determined by his value `theta` for the question and by the score values assigned by the test designer to each option.  We use a plotting interval defined by the range of the sum scores, but as a rule the density of expected scores is positive only over a shorter interval.
-
-```{r}  
-mu <- TestGardener::testscore(theta, WfdList, optList)
-ttllab <- paste(titlestr,": expected score", sep="")
-muden  <- TestGardener::scoreDensity(mu, SDS_dataList$scrrng, ttlstr=ttllab) 
-```
-
-The expected score distribution is much more compressed than the sum score ratings, with 10 being the favourite rating.  But there is a cluster of ratings at the side of the distribution of 20, which corresponds to 6 ratings of 1 and 7 ratings of 2.  Being in a hospital is never great, but it's nice to know that it is not unbearable, either.  Or perhaps the nurses in Winnipeg, Manitoba where the data were collected are especially effective.
-
-But at the top end, the best examinees lose heavily in average score terms.  There are no average scores above 21, even though there are plenty of examinees with score indices of nearly or exactly 100.  This effect is due to the fact that a few questions are faulty in the sense of not getting close to probability one or surprisal 0 at score index 100.  We found, for example, that one question did not have any answer that could be judged correct by serious mathematical standards.  And another question seemed to suffer from some teachers having overlooked covering the topic of "percent increase."
-
 ##   Plot expected test scores and expected test score over mesh
 
+```{r}
 indfine <- seq(0,100,len=101)
-mufine <- TestGardener::testscore(indfine, WfdList, optList)
-
+mufine  <- TestGardener::testscore(indfine, WfdList, optList)
 TestGardener::mu.plot(mufine, SDS_dataList$scrrng, titlestr)
+```
 
 It is typical that lower expected test scores are above the diagonal line and higher ones below.  The process of computing an expected score compresses the range of scores relative to that of the observed test scores.
 
@@ -363,7 +369,7 @@ The next analysis and display displays the length of the curve and how it change
 
 ```{r}  
 print(paste("Arc length =", round(arclength,2)))
-TestGardener::ArcLength.plot(arclength, alfine, titlestr)
+TestGardener::ArcLength.plot(arclength, arclengthvec, titlestr)
 ```
 
 The relationship is surprisingly linear with respect to the score index theta, except for some curvature near 0 and 100.  We can say of the top examinees that they acquire nearly 69 2-bits of information represented in the test.  That is, the probability of getting to the highest arclength is equivalent to tossing 69 heads in a row.  (We convert 6-bits into 2-bits by multiplying 26.58 by 2.585]).
@@ -383,7 +389,8 @@ There is a strong change in the direction of this curve at the 50% marker point.
 The position of an examinee on the percentile rank continuum is directly determined by the rate of change or the derivative of the surprisal curve.  An option becomes an important contributor to defining this position if it deviates strongly from zero on either side.  This is just as true for wrong answers as it is for right answers.  In fact, the estimated percentile rank value of an examinee is unaffected by what option is designated as correct.  It is not rare that a question actually has two right answers, or even none, but such questions can still contribute to the percentile rank estimation.
 
 ```{r}  
-TestGardener::Sensitivity.plot(WfdList, Qvec, SDS_dataList, titlestr=titlestr, plotindex=8)
+TestGardener::Sensitivity.plot(arclengthvec, WfdList, Qvec, SDS_dataList, 
+                               titlestr=titlestr, plotindex=8)
 ```
 
 The peaks and valleys in these curves are at the positions of the four clusters that we saw in the plot of the density of the score index theta.
@@ -392,7 +399,8 @@ The sensitivities of options can be collected together to provide a view of the 
 We do this by, at each point, adding the squares of the sensitivity values and taking the square root of the result.  We call this the item *power curve*.  Here is the power curve for question 9:
 
 ```{r}  
-Result <- TestGardener::Power.plot(WfdList, Qvec, SDS_dataList, plotindex=9, height=0.3)
+Result <- TestGardener::Power.plot(arclengthvec, WfdList, Qvec_al, SDS_dataList, 
+                                   plotindex=9, height=0.3)
 ```
 
 We see only a small amount of power everywhere over the score index continuum except at the highest level of distress.  The power integrated over the score index is among the lowest.
@@ -400,7 +408,8 @@ We see only a small amount of power everywhere over the score index continuum ex
 Now let's look at a question that has a great deal of power, question 8.
 
 ```{r}  
-Result <- TestGardener::Power.plot(WfdList, Qvec, SDS_dataList, plotindex=8, height=0.3)
+Result <- TestGardener::Power.plot(arclengthvec, WfdList, Qvec_al, SDS_dataList, 
+                                   plotindex=8, height=0.3)
 ```
 
 

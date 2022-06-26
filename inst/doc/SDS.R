@@ -2,6 +2,9 @@
 knitr::opts_chunk$set(collapse=TRUE, comment="#", out.width='//textwidth')
 system.file(package="TestGardener")
 
+## ----setup--------------------------------------------------------------------
+library(TestGardener)
+
 ## -----------------------------------------------------------------------------
 titlestr  <- "Symptom Distress"
 
@@ -70,72 +73,83 @@ hist(SDS_dataList$scrvec, SDS_dataList$scrrng[2], xlab="Sum Score",
 theta     <- SDS_dataList$percntrnk
 thetaQnt  <- SDS_dataList$thetaQnt
 WfdResult <- TestGardener::Wbinsmth(theta, SDS_dataList)
-# Wbinsmth <- function(theta, dataList, WfdList=dataList$WfdList, 
-#                      thetaQnt=seq(0,100, len=2*nbin+1), wtvec=matrix(1,n,1),
-#                      iterlim=20, conv=1e-4, dbglev=0) {
-# WfdResult <- Wbinsmth(theta, SDS_dataList)
 
 ## -----------------------------------------------------------------------------
 WfdList <- WfdResult$WfdList
 binctr  <- WfdResult$aves
 Qvec    <- c(5,25,50,75,95)
-TestGardener::Wbinsmth.plot(binctr, Qvec, WfdList, SDS_dataList, Wrng=c(0,3), plotindex=1)
+indfine <- seq(0,100,len=101)
+TestGardener::ICC.plot(indfine, WfdList, SDS_dataList, Qvec, binctr,  Wrng=c(0,3), plotindex=1)
 
 ## -----------------------------------------------------------------------------
 ncycle <- 10
 
 ## -----------------------------------------------------------------------------
-AnalyzeResult <- TestGardener::Analyze(theta, thetaQnt, SDS_dataList, ncycle, itdisp=TRUE) 
+AnalyzeResult <- TestGardener::Analyze(theta, thetaQnt, SDS_dataList, ncycle, itdisp=FALSE) 
 
 ## -----------------------------------------------------------------------------
 parList  <- AnalyzeResult$parList
-meanHvec <- AnalyzeResult$meanHvec
+meanHsave <- AnalyzeResult$meanHsave
 
 ## -----------------------------------------------------------------------------
 cycleno <- 1:ncycle
-plot(cycleno,meanHvec[cycleno], type="b", lwd=2, xlab="Cycle Number")
+plot(cycleno,meanHsave[cycleno], type="b", lwd=2, xlab="Cycle Number")
 
 ## -----------------------------------------------------------------------------
 icycle <- 10
-SDS_parListi  <- parList[[icycle]]
+SDS_parList  <- parList[[icycle]]
 
 ## -----------------------------------------------------------------------------
-WfdList    <- SDS_parListi$WfdList
-theta      <- SDS_parListi$theta
-Qvec       <- SDS_parListi$Qvec
-binctr     <- SDS_parListi$binctr
-arclength  <- SDS_parListi$arclength
-alfine     <- SDS_parListi$alfine
+WfdList    <- SDS_parList$WfdList
+theta      <- SDS_parList$theta
+Qvec       <- SDS_parList$Qvec
+binctr     <- SDS_parList$binctr
 
 ## -----------------------------------------------------------------------------
-TestGardener::Wbinsmth.plot(binctr, Qvec, WfdList, SDS_dataList, Wrng=c(0,3), plotindex=8)
+SMS_infoList <- TestGardener::theta2arclen(theta, Qvec, WfdList, binctr)
 
 ## -----------------------------------------------------------------------------
-ttllab     <- paste(titlestr,": percent rank", sep="")
-scrrng     <- c(0,100)
-theta_in   <- theta[theta > 0 & theta < 100]
-indden10   <- TestGardener::scoreDensity(theta_in, scrrng, ttlstr=ttllab)
+arclength     <- SMS_infoList$arclength
+arclengthvec  <- SMS_infoList$arclengthvec
+arclengthfd   <- SMS_infoList$arclengthfd
+theta_al      <- SMS_infoList$theta_al
+thetafine_al  <- SMS_infoList$thetafine.rng
+Qvec_al       <- SMS_infoList$Qvec_al
+binctr_al     <- SMS_infoList$binctr_al
+Wfd_info      <- SMS_infoList$Wfd_info
+Wdim          <- SMS_infoList$Wdim
 
 ## -----------------------------------------------------------------------------
-mu <- TestGardener::testscore(theta, WfdList, optList)
-ttllab <- paste(titlestr,": expected score", sep="")
-muden  <- TestGardener::scoreDensity(mu, SDS_dataList$scrrng, ttlstr=ttllab) 
+TestGardener::ICC.plot(indfine, WfdList, SDS_dataList, Qvec, binctr,  Wrng=c(0,3), plotindex=1)
+
+## -----------------------------------------------------------------------------
+theta_in <- theta[theta > 0 & theta < 100]
+dens.plot <- TestGardener::scoreDensity(theta_in, ttlstr=titlestr)
+print(dens.plot)
+
+## -----------------------------------------------------------------------------
+indfine <- seq(0,100,len=101)
+mufine  <- TestGardener::testscore(indfine, WfdList, optList)
+TestGardener::mu.plot(mufine, SDS_dataList$scrrng, titlestr)
 
 ## -----------------------------------------------------------------------------
 print(paste("Arc length =", round(arclength,2)))
-TestGardener::ArcLength.plot(arclength, alfine, titlestr)
+TestGardener::ArcLength.plot(arclength, arclengthvec, titlestr)
 
 ## -----------------------------------------------------------------------------
 Result <- TestGardener::Wpca.plot(arclength, WfdList, SDS_dataList$Wdim, titlestr=titlestr)
 
 ## -----------------------------------------------------------------------------
-TestGardener::Sensitivity.plot(WfdList, Qvec, SDS_dataList, titlestr=titlestr, plotindex=8)
+TestGardener::Sensitivity.plot(arclengthvec, WfdList, Qvec, SDS_dataList, 
+                               titlestr=titlestr, plotindex=8)
 
 ## -----------------------------------------------------------------------------
-Result <- TestGardener::Power.plot(WfdList, Qvec, SDS_dataList, plotindex=9, height=0.3)
+Result <- TestGardener::Power.plot(arclengthvec, WfdList, Qvec_al, SDS_dataList, 
+                                   plotindex=9, height=0.3)
 
 ## -----------------------------------------------------------------------------
-Result <- TestGardener::Power.plot(WfdList, Qvec, SDS_dataList, plotindex=8, height=0.3)
+Result <- TestGardener::Power.plot(arclengthvec, WfdList, Qvec_al, SDS_dataList, 
+                                   plotindex=8, height=0.3)
 
 ## -----------------------------------------------------------------------------
 TestGardener::Hfuns.plot(theta, WfdList, U, plotindex=1:5)

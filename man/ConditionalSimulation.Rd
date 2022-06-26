@@ -19,15 +19,7 @@ ConditionalSimulation(dataList, parList, theta.pop=seq(0,100,len=101), nsample=1
   \item{nsample}{The number of simulated samples.  Defaults to 1000.}
 }
 \value{
-A named list with named members as follows:
-  sumscr  = sumscrsave,
-  theta   = thetasave,
-  mu      = musave,
-  al      = alsave,
-  thepop  = theta.pop,
-  mupop   = mu.pop,
-  alpop   = al.pop,
-  Qvec    = Qvec
+  A named list with named members as follows:
   \describe{
     \item{sumscrsave:}{A 101 by nsample matrix of sum scores.}
     \item{thetasave:}{A 101 by nsample matrix of estimated score index values.}

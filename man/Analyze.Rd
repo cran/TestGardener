@@ -73,7 +73,7 @@
       	the test of rating scale.  For details concerning these results, see function 
       	\code{Wbinsmth()}.}
       \item{logdensfd:}{A functional data object defining the estimate of the log of the 
-      probability density function for the distribution of the score index values.}
+        probability density function for the distribution of the score index values.}
       \item{C:}{The normalizing value for probability density functions.  
       	A density value is computed by dividing the exponential of the log density value 
       	by this constant.}
@@ -127,7 +127,7 @@
         \link{theta2arclen},
         \link{thetafun},
         \link{Wbinsmth},
-        \link{Wbinsmth.plot},
+        \link{ICC.plot},
         \link{Wpca.plot}
   }
 }

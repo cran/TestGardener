@@ -1,8 +1,8 @@
-Wbinsmth <- function(theta, dataList, WfdList=dataList$WfdList, 
-                     thetaQnt=seq(0,100, len=2*nbin+1), wtvec=matrix(1,n,1),
-                     iterlim=20, conv=1e-4, dbglev=0) {
+ICC.fit <- function(theta, dataList, WfdList=dataList$WfdList, 
+                    thetaQnt=seq(0,100, len=2*nbin+1), wtvec=matrix(1,n,1),
+                    iterlim=20, conv=1e-4, dbglev=0) {
   
-  # Last modified 18 May 2022 by Jim Ramsay
+  # Last modified 27 May 2022 by Jim Ramsay
 
   #  -----------------------------------------------------------------------------
   #  Step 1.       Set up  objects required for subsequent steps
@@ -236,11 +236,11 @@ Wbinsmth <- function(theta, dataList, WfdList=dataList$WfdList,
 
 #  ----------------------------------------------------------------------------
 
-Wbinsmth.init <- function(percntrnk, nbin, WfdPar, grbg, optList, U) {
+ICC.fit.init <- function(percntrnk, nbin, WfdPar, grbg, optList, U) {
   
   # Last modified 21 January 2022 by Jim Ramsay
   
-  #  This version of Wbinsmth() uses direct least squares smoothing of the
+  #  This version of ICC.fit() uses direct least squares smoothing of the
   #  surprisal values at bin centers to generate dependent variables for
   #  a linear model for the vectorized K by M-1 parameter matrix Bmat.
   
