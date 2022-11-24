@@ -75,6 +75,8 @@ theta.densfine  <- eval.fd(indfine, theta.distnList$pdf_fd)
 thetazero       <- length(theta[theta == 0])
 thetacent       <- length(theta[theta == 100])
 #  Plot both the interior density and the boundary proportions
+oldpar <- par(no.readonly=TRUE)
+on.exit(oldpar)
 plot(indfine, theta.densfine, type="l", lwd=2, ylim=c(0,0.025), 
      xlab="Percentile Index", ylab="Density")
 lines(c(  0,100), c(1/100,1/100), lty=2)

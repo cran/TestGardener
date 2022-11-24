@@ -16,7 +16,7 @@
   of the score index \code{theta}, and is also a metric, it is an ideal 
   choice for the abscissa in all plots.}
 \usage{
-   theta2arclen(theta, Qvec, WfdList, binctr, itemindex=1:n, plotrng=c(0,100))
+   theta2arclen(theta, Qvec, WfdList, binctr, itemindex=1:n, plotrng=c(0,100), shortwrd)
 }
 \arguments{
   \item{theta}{A vector of score index, test score, or arc length values, one for
@@ -45,6 +45,9 @@
   \item{itemindex}{A vector containing the indices of the items to be used.}
   \item{plotrng}{A vector of length 2 containing the starting score index
     and end score index values of the range to be plotted.}
+  \item{shortwrd}{If TRUE only vectors arclength and arclengtvec are returned in order
+         to speed up the computation within cycles in function Analyze where only these 
+         objects are required.  The default is FALSE.}
 }
 \value{A named list object containing these results of the analysis:
   \describe{
@@ -86,8 +89,10 @@ Qvec          <- Quantshort_parList$Qvec
 binctr        <- Quantshort_parList$binctr
 arclenList    <- theta2arclen(theta, Qvec, WfdList, binctr)
 names(arclenList)
+oldpar <- par(no.readonly=TRUE)
 ArcLength.plot(arclenList$arclength, arclenList$arclengthvec)
 #  Example 2.  Display the arc length curve for the 
 #  Symptom Distress Scale with 13 items and 473 respondents
 #  Proceed as above changing "Quant" to "SDS".
+par(oldpar)
 }

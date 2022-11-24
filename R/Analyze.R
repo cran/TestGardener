@@ -1,12 +1,17 @@
-Analyze <- function(theta, thetaQnt, dataList, ncycle=10, itdisp=FALSE, verbose=FALSE) {
+Analyze <- function(theta, thetaQnt, dataList, ncycle=10, itdisp=FALSE, 
+                    verbose=FALSE) {
   
-  # Last modified 16 June 2022 by Jim Ramsay
+  # Last modified 21 June 2022 by Jim Ramsay
 
-  parList       <- vector("list",ncycle)  
-  meanHsave     <- rep(0,ncycle)
-  arclengthsave <- rep(0,ncycle)
+  #  set up list vector to contain all results for each cycle
+  
+  parList <- vector("list",ncycle)  
+  
+  #  define the spline basis for representing the log density function
   
   logdensbasis <- create.bspline.basis(c(0,100), 15)
+  
+  #  initialize surprisal curves and compute size of overspace
   
   WfdList <- dataList$WfdList
   
@@ -18,9 +23,11 @@ Analyze <- function(theta, thetaQnt, dataList, ncycle=10, itdisp=FALSE, verbose=
     Wdim  = Wdim + WStri$M
   }
   
-  parList <- vector("list", ncycle)
+  #  set up data matrix
   
   U <- dataList$U
+  
+  #  main cycle loop
   
   for (icycle in 1:ncycle) {
     
@@ -35,20 +42,21 @@ Analyze <- function(theta, thetaQnt, dataList, ncycle=10, itdisp=FALSE, verbose=
     WfdResult <- Wbinsmth(theta, dataList, WfdList, thetaQnt)
     WfdList   <- WfdResult$WfdList
     
-    #  compute current mean value of objective function H
+    #  ----------------------------------------------------------
+    #  Step 2:  compute mean value of objective function H
+    #  ----------------------------------------------------------
     
     if (verbose) print("Compute mean examinee fits")
     
     H <- Hfun(theta, WfdList, U)
     meanH <- mean(H)
-    meanHsave[icycle] <- meanH
     
     if (verbose) print(paste('Mean data fit = ', round(meanH,3)))
     
     #  ----------------------------------------------------------
-    #  Step 2:  Compute optimal score index values
+    #  Step 3:  Compute optimal score index values
     #  ----------------------------------------------------------
-    # print("step 2")
+    # print("step 3")
     
     if (verbose) print("Optimize examinee data fits")
 
@@ -60,9 +68,9 @@ Analyze <- function(theta, thetaQnt, dataList, ncycle=10, itdisp=FALSE, verbose=
     active   <- thetafunList$active
     
     #  ----------------------------------------------------------
-    #  Step 3:  Estimate the score density for score index values
+    #  Step 4:  Estimate the score density for score index values
     #  ----------------------------------------------------------
-    # print("step 3")
+    # print("step 4")
     
     if (verbose) print("Compute score index density")
     
@@ -83,7 +91,7 @@ Analyze <- function(theta, thetaQnt, dataList, ncycle=10, itdisp=FALSE, verbose=
     thetaQnt  <- pracma::interp1(denscdf, indfine, bdry)
     
     #  ----------------------------------------------------------
-    #  Step 4.  Compute arc length and its measures
+    #  Step 5.  Compute arc length and its measures
     #  ----------------------------------------------------------
     
     DWfine = matrix(0,101,Wdim)
@@ -96,19 +104,19 @@ Analyze <- function(theta, thetaQnt, dataList, ncycle=10, itdisp=FALSE, verbose=
       DWfine[,m1:m2] = WListi$DWmatfine
     }
     arclength = max(pracma::cumtrapz(sqrt(apply(DWfine^2,1,sum))))
-    arclengthsave[icycle] <- arclength
     
     if (verbose)  print(paste('arclength in bits = ',round(arclength,1)))
     
     #  ----------------------------------------------------------
-    #  Step 5:  set up ParameterCell arrays
+    #  Step 6:  set up ParameterCell arrays
     #  ----------------------------------------------------------
-    # print("step 5")
+    # print("step 6")
     
     parListi <- list(
       theta      = theta,
       thetaQnt   = thetaQnt,
       WfdList    = WfdResult$WfdList,
+      meanH      = meanH,
       binctr     = WfdResult$aves,
       bdry       = WfdResult$bdry,
       freq       = WfdResult$freq,
@@ -127,6 +135,6 @@ Analyze <- function(theta, thetaQnt, dataList, ncycle=10, itdisp=FALSE, verbose=
     
   }
   
-  return(list(parList=parList, meanHsave=meanHsave, arclengthsave=arclengthsave))
+  return(list(parList=parList))
   
 } 

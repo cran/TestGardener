@@ -20,7 +20,7 @@ library(TestGardener)
 
 # Introduction 
 
-In this vignette we run through an analysis of examination data selected from the SweSAT Quantitative subtest that was analyzed in our previous publications and in our manual for TestGardener.  We will use only the 24 questions in the SweSAT that were designed to test the examinee's ability to make mathematical calculations.  We also selected at random only 5000 of the roughly 53,000 examinees who took the test.  
+In this vignette we run through an analysis of examination data selected from the SweSAT Quantitative subtest that was analyzed in our previous publications and in our manual for TestGardener.  We will use only the 24 questions in the SweSAT that were designed to test the examinee's ability to make mathematical calculations.  We also selected at random only 1000 of the roughly 53,000 examinees who took the test.  
 
 The test was administered in the fall of 2013, and required both a morning and afternoon session to complete.  Forty items were presented in each session.  Questions 23 to 28 and 63 to 68 had five options as answers, and the remainder had only four.  In addition to these options, there was an additional last "answer" for each question for a failure to respond to the question or illegal or illegible answers, a choice that is often described as "missing responses.  The number of such responses is low in this test, but must will be treated as a response in order to ensure that probabilities of choice for each question add to one.  
 
@@ -29,7 +29,7 @@ The questions are organized into four groups according to the kind of mathematic
 The goal here is to make a more detailed description of the  interactions of the 5000 examinees with the 80 test items than was carried out with the 24 item version of this test.
 
 There are five distinct stages to the processing of the data:
-1.  Reading in the data. 
+1.  Reading in the data and selecting the portion to analyze. 
 2.  Using the data to set up a named list object containing the information essential to their analysis.
 3.  The actual analysis.
 4.  Producing graphs and other displays for evaluation of the performance of the test questions.
@@ -57,7 +57,7 @@ The reader may find it helpful to consult man pages for the functions used using
 First we will set up a title for the data to be used in plots:
 
 ```{r}
-titlestr  <- "SweSAT-Q: 80 math analysis items"
+titlestr  <- "SweSAT-Q: 24 math analysis items and 1000 examinees"
 ```
 
 Then we set up the path or connection to the location of the choice data.
@@ -79,7 +79,7 @@ N <- length(U) # Number of examinees
 
 The command assumes that the working directory is the TestGardener folder, within which there is a "data" folder containing various data files.  The second argument deals with the fact that there is no space between values, and the last argument declares each symbol to be a character value.  The data are now 1000 strings, each 24 characters long, and the second line sets `N`, the number of examinees.
 
-We will use the `stringr` package to break the each 24 character string into separate characters and then convert these characters to 24 integers.  The result is an integer vector of length 48,000 with each set of 24 stacked on top of each other. The number of questions `n` is this length divided by the number of examinees.  The third line reformats `Uvector` into an `N` by `n` matrix.
+We will use the `stringr` package to break the each 80 character string into separate characters and then convert these characters to integers.  The result is an integer vector of length  80 x 5000 = 40,000. The number of questions `n` is this length divided by the number of examinees.  The third line reformats `Uvector` into an `N` by `n` matrix.
 
 ```{r}
 Uvector <- as.integer(unlist(stringr::str_split(U,"")))
@@ -93,35 +93,45 @@ There are many other ways in R to achieve the same result, of course, and this i
 
 Inputting the  right answer `key` object uses the same techniques, and we have in fact saved these also as a set of integer index values looking like the data themselves.
 
-213232211443141223141342
-
 ```{r}
 key   <- scan("key_5000.txt","o")
 key <- as.integer(unlist(stringr::str_split(key,"")))
 ```
 
+##  Selecting the 24 mathematical problem solving items and the subsample of 1000 examinees
+
+```{r}
+itemindex <- c(1:12, 41:52)
+examinees <- 4001:5000
+U <- U[examinees,itemindex]
+key <- key[itemindex]
+N <- 1000
+n <- 24
+```
 ##  Setting up the analysis
 
 Now we turn to computing objects using these data that are essential to the analysis of the data.
 
-All questions for these 24 questions in the test have four answers, but in case there are questions whether there are are missing or illegal answers for a question, we'll use this code to add the last wastebasket option where needed.
+All questions for these 24 questions in the test have four answers, but we will add an additional category for answers that are missing or illegitimate.
 
 ```{r}
-noption <- rep(4,n)
-noption[23:28] <- 5
-noption[63:68] <- 5
-for (i in 1:n) {
-  if (any(U[,i] > noption[i])) {
-    noption[i]  <- noption[i] + 1 # Add one option for invalid responses
-    U[U[,i] > noption[i],i] <- noption[i]
-  }
-}
+noption <- rep(5,n)
 ```
 
 These data encode missing or illegal choices for each item as choices for the last option, which is added on to the options coding legitimate choices.  We call this option the garbage option, , which is named grbg in the code.  Here we indicate which option this is.
 
 ```{r}
 grbg <- noption 
+```
+
+The data have two integers for missing or illegitimate items:  8 and 9.  We change these to the garbage category 5.
+
+```{r}
+for (j in 1:N) {
+  for (i in 1:n) {
+    if (U[j,i] == 8 || U[j,i] == 9) U[j,i] = 5
+  }
+}
 ```
 
 Now we turn to code that sets up objects that are essential to the analysis but that the analyst may want to set up using code rather than inputting.  The first of these is a list vector of length `n` where each member contains a numeric vector of length `M` containing the designed scores assigned to each option.  For multiple choice tests, that is easily done using the following code:
@@ -191,7 +201,7 @@ TestGardener::ICC.plot(indfine, WfdList, Math_dataList, Qvec, binctr,
 
 ```
 
-Here here and elsewhere we only plot the probability and surprisal curves for the first time in order to allow this vignette to be displayed compactly.  There are comments on how to interpret these plots in the call to function `ICC.plot()` after the analysis step.  
+Here Ωand elsewhere we only plot the probability and surprisal curves for the first time in order to allow this vignette to be displayed compactly.  There are comments on how to interpret these plots in the call to function `ICC.plot()` after the analysis step.  
 
 The bottom plot displays surprisal, the logarithm to the base M of the negative of probability.  Surprisal is a valuable transform of probability.  As the name suggests, when probability approach one, surprisal move close to zero, but probabilities near zero imply surprisals high surprisals.  Surprisal is a measure if information having the "M-bit" as its unit.  Most of us are familiar with the "2-bit", associated with coin tosses.  Surprisal is essentially the number of heads you would have to toss on the average to yield a particular probability.  Probability 0.5 corresponds to 1 "2-bit", and the famous probabilities 0.05 and 0.01 in statistics correspond to 4.3 and 6.1 "2-bits" respectively.  These ideas generalize to "M-sided coins" such as the "6-bit" for a dice.
 
@@ -249,8 +259,12 @@ The following three lines set up a list vector object of length 10 that stores r
 
 ```{r}  
 parList      <- AnalyzeResult$parList
-meanHsave    <- AnalyzeResult$meanHsave
-arclengthvec <- AnalyzeResult$arclengthsave
+meanHsave    <- matrix(0,ncycle,1)
+arclengthvec <- matrix(0,ncycle,1)
+for (icycle in 1:ncycle) {
+  meanHsave[icycle]    <- parList[[icycle]]$meanH
+  arclengthvec[icycle] <- parList[[icycle]]$arclength
+}
 ```
 
 ##  Displaying the results of the analysis cycles
@@ -258,28 +272,38 @@ arclengthvec <- AnalyzeResult$arclengthsave
 ### Plot `meanHsave` and 'arclength'; and also choose the cycle for plotting
 
 The mean fitting values in `meanHvec` should decrease, and then level off as we 
-approach optimal estimations of important model objects, such as optimal percent ranks in numeric vector `theta` and optimal surprisal curves in list vector `WfdList`.  Plotting these values as a function of cycle number will allow us to choose a best cycle for displaying results.
+approach optimal estimations of important model objects, such as optimal percent  
+ranks in numeric vector `theta` and optimal surprisal curves in list vector 
+`WfdList`.  Plotting these values as a function of cycle number will allow us to 
+a choose best cycle for displaying results.  
 
 ```{r}  
 cycleno <- 1:ncycle
-plot(cycleno,    meanHsave[cycleno], type="b", lwd=2, xlab="Cycle Number", ylab="Mean Fit")
+plot(cycleno,    meanHsave[cycleno], type="b", lwd=2, xlab="Cycle Number", 
+     ylab="Mean Fit")
+```
+
+The convergence of the arclength of the test information curve is also important 
+to display since it tells us how much information is being tested for this set of
+examinees.  
+
+```{r}  
+cycleno <- 1:ncycle
+plot(cycleno, arclengthvec[cycleno], type="b", lwd=2, xlab="Cycle Number",   
+     ylab="Arclength")
 ```
 
 This plot shows a nice exponential-like decline in the average fitting criterion `meanHsave` over 10 iterations.  It does look like we could derive a small benefit from a few more iterations, but the changes in what we estimate using super precision in the minimization will be too small to be of any practical interest.  
 
-```{r}  
-cycleno <- 1:ncycle
-plot(cycleno, arclengthvec[cycleno], type="b", lwd=2, xlab="Cycle Number", ylab="Arclength")
-```
+The arc length of the information curve increases at each cycle as more and more information captured by the fit to the choice data.
 
-The arc length of the information curve increases at each cycle as more and more information
-captured by the fit to the choice data.
 
-Here we choose to display results for the last cycle:
+###  Setting up the parList objects to be used in further analyses and displays
+
+Here we choose to use results for the last cycle:
 
 ```{r}  
-icycle <- ncycle
-Math_parListi  <- parList[[icycle]]
+Math_parListi  <- parList[[ncycle]]
 ```
 
 The list object `Math_parListi` contains a large number of objects, but in our exploration of results, we will only need these results:
@@ -288,13 +312,40 @@ The list object `Math_parListi` contains a large number of objects, but in our e
 WfdList    <- Math_parListi$WfdList
 theta      <- Math_parListi$theta
 Qvec       <- Math_parListi$Qvec
+Hval       <- Math_parListi$Hval
+DHval      <- Math_parListi$DHval
+D2Hval     <- Math_parListi$D2Hval
 binctr     <- Math_parListi$binctr
+indfine    <- seq(0,100,len=101)
 ```
 
 - `WfdList`: List object of length `n` that contains information about the surprisal and   probability curves 
 - `theta`:  A vector of length N of values of what we call "score index", which are real numbers between 0 and 100.  These values are used for computing various score values such as expected sum scores.
 - `Qvec`:  Values within the range 0 to 100 below which these percentages of examinees fall: 5, 25, 50, 75 and 95.
 - `binctr`:  The surprisal curves are estimated by first binning the values in vector `theta` and then using the surprisal values within each bin.  `binctr` contains the values at the centres of the bins.
+
+### Check the score index for each fitting curve for being the global miniimum
+
+Experience shows that in about 10 % of the cases the analysis locates the score
+index value theta at a minimum point along the fitting curve that is not the
+lowest point on the curve.  We now check each examinee's curve, and where the
+global minimum has not been identified, we do so by identifying the global
+minimum using a fine mesh of 101 values of theta.  The revised value of theta
+is a location on this mesh, and objects `Hval, DHval` and `D2Hval` are also 
+changed to their values at this point.
+
+```{r}  
+thetacheck  <- thetasearch(WfdList, U, theta, Hval, DHval, D2Hval)
+theta       <- thetacheck$theta
+Hval        <- thetacheck$Hval
+DHval       <- thetacheck$DHval
+D2Hval      <- thetacheck$D2Hval
+changeindex <- thetacheck$changeindex
+print(paste("The number of altered theta values is", length(changeindex)))
+```
+
+Object `changeindex` is a vector containing the the indices of the examinees
+for whom the values have been altered.
 
 ###  Compute objects needed for plotting as a function of arc length or information
 
@@ -365,7 +416,7 @@ TestGardener::density_plot(theta, c(0,100), Qvec, xlabstr="Score index",
                            titlestr="Theta Density", scrnbasis=15)
 ```
 
-In fact, there are six distinct clusters of score index values below the 75% level.  Within each of these clusters there are strong similarities in examinee's choice patterns, whether right or wrong. We have only plotted score indices which are away from the two boundaries, because there are significant tendencies to have estimated score index values at 0 and 100.
+In fact, there are four distinct clusters of score index values below the 75% level.  Within each of these clusters there are strong similarities in examinee's choice patterns, whether right or wrong. We have only plotted score indices which are away from the two boundaries, because there are significant tendencies to have estimated score index values at 0 and 100.
 
 ```{r}  
 TestGardener::density_plot(theta_al, c(0,arclength), Qvec_al, xlabstr="Arclength", 
@@ -428,3 +479,5 @@ Here we produce these plots for the first examinee.
 ```{r,}
 TestGardener::Hfuns.plot(theta, WfdList, U, plotindex=1)
 ```
+
+##  Use simulated data to estimate the accuracy of test scores

@@ -4,9 +4,8 @@
   Calculate mean squared error and bias for a set of score index values from 
   simulated data.
 }
-\description{
-  This function is used on \code{ConditionalSimulation} after the simulated 
-  data matrices have been analyzed.  It prepares the objects necessary for the 
+\description{After the simulated data matrices have been 
+  analyzed, prepare the objects necessary for the 
   performance plots produced by functions \code{RMSEbias1.plot} and 
   \code{RMSEbias2.plot}.
 }
@@ -99,4 +98,7 @@ Ramsay, J. O., Li J. and Wiberg, M. (2020) Better rating scale scores with
 information-based psychometrics.  Psych, 2, 347-360.
 
 http://testgardener.azurewebsites.net
+}
+\seealso{
+  \code{\link{dataSimulation}}
 }

@@ -42,11 +42,13 @@ indfine       <- seq(0,100,len=101)
 WfdList       <- Quantshort_parList$WfdList
 theta         <- Quantshort_parList$theta
 Qvec          <- Quantshort_parList$Qvec
-binctr        <- Quantshort_parList$binctrc
+binctr        <- Quantshort_parList$binctr
 arclenList    <- theta2arclen(theta, Qvec, WfdList, binctr)
 names(arclenList)
 arclength    <- arclenList$arclength
 arclengthvec <- arclenList$arclengthvec
+oldpar <- par(no.readonly=TRUE)
+on.exit(oldpar)
 ArcLength.plot(arclength, arclengthvec)
 #  Example 2.  Display the arc length curve for the 
 #  Symptom Distress Scale with 13 items and 473 respondents

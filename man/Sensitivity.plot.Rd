@@ -112,8 +112,10 @@ http://testgardener.azurewebsites.net
 WfdList <- Quantshort_parList$WfdList
 Qvec    <- Quantshort_parList$Qvec
 scrfine <- seq(0,100,len=101)
+oldpar <- par(no.readonly=TRUE)
 Sensitivity.plot(scrfine, WfdList, Qvec, Quantshort_dataList, 
                  plotindex=1)
+par(oldpar)
 #  Example 2.  Display the option sensitivity curves for the 
 #  Symptom Distress Scale with 13 items and 473 respondents
 #  Proceed as above changing "Quant" to "SDS".

@@ -118,7 +118,7 @@
 \author{Juan Li and James Ramsay}
 \seealso{
   \code{\link{make.dataList},
-        \link{ConditionalSimulation},
+        \link{dataSimulation},
         \link{Power.plot},
         \link{scoreDensity},
         \link{Sensitivity.plot},

@@ -57,5 +57,7 @@ theta   <- Quantshort_parList$theta
 Qvec    <- Quantshort_parList$Qvec
 #  plot the density for the score indices within interval c(0,100)
 theta_int <- theta[0 < theta & theta < 100]
+oldpar <- par(no.readonly=TRUE)
 scoreDensity(theta_int)
+par(oldpar)
 }

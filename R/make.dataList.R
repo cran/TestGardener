@@ -1,5 +1,6 @@
 
-make.dataList <- function(U, key, optList, grbg=rep(0,n), scrrng=NULL, titlestr=NULL,
+make.dataList <- function(U, key, optList, grbg=rep(0,n), scrrng=NULL,
+                          titlestr=NULL,
                           nbin=nbinDefault(N), NumBasis=NULL, WfdPar=NULL,
                           jitterwrd=TRUE, PcntMarkers=c( 5, 25, 50, 75, 95),
                           quadwrd=FALSE, verbose=FALSE) {
@@ -55,6 +56,7 @@ make.dataList <- function(U, key, optList, grbg=rep(0,n), scrrng=NULL, titlestr=
   
   scrmin  <- min(scrvec)
   scrmax  <- max(scrvec)
+  scrrng  <- c(scrmin, scrmax)
   if (is.null(scrrng)) {
     scrrng <- c(scrmin,scrmax)
   }
@@ -132,6 +134,9 @@ make.dataList <- function(U, key, optList, grbg=rep(0,n), scrrng=NULL, titlestr=
   ##  Construct dataList object to define data Listucture
   
   dataList <- list(U           = U, 
+                   N           = N,
+                   n           = n,
+                   titlestr    = titlestr,
                    optList     = optList,
                    WfdList     = WfdList,
                    key         = key,

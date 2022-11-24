@@ -6,7 +6,7 @@ system.file(package="TestGardener")
 library(TestGardener)
 
 ## -----------------------------------------------------------------------------
-titlestr  <- "SweSAT-Q: 80 math analysis items"
+titlestr  <- "SweSAT-Q: 24 math analysis items and 1000 examinees"
 
 ## -----------------------------------------------------------------------------
 U <- scan("U_5000.txt","o")
@@ -22,18 +22,25 @@ key   <- scan("key_5000.txt","o")
 key <- as.integer(unlist(stringr::str_split(key,"")))
 
 ## -----------------------------------------------------------------------------
-noption <- rep(4,n)
-noption[23:28] <- 5
-noption[63:68] <- 5
-for (i in 1:n) {
-  if (any(U[,i] > noption[i])) {
-    noption[i]  <- noption[i] + 1 # Add one option for invalid responses
-    U[U[,i] > noption[i],i] <- noption[i]
-  }
-}
+itemindex <- c(1:12, 41:52)
+examinees <- 4001:5000
+U <- U[examinees,itemindex]
+key <- key[itemindex]
+N <- 1000
+n <- 24
+
+## -----------------------------------------------------------------------------
+noption <- rep(5,n)
 
 ## -----------------------------------------------------------------------------
 grbg <- noption 
+
+## -----------------------------------------------------------------------------
+for (j in 1:N) {
+  for (i in 1:n) {
+    if (U[j,i] == 8 || U[j,i] == 9) U[j,i] = 5
+  }
+}
 
 ## -----------------------------------------------------------------------------
 ScoreList <- list() # option scores
@@ -77,26 +84,44 @@ AnalyzeResult <- TestGardener::Analyze(theta, thetaQnt, Math_dataList,
 
 ## -----------------------------------------------------------------------------
 parList      <- AnalyzeResult$parList
-meanHsave    <- AnalyzeResult$meanHsave
-arclengthvec <- AnalyzeResult$arclengthsave
+meanHsave    <- matrix(0,ncycle,1)
+arclengthvec <- matrix(0,ncycle,1)
+for (icycle in 1:ncycle) {
+  meanHsave[icycle]    <- parList[[icycle]]$meanH
+  arclengthvec[icycle] <- parList[[icycle]]$arclength
+}
 
 ## -----------------------------------------------------------------------------
 cycleno <- 1:ncycle
-plot(cycleno,    meanHsave[cycleno], type="b", lwd=2, xlab="Cycle Number", ylab="Mean Fit")
+plot(cycleno,    meanHsave[cycleno], type="b", lwd=2, xlab="Cycle Number", 
+     ylab="Mean Fit")
 
 ## -----------------------------------------------------------------------------
 cycleno <- 1:ncycle
-plot(cycleno, arclengthvec[cycleno], type="b", lwd=2, xlab="Cycle Number", ylab="Arclength")
+plot(cycleno, arclengthvec[cycleno], type="b", lwd=2, xlab="Cycle Number",   
+     ylab="Arclength")
 
 ## -----------------------------------------------------------------------------
-icycle <- ncycle
-Math_parListi  <- parList[[icycle]]
+Math_parListi  <- parList[[ncycle]]
 
 ## -----------------------------------------------------------------------------
 WfdList    <- Math_parListi$WfdList
 theta      <- Math_parListi$theta
 Qvec       <- Math_parListi$Qvec
+Hval       <- Math_parListi$Hval
+DHval      <- Math_parListi$DHval
+D2Hval     <- Math_parListi$D2Hval
 binctr     <- Math_parListi$binctr
+indfine    <- seq(0,100,len=101)
+
+## -----------------------------------------------------------------------------
+thetacheck  <- thetasearch(WfdList, U, theta, Hval, DHval, D2Hval)
+theta       <- thetacheck$theta
+Hval        <- thetacheck$Hval
+DHval       <- thetacheck$DHval
+D2Hval      <- thetacheck$D2Hval
+changeindex <- thetacheck$changeindex
+print(paste("The number of altered theta values is", length(changeindex)))
 
 ## -----------------------------------------------------------------------------
 Math_infoList <- TestGardener::theta2arclen(theta, Qvec, WfdList, binctr)

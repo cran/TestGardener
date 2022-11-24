@@ -141,7 +141,9 @@ binctr   <- Quantshort_parList$binctr
 titlestr <- NULL
 #  plot the curves for the first question
 scrfine <- seq(0,100,len=101)
+oldpar <- par(no.readonly=TRUE)
 ICC.plot(scrfine, WfdList, Quantshort_dataList, Qvec, binctr, plotindex=1:2)
+par(oldpar)
 #  Example 2.  Display the item proability and surprisal curves for the 
 # Symptom Distress Scale with 13 items and 473 respondents.
 # Proceed as above changing "Quant" to "SDS"

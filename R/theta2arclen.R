@@ -1,5 +1,5 @@
 theta2arclen <- function(theta, Qvec, WfdList, binctr, itemindex=1:n, 
-                         plotrng=c(0,100)) {
+                         plotrng=c(0,100), shortwrd=FALSE) {
     # THETA2ARCLEN is a centrally important function.  It's job is to convert
     #  objects defined over the score index continuum [0,100] to
     # the same objects over the arc length continuum [0,arclength], and also
@@ -46,14 +46,14 @@ theta2arclen <- function(theta, Qvec, WfdList, binctr, itemindex=1:n,
     # WDIM          ... The dimension of the over space containing the 
     #                   surprisal curves.
     
-    #  Last modified 6 June 2022
+    #  Last modified 22 July 2022
     
     #  ------------------------------------------------------------------------
     #                              check inputs  
     #  ------------------------------------------------------------------------
     
     if (!is.list(WfdList)) {
-        stop("The second argument is not a list object.")
+        stop("The third argument is not a list object.")
     }
     
     if (!is.numeric(theta)) {
@@ -126,6 +126,15 @@ theta2arclen <- function(theta, Qvec, WfdList, binctr, itemindex=1:n,
     
     arclengthvec.rng <- pracma::cumtrapz(sqrt(apply(DWfine.rng^2,1,sum)))
     arclength.rng    <- max(arclengthvec.rng)
+    
+    #  ------------------------------------------------------------------------
+    #  If shortwrd == TRUE, return here with only arclength.rng and
+    # arclengthvec.rng
+    #  ------------------------------------------------------------------------
+
+    if (shortwrd) {
+      return(list(arclength = arclength.rng,  arclengthvec = arclengthvec.rng))
+    }   
     
     #  ------------------------------------------------------------------------
     #  set up a fd object over plot range for representing arc length

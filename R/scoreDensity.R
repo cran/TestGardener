@@ -6,7 +6,7 @@ scoreDensity <- function(scrvec, scrrng=c(0,100), ndensbasis=15,
   #  define a fine mesh of score values for plotting
   
   nfine   <- 101
-  scrfine <- seq(0,100,len=101)
+  scrfine <- seq(0,scrrng[2],len=101)
   
   #  set up the bspline basis object
   
@@ -22,7 +22,7 @@ scoreDensity <- function(scrvec, scrrng=c(0,100), ndensbasis=15,
   densfine     <- exp(logdensvec)/tdList$C
   pvec         <- c(0.05,0.25,0.50,0.75,0.95)
   denscdfi     <- unique(denscdf)
-  scrfinei     <- seq(0,100,length.out=length(denscdfi))
+  scrfinei     <- seq(0,scrrng[2],length.out=length(denscdfi))
   Qvec         <- pracma::interp1(as.numeric(denscdfi), 
                                   as.numeric(scrfinei), as.numeric(pvec))
   

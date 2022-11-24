@@ -10,8 +10,8 @@ Plot the test information or scale curve in either two or three dimensions.
   can be fixed by using functional principal components analysis.
 }
 \usage{
-  Wpca.plot(arclength, WfdList, Wdim, nharm=2, rotate=TRUE, dodge = 1.003, 
-  titlestr = NULL)
+  Wpca.plot(arclength, WfdList, Wdim, nharm=2, rotate=TRUE, dodge=1.003, 
+  titlestr=NULL, Display=TRUE)
 }
 \arguments{
   \item{arclength}{The total length of the test information or scale curve as computed by function 
@@ -43,6 +43,8 @@ Plot the test information or scale curve in either two or three dimensions.
   \item{dodge}{A constant greater than 1 required by ggplot2.  
   Defaults to 1.003.}
   \item{titlestr}{A string for the title of the plot.  Defaults to NULL. }
+  \item{Display}{A logical value that is TRUE if the test information manifold
+    is to be displayed.}
 }
 \value{
 A named list with these members:
@@ -73,6 +75,8 @@ http://testgardener.azurewebsites.net
 WfdList    <- Quantshort_parList$WfdList
 theta      <- Quantshort_parList$theta
 arclength  <- Quantshort_parList$arclength 
+oldpar <- par(no.readonly=TRUE)
+on.exit(oldpar)
 Wpca.plotResults <- Wpca.plot(arclength, WfdList, Quantshort_dataList$Wdim)
 varprop <- Wpca.plotResults$varpropvarmx
 print("Proportions of variance accounted for and their sum:")

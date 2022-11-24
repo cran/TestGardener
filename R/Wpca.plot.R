@@ -1,7 +1,7 @@
 Wpca.plot <- function(arclength, WfdList, Wdim, nharm=2, rotate=TRUE, 
-                       dodge = 1.003, titlestr=NULL) {
+                       dodge = 1.003, titlestr=NULL, Display=TRUE) {
   
-  #  Last modified 8 February 2021 by Jim Ramsay
+  #  Last modified 7 October 2022 by Jim Ramsay
   
   #  set up matrices of fine mesh values
   
@@ -62,8 +62,9 @@ Wpca.plot <- function(arclength, WfdList, Wdim, nharm=2, rotate=TRUE,
     varpropvarmx <- varmxList$varprop
   }
   
-  #  set up the varimax rotated harmonic functional data object
-  #  display variance proportions for (varimax rotated solution
+  #  display test manifold curve if required
+  
+  if (Display) {
   
   #  plot the first two or three harmonics
   #  ggpot version
@@ -71,22 +72,22 @@ Wpca.plot <- function(arclength, WfdList, Wdim, nharm=2, rotate=TRUE,
     pind   <- c(5,25,50,75,95)
     Qlabel <- c("5%","25%","50%","75%","95%")
     #  plot manifold along with marker and mesh points and crossing lines
-    harmmat <- -fda::eval.fd(arclengthfine, harmvarmxfd)
-    Qvec_al <- arclengthfine[ceiling(nfine*c(0.05, 0.25, 0.50, 0.75, 0.95))]
-    Qharmmat <- -fda::eval.fd(Qvec_al, harmvarmxfd)
+    harmmat  <- -fda::eval.fd(arclengthfine, harmvarmxfd)
+    Qvec_al  <-  arclengthfine[ceiling(nfine*c(0.05, 0.25, 0.50, 0.75, 0.95))]
+    Qvec_pts <- -fda::eval.fd(Qvec_al, harmvarmxfd)
     if (nharm == 2) {
       df1 <- data.frame(harmmat)
-      df2 <- data.frame(Qharmmat)
+      df2 <- data.frame(Qvec_pts)
       pcaplt <- ggplot2::ggplot(df1, ggplot2::aes(harmmat[,1],harmmat[,2])) +
                 ggplot2::geom_point(size=2) +
-                ggplot2::geom_point(data=df2, ggplot2::aes(Qharmmat[,1],Qharmmat[,2], size=2)) +
+                ggplot2::geom_point(data=df2, ggplot2::aes(Qvec_pts[,1],Qvec_pts[,2], size=2)) +
                 xlab('Rotated Component 1') +
                 ylab('Rotated Component 2') +
-                annotate("text", x=Qharmmat[1,1]*dodge, y=Qharmmat[1,2], label=Qlabel[1]) +
-                annotate("text", x=Qharmmat[2,1]*dodge, y=Qharmmat[2,2], label=Qlabel[2]) +
-                annotate("text", x=Qharmmat[3,1]*dodge, y=Qharmmat[3,2], label=Qlabel[3]) +
-                annotate("text", x=Qharmmat[4,1]*dodge, y=Qharmmat[4,2], label=Qlabel[4]) +
-                annotate("text", x=Qharmmat[5,1]*dodge, y=Qharmmat[5,2], label=Qlabel[5]) +
+                annotate("text", x=Qvec_pts[1,1]*dodge, y=Qvec_pts[1,2], label=Qlabel[1]) +
+                annotate("text", x=Qvec_pts[2,1]*dodge, y=Qvec_pts[2,2], label=Qlabel[2]) +
+                annotate("text", x=Qvec_pts[3,1]*dodge, y=Qvec_pts[3,2], label=Qlabel[3]) +
+                annotate("text", x=Qvec_pts[4,1]*dodge, y=Qvec_pts[4,2], label=Qlabel[4]) +
+                annotate("text", x=Qvec_pts[5,1]*dodge, y=Qvec_pts[5,2], label=Qlabel[5]) +
                 theme(legend.position = "none",
                       axis.title=element_text(size=16,face="bold"))
       if (!is.null(titlestr))
@@ -99,14 +100,17 @@ Wpca.plot <- function(arclength, WfdList, Wdim, nharm=2, rotate=TRUE,
     } else {
       rgl::open3d()
       rgl::points3d( harmmat[,1],        harmmat[,2],  harmmat[,3], col = rainbow(1000), size=5) 
-      rgl::points3d(Qharmmat[,1],       Qharmmat[,2], Qharmmat[,3], color="black", size=8)
-      rgl::texts3d( Qharmmat[,1]*dodge, Qharmmat[,2], Qharmmat[,3], texts = Qlabel)
+      rgl::points3d(Qvec_pts[,1],       Qvec_pts[,2], Qvec_pts[,3], color="black", size=8)
+      rgl::texts3d( Qvec_pts[,1]*dodge, Qvec_pts[,2], Qvec_pts[,3], texts = Qlabel)
       rgl::axes3d()
       rgl::aspect3d(1,1,1)
       rgl::title3d(xlab="Rotated Component 1",ylab="Rotated Component 2",zlab="Rotated Component 3")
       pcaplt <- NULL
     }
+  }
+    
     return(list(pcaplt=pcaplt, harmvarmxfd=harmvarmxfd, varpropvarmx=varpropvarmx))
+    
   }
   
   

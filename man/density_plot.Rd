@@ -51,6 +51,8 @@ Juan Li and James Ramsay
 theta   <- Quantshort_parList$theta
 Qvec    <- Quantshort_parList$Qvec
 #  plot the density for the score indices within interval c(0,100)
+oldpar <- par(no.readonly=TRUE)
+on.exit(oldpar)
 density_plot(theta, c(0,100), Qvec, xlabstr="Score index", 
              titlestr="SweSAT 13B Theta Density",  
              scrnbasis=11, nfine=101)

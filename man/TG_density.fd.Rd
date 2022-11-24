@@ -98,7 +98,6 @@ turn off the output buffering option in S-PLUS.
   \code{\link{intensity.fd}}
 }
 \examples{
-
 #  set up range for density
 rangeval <- c(-3,3)
 #  set up some standard normal data
@@ -117,9 +116,10 @@ denslist <- TG_density.fd(thetadens, logdensfdPar)
 thetadensval <- seq(-3,3,.2)
 wval <- eval.fd(thetadensval, denslist$Wfdobj)
 pval <- exp(wval)/denslist$C
+oldpar <- par(no.readonly=TRUE)
+on.exit(oldpar)
 plot(thetadensval, pval, type="l", ylim=c(0,0.4))
 points(thetadens,rep(0,50))
-
 }
 % docclass is function
 \keyword{smooth}
