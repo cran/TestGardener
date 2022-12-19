@@ -33,9 +33,6 @@ for (i in 1:n)
 }
 
 ## -----------------------------------------------------------------------------
-grbg <- noption 
-
-## -----------------------------------------------------------------------------
 optScore <- list() # option scores
 for (item in 1:n){
   scorei <- c(0:4,0)
@@ -63,7 +60,7 @@ optList <- list(itemLab=itemVec, optLab=optLab, optScr=optScore)
 scrrng = c(0,37)
 
 ## -----------------------------------------------------------------------------
-SDS_dataList <- TestGardener::make.dataList(U, key, optList, grbg, scrrng=scrrng)
+SDS_dataList <- TestGardener::make.dataList(U, key, optList, scrrng=scrrng)
 
 ## -----------------------------------------------------------------------------
 hist(SDS_dataList$scrvec, SDS_dataList$scrrng[2], xlab="Sum Score",

@@ -1,9 +1,9 @@
-theta.distn <- function(thetadens, logdensbasis, pvec=c(0.05, 0.25, 0.50, 0.75, 0.95), 
-                        nfine=101) {
+theta.distn <- function(thetadens, logdensbasis,
+                        pvec=c(0.05, 0.25, 0.50, 0.75, 0.95), nfine=101) {
   #  Compute cumulative density functions and probability density functions
   #  for the values in THETADENS using the basis object LOGDENSBASIS.
 
-  # Last modified 16 March 2022 by Jim Ramsay
+  # Last modified 13 December 2022 by Jim Ramsay
   
   #  check logdensfd
   
@@ -62,8 +62,9 @@ theta.distn <- function(thetadens, logdensbasis, pvec=c(0.05, 0.25, 0.50, 0.75, 
   thetafine <- c(indrng[1], thetasort, indrng[2])
   yfine     <- c(0, ysmth, 1   )
   
-  # cdffine <- cumfd(thetadens, c(0,100))$cdffine
-   
+  denscdf   <- unique(cdffine)
+  indfine   <- seq(0,100,len=length(denscdf))
+  
   # return results
   
   return(list(pdf_fd=pdf_fd, cdffine=cdffine, pdffine=pdffine, 

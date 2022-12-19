@@ -8,7 +8,7 @@
   in the value section below.
 }
 \usage{
-make.dataList(U, key, optList, grbg=rep(0,n), scrrng=NULL, titlestr=NULL,  
+make.dataList(U, key, optList, scrrng=NULL, titlestr=NULL,  
               nbin=nbinDefault(N),NumBasis=NULL,  WfdPar=NULL,
               jitterwrd=TRUE, PcntMarkers=c( 5, 25, 50, 75, 95),
               quadwrd=FALSE, verbose=FALSE)
@@ -18,15 +18,17 @@ make.dataList(U, key, optList, grbg=rep(0,n), scrrng=NULL, titlestr=NULL,
     and columns to questions or items.}
   \item{key}{If the data are a multiple choice test with only weights 0 and 1, 
     a vector of length n containing the indices of the right answers.  
-    Otherwise, NULL.}
+    Otherwise, key = NULL, which is the default value. This is the case
+    for rating scale questions.}
   \item{optList}{A list vector of length number of questions. A member 
-    contains a vector of score values assigned to each answer or option by the 
-    test designer.}
-  \item{grbg}{A vector of length indicating which option for each item contains 
-    missing or illegal choice values.  If 0, there is no such option.}
-  \item{scrrng}{A vector of length two containing the initial and final values  
-    for the interval over which test scores are to be plotted.  Default is 
-    minimum and maximum sum score.}
+    contains a numeric vector of score values assigned to each answer or option  
+    by the test designer. For multiple choice items with 0-1 scroing, the 
+    zero values must be included in each item's vector. Scores are not to
+    be included for illegal or missing responses, since these are automatically
+    added.}
+  \item{scrrng}{A numeric vector of length two containing the initial and   
+    final values for the interval over which test scores are to be plotted.   
+    Default is minimum and maximum sum score.}
   \item{titlestr}{A string to be used as a title in plots and other displays.}
   \item{nbin}{The number of bins for containing proportions of examinees 
     choosing options.  The default is computed by a function that uses the 
@@ -110,6 +112,10 @@ make.dataList(U, key, optList, grbg=rep(0,n), scrrng=NULL, titlestr=NULL,
       \item{Wdim:}{The total dimension of the surprisal scores.}
       \item{PcntMarkers:}{The marker percentages for plotting: 
         5, 25, 50, 75 and 95.}
+       \item{grbg:}{A logical vector of length number of questions. 
+       TRUE for an item indicates that a garbage option must be added to the  
+       score values, and FALSE indicates that there are no illegal or missing 
+       responses and the number of options is equal to number of score values.}
   }
 }
 \references{
@@ -131,22 +137,20 @@ http://testgardener.azurewebsites.net
 #  input the choice data as 1000 strings of length 24
 N <- dim(Quantshort_U)[1]
 n <- dim(Quantshort_U)[2]
-
-optList <- list()
-grbg = matrix(0,n,1)
+noption <- rep(0,n)
+for (i in 1:n) noption[i]  <- length(unique(Quantshort_U[,i]))
+ScoreList <- list() # option scores
 for (item in 1:n){
-  noptioni <- length(unique(Quantshort_U[,item]))
-  scorei <- rep(0,noptioni)
+  scorei <- rep(0,noption[item])
   scorei[Quantshort_key[item]] <- 1
-  optList[[item]] <- scorei
-  grbg[item] <- length(scorei)
+  ScoreList[[item]] <- scorei
 }
-optList <- list(itemLab=NULL, optLab=NULL, optScr=optList)
+optList <- list(itemLab=NULL, optLab=NULL, optScr=ScoreList)
 
 #  Set up the dataList object containing the objects necessary
 #  for further display and analyses
 
-Quantshort_dataList <- make.dataList(Quantshort_U, Quantshort_key, optList, grbg)
+Quantshort_dataList <- make.dataList(Quantshort_U, Quantshort_key, optList)
 
 #  Example 2:  Input choice data and key for the Symptom Distress Scale 
 #  with 13 items and 473 examinees.
@@ -154,15 +158,8 @@ Quantshort_dataList <- make.dataList(Quantshort_U, Quantshort_key, optList, grbg
 N <- dim(SDS_U)[1]
 n <- dim(SDS_U)[2]
 # --------- Define the option score values for each item ---------
-optList <- list()
-grbg <- matrix(0,n,1)
-for (item in 1:n){
-  scorei <- c(0:4,0)
-  optList[[item]] <- scorei
-  grbg[item] <- length(scorei)
-}
-optList <- list(itemLab=NULL, optLab=NULL, optScr=optList)
+optList <- list(itemLab=NULL, optLab=NULL, optScr=ScoreList)
 #  largest observed sum score is 37 
 scrrng <- c(0,37)
-SDS_dataList <- make.dataList(SDS_U, SDS_key, optList, grbg, scrrng)
+SDS_dataList <- make.dataList(SDS_U, SDS_key, optList, scrrng)
 }

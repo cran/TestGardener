@@ -33,9 +33,6 @@ n <- 24
 noption <- rep(5,n)
 
 ## -----------------------------------------------------------------------------
-grbg <- noption 
-
-## -----------------------------------------------------------------------------
 for (j in 1:N) {
   for (i in 1:n) {
     if (U[j,i] == 8 || U[j,i] == 9) U[j,i] = 5
@@ -54,7 +51,7 @@ for (item in 1:n){
 optList <- list(itemLab=NULL, optLab=NULL, optScr=ScoreList)
 
 ## -----------------------------------------------------------------------------
-Math_dataList <- TestGardener::make.dataList(U, key, optList, grbg)
+Math_dataList <- TestGardener::make.dataList(U, key, optList)
 names(Math_dataList)
 
 ## -----------------------------------------------------------------------------

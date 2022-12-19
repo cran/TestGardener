@@ -2,8 +2,8 @@
 \alias{theta.distn}
 \title{Compute score density}
 \usage{
-  theta.distn(thetadens, logdensbasis, pvec=c(0.05, 0.25, 0.50, 0.75, 0.95), 
-              nfine = 101)
+  theta.distn(thetadens, logdensbasis,  
+              pvec=c(0.05, 0.25, 0.50, 0.75, 0.95), nfine = 101)
 }
 \arguments{
   \item{thetadens}{A vector of score index, test score, or arc length values.  

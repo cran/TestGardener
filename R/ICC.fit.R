@@ -131,28 +131,27 @@ ICC.fit <- function(theta, dataList, WfdList=dataList$WfdList,
     #  process NA values in Wbin associated with zero probabilities
     
     for (m in 1:Mi) {
-      if (!is.null(grbg) && m != grbg[item]) {
-        #  normal non-garbage choice, change NA values to SurprisalMax
-        Wmis.na <- is.na(Pbin[,m])
+      Wmis.na <- is.na(Pbin[,m])
+      if (!grbg[item] || (grbg[item] && m != Mi)) {
         Wbin[Wmis.na,m] <- SurprisalMax
-      } else {
+      }  else {
         #  garbage choices: compute sparse numeric values into 
-        #  linear approximationsand NA values to SurprisalMax
-        Wmis.na <- is.na(Pbin[,m])
-        indm <- (1:nbin)[!Wmis.na]
+        #  linear approximations and NA values to SurprisalMax
+        indm    <- (1:nbin)[!Wmis.na]
         indmlen <- length(indm)
-        if (indmlen > 3) {
-          WY <- Wbin[indm,m]
+        nonindm <- (1:nbin)[Wmis.na]
+        if (length(indm) > 3) {
+          WY <- Wbin[indm,m];
           WX <- cbind(rep(1,indmlen), aves[indm])
           BX <- lsfit(aves[indm], WY)$coefficients
-          Wbin[indm,m] <- WX %*% BX
-          Wbin[Wmis.na,m] <- SurprisalMax
+          Wbin[indm,m]    <- WX %*% BX
+          Wbin[nonindm,m] <- SurprisalMax
         } else {
-          Wbin[Wmis.na,m] <- SurprisalMax
+          Wbin[nonindm,m] <- SurprisalMax
         }
       }
     }
-      
+    
     #  apply surprisal smoothing
     
     WListi  <- WfdList[[item]]

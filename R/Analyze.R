@@ -66,7 +66,7 @@ Analyze <- function(theta, thetaQnt, dataList, ncycle=10, itdisp=FALSE,
     DHval    <- thetafunList$DHval
     D2Hval   <- thetafunList$D2Hval
     active   <- thetafunList$active
-    
+ 
     #  ----------------------------------------------------------
     #  Step 4:  Estimate the score density for score index values
     #  ----------------------------------------------------------
@@ -77,13 +77,13 @@ Analyze <- function(theta, thetaQnt, dataList, ncycle=10, itdisp=FALSE,
     thetadens <- theta[0 < theta & theta < 100]
     theta.distnList <- theta.distn(thetadens, logdensbasis)
     
-    # cdf_fd    <- theta.distnList$cdf_fd
     pdf_fd    <- theta.distnList$pdf_fd
     logdensfd <- theta.distnList$logdensfd
     cdffine   <- theta.distnList$cdffine
     C         <- theta.distnList$C
-    indfine   <- seq(0,100,len=101)
     denscdf   <- as.numeric(cdffine)
+    denscdf   <- unique(denscdf)
+    indfine   <- seq(0,100,len=length(denscdf))
     markers   <- dataList$PcntMarkers/100
     Qvec      <- pracma::interp1(denscdf, indfine, markers)
     nbin      <- dataList$nbin

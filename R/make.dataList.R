@@ -1,6 +1,5 @@
 
-make.dataList <- function(U, key, optList, grbg=rep(0,n), scrrng=NULL,
-                          titlestr=NULL,
+make.dataList <- function(U, key, optList, scrrng=NULL, titlestr=NULL,
                           nbin=nbinDefault(N), NumBasis=NULL, WfdPar=NULL,
                           jitterwrd=TRUE, PcntMarkers=c( 5, 25, 50, 75, 95),
                           quadwrd=FALSE, verbose=FALSE) {
@@ -10,7 +9,7 @@ make.dataList <- function(U, key, optList, grbg=rep(0,n), scrrng=NULL,
   #' The information set up here is not meant to be modified by later code
   #' in the analysis.
   
-  #  Last modified 13 June 2022 by Jim Ramsay
+  #  Last modified 19 December 2022 by Jim Ramsay
   
   N <- nrow(U)
   n <- ncol(U)
@@ -19,51 +18,61 @@ make.dataList <- function(U, key, optList, grbg=rep(0,n), scrrng=NULL,
   
   if (min(U) < 1) stop("Zero data values encountered in data.  Are they score values?")
   
-  #  check lengths of key and garbg
+  #  check key
   
   if (length(key) != n && length(key) > 0) {
     stop("length of key is neither n or 0") 
   } 
   
-  if (length(grbg) != n && length(grbg) > 0) {
-    stop("length of grbg is not n") 
-  } 
   
-  ##  Set up Wdim
+  ##  Set up noption using optList$optScr
   
-  noption <- matrix(0,n,1)
+  noption <- rep(0,n)
   for (item in 1:n) {
-    noption[item] <- length(optList$optScr[[item]])# JL 2021-02-18
+    noption[item] <- length(optList$optScr[[item]])  
   }
-  Wdim   <- sum(noption) 
   
-  ## compute sum scores for (both examinees and items
+  #  construct logical vector grbg 
+  
+  grbg <- rep(FALSE, n)
+  for (item in 1:n) {
+    grbgind <- U[,item] > noption[item]
+    if (sum(grbgind) > 0) {
+      #  indices greater than noption[item] encountered
+      #  add an option the these labels, set grbg value to TRUE
+      #  change indices to updated noption[item]
+      noption[item]   <- noption[item] + 1
+      optScri <- optList$optScr[[item]]
+      optScri <- c(optScri,0)
+      optList$optScr[[item]] <- optScri
+      grbg[item]      <- TRUE
+      U[grbgind,item] <- noption[item]
+    }
+  }
+  
+  # compute dimension of ambient space
+  
+  Wdim  <- sum(noption) 
+  
+  ## compute sum scores for both examinees and items
   
   scrvec <- matrix(0,N,1)
   itmvec <- matrix(0,n,1)
-  for (i in 1:n) {
+  for (item in 1:n) {
     for (j in 1:N) {
-      scoreij <- optList$optScr[[i]][U[j,i]]
-      if (!is.null(scoreij)) {
-        if (is.na(scoreij)) print(paste("is.na score:",j))
-      } else {
-        print(paste("score of length 0:",j))
-      }
+      scoreij <- optList$optScr[[item]][U[j,item]]
       scrvec[j] <- scrvec[j] + scoreij
-      itmvec[i] <- itmvec[i] + scoreij
+      itmvec[item] <- itmvec[item] + scoreij
     }
   }
   
   scrmin  <- min(scrvec)
   scrmax  <- max(scrvec)
   scrrng  <- c(scrmin, scrmax)
-  if (is.null(scrrng)) {
-    scrrng <- c(scrmin,scrmax)
-  }
+  if (is.null(scrrng)) scrrng <- c(scrmin,scrmax)
   nfine   <- 101
   scrfine <- seq(scrrng[1],scrrng[2],len=nfine)
-  denscdf <- seq(0,1,len=nfine)
-  
+    
   thetaQnt <- seq(0,100,len=2*nbin+1)
   
   ##  jitter sum scores if required
@@ -79,10 +88,7 @@ make.dataList <- function(U, key, optList, grbg=rep(0,n), scrrng=NULL,
   ##  compute ranks for jittered sum scores
   
   scrrnk <- matrix(0,N,1)
-  for (j in 1:N) {
-    scrrnk[j] <- sum(scrjit <= scrjit[j])
-  }
-  
+  for (j in 1:N) scrrnk[j] <- sum(scrjit <= scrjit[j])
   percntrnk <- 100*scrrnk/N
   
   ##  Basis and bin setup for W function and theta estimation cycle
@@ -120,14 +126,7 @@ make.dataList <- function(U, key, optList, grbg=rep(0,n), scrrng=NULL,
     } 
   }
   
-  ##  Set up initial WfdList. 
-  
-  #  Wbinsmth.init computes an approximation to optimal Bmat
-  
-  # print("Entering Wbinsmth.init")
-  # print(percntrnk[1:5])
-  # print(nbin)
-  # print(WfdPar$fd$basis$nbasis)
+  ##  Wbinsmth.init computes an approximation to optimal Bmat
   
   WfdList <- Wbinsmth.init(percntrnk, nbin, WfdPar, grbg, optList, U) 
   
@@ -153,7 +152,8 @@ make.dataList <- function(U, key, optList, grbg=rep(0,n), scrrng=NULL,
                    thetaQnt    = thetaQnt,
                    Wdim        = Wdim, 
                    PcntMarkers = PcntMarkers,
-                   titlestr    = titlestr)
+                   titlestr    = titlestr,
+                   grbg        = grbg)
   
   return(dataList)
   
@@ -163,7 +163,7 @@ make.dataList <- function(U, key, optList, grbg=rep(0,n), scrrng=NULL,
 
 Wbinsmth.init <- function(percntrnk, nbin, WfdPar, grbg, optList, U) {
   
-  # Last modified 21 January 2022 by Jim Ramsay
+  # Last modified 19 December 2022 by Jim Ramsay
   
   #  This version of Wbinsmth() uses direct least squares smoothing of the
   #  surprisal values at bin centers to generate dependent variables for
@@ -171,10 +171,10 @@ Wbinsmth.init <- function(percntrnk, nbin, WfdPar, grbg, optList, U) {
   
   nitem <- ncol(U)
   chartList <- vector("list", nitem)
-  indfine  <- seq(0,100, len=101)
-  thetaQnt <- seq(0,100, len=2*nbin+1)  
-  bdry     <- thetaQnt[seq(1,2*nbin+1,by=2)]
-  aves     <- thetaQnt[seq(2,2*nbin,  by=2)]  
+  indfine   <- seq(0,100, len=101)
+  thetaQnt  <- seq(0,100, len=2*nbin+1)  
+  bdry      <- thetaQnt[seq(1,2*nbin+1,by=2)]
+  aves      <- thetaQnt[seq(2,2*nbin,  by=2)]  
   freq <- matrix(0,nbin,1)
   freq[1] <- sum(percntrnk < bdry[2])
   for (k in 2:nbin) {
@@ -207,13 +207,6 @@ Wbinsmth.init <- function(percntrnk, nbin, WfdPar, grbg, optList, U) {
       }
     } # end of bin loop
     
-    # if (item==1){
-    #   print("Pbin 1:")
-    #   print(Pbin)
-    #   print("Wbin 1")
-    #   print(Wbin)
-    # }
-    
     #  --------------------------------------------------------------------
     #  Step 3.2 Smooth the binned W values
     #  --------------------------------------------------------------------
@@ -228,44 +221,32 @@ Wbinsmth.init <- function(percntrnk, nbin, WfdPar, grbg, optList, U) {
     }
     SurprisalMax <- min(c(-log(1/(meanfreq*2))/logMi, maxWbin))
     
-    # if (item==1) print(paste("SurprisalMax",SurprisalMax))
-          
     #  process NA values in Wbin associated with zero probabilities
     
     for (m in 1:Mi) {
-      if (is.null(grbg[item]) || grbg[item] == 0) {
-        Wmis.na         <- is.na(Pbin[,m])
+      Wmis.na <- is.na(Pbin[,m])
+      if (!grbg[item] || (grbg[item] && m != Mi)) {
         Wbin[Wmis.na,m] <- SurprisalMax
       }  else {
-        if (m != grbg[item]) {
-          #  normal non-garbage choice, change NA values to SurprisalMax
-          Wmis.na         <- is.na(Pbin[,m])
-          Wbin[Wmis.na,m] <- SurprisalMax
+        #  garbage choices: compute sparse numeric values into 
+        #  linear approximations and NA values to SurprisalMax
+        indm    <- (1:nbin)[!Wmis.na]
+        indmlen <- length(indm)
+        nonindm <- (1:nbin)[Wmis.na]
+        if (indmlen > 3) {
+          WY <- Wbin[indm,m];
+          WX <- cbind(rep(1,indmlen), aves[indm])
+          BX <- lsfit(aves[indm], WY)$coefficients
+          Wbin[indm,m]    <- WX %*% BX
+          Wbin[nonindm,m] <- SurprisalMax
         } else {
-          #  garbage choices: compute sparse numeric values into 
-          #  linear approximationsand NA values to SurprisalMax
-          Wmis.na <- is.na(Pbin[,m])
-          indm <- (1:nbin)[!Wmis.na]
-          indmlen <- length(indm)
-          if (indmlen > 3) {
-            WY <- Wbin[indm,m];
-            WX <- cbind(rep(1,indmlen), aves[indm])
-            BX <- lsfit(aves[indm], WY)$coefficients
-            Wbin[indm,m] <- WX %*% BX
-            Wbin[Wmis.na,m] <- SurprisalMax
-          } else {
-            Wbin[Wmis.na,m] <- SurprisalMax
-          }
+          Wbin[nonindm,m] <- SurprisalMax
         }
       }
     }
     
-    # if (item==1) {
-    #   print("Second Wbin 1")
-    #   print(Wbin)
-    # }
-    
     #  generate a map into M-vectors with zero row sums
+    
     if (Mi == 2) {
       root2 <- sqrt(2)
       Zmati <- matrix(1/c(root2,-root2),2,1)

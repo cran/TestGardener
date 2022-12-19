@@ -31,12 +31,7 @@ load(Quantshort_key, file="data/Quantshort_key.rda")
 # Any value in U greater than number of legitimate options is treated as missing.
 
 noption <- rep(0,n)
-for (i in 1:n)
-{
-  noption[i]  <- length(unique(U[,i]))
-}
-
-grbg <- noption  # assumed that the last option is always a garbage option
+for (i in 1:n) noption[i]  <- length(unique(Quantshort_U[,i]))
 
 # summary count for each option
 
@@ -62,15 +57,11 @@ optList <- list(itemLab=NULL, optLab=NULL, optScr=ScoreList)
 
 # ----------------  Initialization Steps  ------------------------
 
-Quantshort_dataList <- make.dataList(U, key, optList, grbg, titlestr=titlestr)
-
-# Quantshort_dataList <- make.dataList(U, key, optList, grbg, scrrng, titlestr, 
-#                                 nbin, Wnbasis, jitterwrd=FALSE, 
-#                                 linearwrd=TRUE)
+Quantshort_dataList <- make.dataList(U, key, optList, titlestr=titlestr)
 
 #  save this list object in the data folder
 
-save(Quantshort_dataList, file="data/Quantshort_dataList.rda")  #  17 May 2022
+save(Quantshort_dataList, file="data/Quantshort_dataList.rda")  
 load(file="data/Quantshort_dataList.rda")
 
 #  plot the sum scores as a histogram 

@@ -28,8 +28,6 @@ for (i in 1:n)
   }
 }
 
-grbg <- noption  # assumed that the last option is always a garbage option
-
 # summary count for each option
 for (i in 1:n)
 {
@@ -42,17 +40,17 @@ for (i in 1:n)
 
 # --------- Define the option score values for each item ---------
 
-optList <- list() # option scores
+ScoreList <- list() # option scores
 for (item in 1:n){
   scorei <- c(0:4,0)
-  optList[[item]] <- scorei
+  ScoreList[[item]] <- scorei
 }
 
-optList <- list(itemLab=NULL, optLab=NULL, optScr=optList)
+optList <- list(itemLab=NULL, optLab=NULL, optScr=ScoreList)
 
 # ----------------  Initialization Steps  ------------------------
 
-SDS_dataList <- make.dataList(U, key, optList, grbg, titlestr=titlestr)
+SDS_dataList <- make.dataList(U, key, optList, titlestr=titlestr)
 
 #  save this list object in the data folder
 

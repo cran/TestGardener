@@ -107,12 +107,6 @@ for (i in 1:n)
 }
 ```
 
-These data encode missing or illegal choices for each item as choices for the last option, which is added on to the options coding legitimate choices.  We call this option the garbage option, , which is named grbg in the code.  Here we indicate which option this is.
-
-```{r}
-grbg <- noption 
-```
-
 Now we turn to code that sets up objects that are essential to the analysis but that the analyst may want to set up using code rather than inputting.  The first of these is a list vector of length `n` where each member contains a numeric vector of length `M` containing the designed scores assigned to each option.  For multiple choice tests, that is easily done using the following code:
 
 ```{r}
@@ -161,7 +155,7 @@ scrrng = c(0,37)
 We're now finished with the data input and setup phase.  From these objects we have a function `make_dataList` that completes the set up:
 
 ```{r}
-SDS_dataList <- TestGardener::make.dataList(U, key, optList, grbg, scrrng=scrrng)
+SDS_dataList <- TestGardener::make.dataList(U, key, optList, scrrng=scrrng)
 ```
 
 The result is a named list with many members whose values may be required in the analysis phase.  Consult the documentation using `help("make.dataList.R")`.

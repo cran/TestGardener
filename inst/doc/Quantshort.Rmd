@@ -1,7 +1,7 @@
 ---
 title: "Quantshort"
 author: "Juan Li and Jim Ramsay"
-date: "05/30/2022"
+date: "11/24/2022"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Quantshort}
@@ -118,12 +118,6 @@ All questions for these 24 questions in the test have four answers, but we will 
 noption <- rep(5,n)
 ```
 
-These data encode missing or illegal choices for each item as choices for the last option, which is added on to the options coding legitimate choices.  We call this option the garbage option, , which is named grbg in the code.  Here we indicate which option this is.
-
-```{r}
-grbg <- noption 
-```
-
 The data have two integers for missing or illegitimate items:  8 and 9.  We change these to the garbage category 5.
 
 ```{r}
@@ -156,7 +150,7 @@ optList <- list(itemLab=NULL, optLab=NULL, optScr=ScoreList)
 We're now finished with the data input and setup phase.  From these objects we have a function `make_dataList` that completes the set up:
 
 ```{r}
-Math_dataList <- TestGardener::make.dataList(U, key, optList, grbg)
+Math_dataList <- TestGardener::make.dataList(U, key, optList)
 names(Math_dataList)
 ```
 
@@ -466,7 +460,7 @@ Result <- TestGardener::Wpca.plot(arclength, WfdList, Math_dataList$Wdim, titles
 
 The change in direction of this curve between the 25% and 50% marker points indicates that the information acquired initially is qualitatively different than that mastered at the upper end of the curve.  This seems obvious, since math moves from the concrete to the abstract over a secondary school program.
 
-##Investigate the status of score index estimate by plotting H(theta) and its derivatives
+##  Investigate the status of score index estimate by plotting H(theta) and its derivatives
 
 An optimal fitting criterion for modelling test data should have these features:  (1) at the optimum value of theta fit values at neighbouring values should be larger than the optimum; (2)  the first derivative of the fitting criterion should be zero or very nearly so, and (3)  the second derivative should have a positive value.
 
