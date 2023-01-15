@@ -1,4 +1,4 @@
-Wpca.plot <- function(arclength, WfdList, Wdim, nharm=2, rotate=TRUE, 
+Wpca.plot <- function(arclength, WfdList, Wdim=NULL, nharm=2, rotate=TRUE, 
                        dodge = 1.003, titlestr=NULL, Display=TRUE) {
   
   #  Last modified 7 October 2022 by Jim Ramsay
@@ -8,12 +8,19 @@ Wpca.plot <- function(arclength, WfdList, Wdim, nharm=2, rotate=TRUE,
   nfine   <- 101
   indfine <- seq(0,arclength,len=nfine)
   
-  n <- length(WfdList)
+  if (is.null(Wdim)) {
+    Wdim <- 0
+    for (i in 1:length(WfdList)) {
+      WfdListi <- WfdList[[i]]
+      Wdim <- Wdim + WfdListi$M
+    }
+  }
   
   Pmat_full  <- matrix(0,nfine, Wdim)
   Wmat_full  <- matrix(0,nfine, Wdim)
   DWmat_full <- matrix(0,nfine, Wdim)
   
+  n <- length(WfdList)
   m2 <- 0
   for (i in 1:n) {
     WListi <- WfdList[[i]]
@@ -28,13 +35,10 @@ Wpca.plot <- function(arclength, WfdList, Wdim, nharm=2, rotate=TRUE,
   
   #  set up basis for (smoothing over arclength
   
-  Wnbasis <- 24
-  Wnorder <-  5
+  Wnbasis <- 7
+  Wnorder <- 4
   Wbasis  <- fda::create.bspline.basis(c(0,arclength), Wnbasis, Wnorder) 
-  Wlambda <- 1e4   #  smoothing parameter
-  Wnderiv <- 3  
-  Wpenmat <- fda::eval.penalty(Wbasis, Wnderiv)
-  WfdPar  <- fda::fdPar(Wbasis, Wnderiv, Wlambda, TRUE, Wpenmat)
+  WfdPar  <- fda::fdPar(fd(matrix(0,Wnbasis,1),Wbasis))
   
   #  prepare surprisal curves
   #  fine mesh of points along manifold of length arclength
@@ -52,13 +56,13 @@ Wpca.plot <- function(arclength, WfdList, Wdim, nharm=2, rotate=TRUE,
   
   #  carry out a varimax rotation
   
-  if (rotate) {
+  if (!rotate) {
     varmxList    <- pcaList
     harmvarmxfd  <- harmfd
     varpropvarmx <- varprop
   } else {
-    varmxList  <- varmx.pca.fd(pcaList)
-    harmvarmxfd  <- varmxList$harmfd
+    varmxList    <- varmx.pca.fd(pcaList)
+    harmvarmxfd  <- varmxList$harmonics
     varpropvarmx <- varmxList$varprop
   }
   
@@ -99,17 +103,18 @@ Wpca.plot <- function(arclength, WfdList, Wdim, nharm=2, rotate=TRUE,
       
     } else {
       rgl::open3d()
-      rgl::points3d( harmmat[,1],        harmmat[,2],  harmmat[,3], col = rainbow(1000), size=5) 
-      rgl::points3d(Qvec_pts[,1],       Qvec_pts[,2], Qvec_pts[,3], color="black", size=8)
-      rgl::texts3d( Qvec_pts[,1]*dodge, Qvec_pts[,2], Qvec_pts[,3], texts = Qlabel)
-      rgl::axes3d()
+      rgl::points3d( harmmat[,1],        harmmat[,2],  -harmmat[,3], color = "black", size=5) 
+      rgl::points3d(Qvec_pts[,1],       Qvec_pts[,2], -Qvec_pts[,3], color = "black", size=8)
+      rgl::texts3d( Qvec_pts[,1]*dodge, Qvec_pts[,2], -Qvec_pts[,3], texts = Qlabel)
+      rgl::axes3d(expand=5, nticks=3)
       rgl::aspect3d(1,1,1)
-      rgl::title3d(xlab="Rotated Component 1",ylab="Rotated Component 2",zlab="Rotated Component 3")
+      rgl::title3d(xlab="I", ylab="II", zlab="III")
       pcaplt <- NULL
     }
   }
     
-    return(list(pcaplt=pcaplt, harmvarmxfd=harmvarmxfd, varpropvarmx=varpropvarmx))
+  return(list(pcaplt=pcaplt, harmvarmxfd=harmvarmxfd, varpropvarmx=varpropvarmx,
+              harmmat=harmmat,Qvec_pts=Qvec_pts, Qvec_al=Qvec_al))
     
   }
   

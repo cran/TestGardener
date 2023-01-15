@@ -2,7 +2,7 @@ Wbinsmth <- function(theta, dataList, WfdList=dataList$WfdList,
                      thetaQnt=seq(0,100, len=2*nbin+1), wtvec=matrix(1,n,1),
                      iterlim=20, conv=1e-4, dbglev=0) {
   
-  # Last modified 19 December 2022 by Jim Ramsay
+  # Last modified 3 January 2023 by Jim Ramsay
 
   #  -----------------------------------------------------------------------------
   #  Step 1.       Set up  objects required for subsequent steps
@@ -23,7 +23,6 @@ Wbinsmth <- function(theta, dataList, WfdList=dataList$WfdList,
   U       <- dataList$U
   noption <- dataList$noption
   grbg    <- dataList$grbg
-  key     <- dataList$key
 
   #  check objects from dataList
   
@@ -81,7 +80,6 @@ Wbinsmth <- function(theta, dataList, WfdList=dataList$WfdList,
     #  set some variable values for this item
     Mi    <- noption[item]
     logMi <- log(Mi)
-    keyi  <- key[[item]]
     #  extract active cases for (this item and corresponding theta value
     Uveci     <- as.numeric(U[,item])
     #  bin frequencies (bin number nbin + 1 is the upper boundary)
@@ -207,13 +205,13 @@ Wbinsmth <- function(theta, dataList, WfdList=dataList$WfdList,
     WStdErr <- sqrt(WErrVar)        
     
     #  --------------------------------------------------------------------
-    #  Step 6 assemble struct object WStr that containins results
-    #  of step 4 for this single item.  WfdCell[item} <- WStr
+    #  Step 6 assemble list vector WList that contains results
+    #  of step 4 for this single item.  WfdList[[item]] <- WListi
     #  --------------------------------------------------------------------
     
     WListi  <- list(
-      Wfd        = Wfdi,       #  functional data object for (options
-      M          = Mi,         #  the number of options
+      Wfd        = Wfdi,       # functional data object 
+      M          = Mi,         # the number of options
       Pbin       = Pbin,       # proportions at each bin
       Wbin       = Wbin,       # negative surprisals at each bin
       indfine    = indfine,    # 101 equally spaced plotting points

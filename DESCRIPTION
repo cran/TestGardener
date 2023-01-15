@@ -1,6 +1,6 @@
 Package: TestGardener
-Version: 3.1.1
-Date: 2022-12-19
+Version: 3.1.4
+Date: 2023-01-02
 Type: Package
 Title: Optimal Analysis of Test and Rating Scale Data
 Authors@R: c(person("James", "Ramsay", 
@@ -39,11 +39,11 @@ VignetteBuilder: knitr
 BuildVignettes: yes
 Language: en-US
 NeedsCompilation: no
-Packaged: 2022-12-19 19:25:06 UTC; jimramsay
+Packaged: 2023-01-15 17:23:04 UTC; jimramsay
 Author: James Ramsay [aut, cre],
   Juan Li [ctb],
   Marie Wiberg [ctb],
   Joakim Wallmark [ctb],
   Spencer Graves [ctb]
 Repository: CRAN
-Date/Publication: 2022-12-19 20:50:02 UTC
+Date/Publication: 2023-01-15 19:00:02 UTC

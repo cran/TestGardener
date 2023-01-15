@@ -60,20 +60,15 @@ Sensitivity.plot <- function(scrfine, WfdList, Qvec, dataList, plotindex=1:n,
       n1<-readline(prompt=
                      paste("Press [N/n/enter] to next item;",
                            "[P/p] to previous item; or item index to that item: "))
-      if (n1 == "N" | n1 == "n" | n1 == "")
-      {
+      if (n1 == "N" | n1 == "n" | n1 == "") {
         i = i + 1
-      } else if (n1 == "P" | n1 == "p")
-      {
+      } else if (n1 == "P" | n1 == "p") {
         i = i - 1
-      } else
-      {
+      } else {
         n1 <- suppressWarnings(as.integer(n1))
-        if (!is.na(n1) & (n1 >= plotindex[1] & n1 <= plotindex[length(plotindex)]))
-        {
+        if (!is.na(n1) & (n1 >= plotindex[1] & n1 <= plotindex[length(plotindex)])) {
           i <- n1
-        } else
-        {
+        } else {
           break
         }
       }

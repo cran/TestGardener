@@ -1,7 +1,7 @@
 ---
 title: "Quantshort"
 author: "Juan Li and Jim Ramsay"
-date: "11/24/2022"
+date: "12/19/2022"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Quantshort}

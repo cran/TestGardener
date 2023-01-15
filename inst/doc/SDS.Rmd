@@ -1,7 +1,7 @@
 ---
 title: "Symptom Distress Analysis"
 author: "Juan Li and Jim Ramsay"
-date: "05/07/2022"
+date: "12/19/2022"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Symptom Distress Analysis}
