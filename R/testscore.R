@@ -1,7 +1,7 @@
 testscore <- function(theta, WfdList, optList){
   #  compute expected score mu
   
-  # Last modified 7 June 2022 by Jim Ramsay
+  # Last modified 24 April 2023 by Jim Ramsay
   
   N  <- length(theta)
   n  <- length(WfdList)
@@ -13,7 +13,7 @@ testscore <- function(theta, WfdList, optList){
     if (Mi == 1){
       stop("Mi = 1.  Binary data should use Mi = 2.")
     } else {
-      Smati <- fda::eval.surp(theta, Sfdi)
+      Smati <- eval_surp(theta, Sfdi)
       Pmati <- exp(-Smati*log(Mi))
       scri  <- matrix(optList$optScr[[item]], N, Mi, byrow=TRUE)
       mu    <- mu + apply(scri*Pmati,1,sum)

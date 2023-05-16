@@ -1,6 +1,6 @@
 Package: TestGardener
-Version: 3.1.4
-Date: 2023-01-02
+Version: 3.2.3
+Date: 2023-05-15
 Type: Package
 Title: Optimal Analysis of Test and Rating Scale Data
 Authors@R: c(person("James", "Ramsay", 
@@ -34,16 +34,16 @@ Description: Develop, evaluate, and score multiple choice examinations,
  Most of the output is in graphical form. 
 License: GPL (>= 2)
 LazyData: true
-Imports: dplyr, ggpubr, stringr, tidyr, pracma, utf8, knitr, rmarkdown
+Imports: dplyr, ggpubr, stringr, tidyr, pracma, utf8, knitr, rmarkdown,
+        plotly
 VignetteBuilder: knitr
-BuildVignettes: yes
-Language: en-US
 NeedsCompilation: no
-Packaged: 2023-01-15 17:23:04 UTC; jimramsay
+Language: en-US
+Packaged: 2023-05-16 14:29:08 UTC; jimramsay
 Author: James Ramsay [aut, cre],
   Juan Li [ctb],
   Marie Wiberg [ctb],
   Joakim Wallmark [ctb],
   Spencer Graves [ctb]
 Repository: CRAN
-Date/Publication: 2023-01-15 19:00:02 UTC
+Date/Publication: 2023-05-16 14:50:06 UTC

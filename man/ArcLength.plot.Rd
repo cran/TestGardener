@@ -36,22 +36,27 @@ http://testgardener.azurewebsites.net
   \code{\link{theta2arclen}}
 }
 \examples{
+#
 #  Example 1.  Display the arc length curve for the 
-#  short SweSAT multiple choice test with 24 items and 1000 examinees
+#  SweSAT multiple choice test with 24 items and 1000 
+#.  examinees
+#
 indfine       <- seq(0,100,len=101)
-WfdList       <- Quantshort_parList$WfdList
-theta         <- Quantshort_parList$theta
-Qvec          <- Quantshort_parList$Qvec
-binctr        <- Quantshort_parList$binctr
-arclenList    <- theta2arclen(theta, Qvec, WfdList, binctr)
+WfdList       <- Quant_13B_problem_parList$WfdList
+theta         <- Quant_13B_problem_parList$theta
+Qvec          <- Quant_13B_problem_parList$Qvec
+binctr        <- Quant_13B_problem_parList$binctr
+arclenList    <- theta2arclen(theta, Qvec, WfdList, binctr, shortwrd=TRUE)
 names(arclenList)
 arclength    <- arclenList$arclength
 arclengthvec <- arclenList$arclengthvec
 oldpar <- par(no.readonly=TRUE)
 on.exit(oldpar)
 ArcLength.plot(arclength, arclengthvec)
+#
 #  Example 2.  Display the arc length curve for the 
 #  Symptom Distress Scale with 13 items and 473 respondents
+#
 indfine       <- seq(0,100,len=101)
 WfdList       <- SDS_parList$WfdList
 theta         <- SDS_parList$theta

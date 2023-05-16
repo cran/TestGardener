@@ -3,15 +3,20 @@
 \title{Plot probability and surprisal curves for a selection of test or scale 
        items.}
 \usage{
-  ICC.plot(scrfine, WfdList, dataList, Qvec, binctr, plotType = "P", 
-           plotindex=1:n, plotrange=c(min(scrfine),max(scrfine)), 
-           shaderange = NULL, Wrng=c(0,5), DWrng=c(-0.2, 0.2), 
-           data_point = FALSE, ci = FALSE, 
-           titlestr = NULL, autoplot = FALSE, ttlsz = NULL, 
-           axisttl = NULL, axistxt = NULL, lgdlab = NULL)
+  ICC.plot(scrfine, WfdList, dataList, Qvec, 
+           binctr = NULL, data_point = FALSE, ci = FALSE, 
+           plotType = "P", 
+           Wrng=c(0,5), DWrng=c(-0.2, 0.2),
+           plotindex=1:n, 
+           titlestr = NULL, plotTitle = TRUE, xlab = "Score Index", ylab = "Probability",
+           autoplot = FALSE,
+           plotMissing = TRUE, 
+           plotrange=c(min(scrfine),max(scrfine)), shaderange = NULL,  
+           ttlsz = NULL, axisttl = NULL, axistxt = NULL, 
+           lgdlab = NULL, lgdpos = "bottom")
 }
 \description{
-ICC.plots plots each item in argument \code{plotindex} in turn after 
+ICC.plot plots each item in argument \code{plotindex} in turn after 
 function\code{Wbinsmth()} has used spline smoothing to estimate item and 
 option characteristic curves.
 }
@@ -87,26 +92,31 @@ option characteristic curves.
   \code{Wbinsth.plot} by the command
   \code{binctr_al = pracma::interp1(indfine, alfine, binctr)}, and
     argument \code{binctr} is replaced by \code{binctr_al}.}
+  \item{data_point}{A logical value indicating whether to plot the data points.}
+  \item{ci}{A logical value indicating whether to plot the confidence limits.}
   \item{plotType}{Type(s) of plot, default as "P" for probability, 
     can also be "W" for surprisal, 
     "DW" for sensitivity, and any combination of the three}
-  \item{plotindex}{A vector of indices of items to be plotted.}
-  \item{plotrange}{A vector of length 2 containing the plot boundaries of
-  	 the score index interval.}
-  \item{shaderange}{a list of length 2 vector(s); set if users want to gray 
-    out specific score range(s)}      
   \item{Wrng}{A vector of length 2 specifing the plotting range for surprisal 
     values.}
   \item{DWrng}{A vector of length 2 specifing the plotting range for 
     sensitivity values.}
+  \item{plotindex}{A vector of indices of items to be plotted.}
   \item{titlestr}{plot title}
-  \item{autoplot}{in Vignette, plot all items in a batch}
-  \item{data_point}{A logical value indicating whether to plot the data points.}
-  \item{ci}{A logical value indicating whether to plot the confidence limits.}
+  \item{plotTitle}{indicator of showing the plot title, default as TRUE}
+  \item{xlab}{title of x-axis, default as "Score Index"}
+  \item{ylab}{title of y-axis, default as "Probability", Note: should work with plotType to define ylab for each subplot}
+  \item{autoplot}{indicator for plotting all items in a batch}
+  \item{plotMissing}{Determine if plot the extra option for missing/spoiled responses.}
+  \item{plotrange}{A vector of length 2 containing the plot boundaries of
+  	 the score index interval.}
+  \item{shaderange}{a list of length 2 vector(s); set if users want to gray 
+    out specific score range(s)}      
   \item{ttlsz}{Title font size.}
   \item{axisttl}{Axis title font size.}
   \item{axistxt}{Axis text(tick label) font size.}
   \item{lgdlab}{Legend label font size.}
+  \item{lgdpos}{legend position, could be set as "None" to remove the legend.}
 }
 \value{
   A list vector is returned which is of the length of argument \code{plotindex}.  
@@ -135,14 +145,15 @@ option characteristic curves.
 \examples{
 #  Example 1.  Display the item surprisal curves for the 
 #  short SweSAT multiple choice test with 24 items and 1000 examinees
-WfdList  <- Quantshort_parList$WfdList
-Qvec     <- Quantshort_parList$Qvec
-binctr   <- Quantshort_parList$binctr
+WfdList  <- Quant_13B_problem_parList$WfdList
+Qvec     <- Quant_13B_problem_parList$Qvec
+binctr   <- Quant_13B_problem_parList$binctr
 titlestr <- NULL
 #  plot the curves for the first question
 scrfine <- seq(0,100,len=101)
 oldpar <- par(no.readonly=TRUE)
-ICC.plot(scrfine, WfdList, Quantshort_dataList, Qvec, binctr, plotindex=1:2)
+ICC.plot(scrfine, WfdList, Quant_13B_problem_dataList, Qvec, binctr, 
+         plotindex=1:2)
 par(oldpar)
 #  Example 2.  Display the item proability and surprisal curves for the 
 # Symptom Distress Scale with 13 items and 473 respondents.

@@ -18,7 +18,7 @@ density_plot <- function(scrvec, scrrng, Qvec, xlabstr=NULL, titlestr=NULL,
   #               the smooth density function.
   #  NFINE    ... The number of plotting points.
   
-  #  Last modified 18 May 2022 by Jim Ramsay
+  #  Last modified 9 February 2023 by Jim Ramsay
   
   #  set default values
   #  get the score values not on the boundaries
@@ -27,7 +27,7 @@ density_plot <- function(scrvec, scrrng, Qvec, xlabstr=NULL, titlestr=NULL,
   #  set up the basis object for the spline function representing
   #  the density function
   logdensbasis <- create.bspline.basis(scrrng, scrnbasis)    
-  #  compute the values of the density function at a 
+  #  compute the values of the density function
   densResults  <- theta.distn(scrdens, logdensbasis)
   logdensfd    <- densResults$logdensfd
   C            <- densResults$C

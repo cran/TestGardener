@@ -72,20 +72,20 @@ http://testgardener.azurewebsites.net
 #  Example 1.  Display the test information curve for the 
 #  short SweSAT multiple choice test with 24 items and 1000 examinees
 #  plot a two-dimension version of manifold curve
-WfdList    <- Quantshort_parList$WfdList
-theta      <- Quantshort_parList$theta
-arclength  <- Quantshort_parList$arclength 
+WfdList    <- Quant_13B_problem_parList$WfdList
+theta      <- Quant_13B_problem_parList$theta
+arclength  <- Quant_13B_problem_parList$arclength 
 oldpar <- par(no.readonly=TRUE)
 on.exit(oldpar)
-Wpca.plotResults <- Wpca.plot(arclength, WfdList, Quantshort_dataList$Wdim)
+Wpca.plotResults <- Wpca.plot(arclength, WfdList, Quant_13B_problem_dataList$Wdim)
 varprop <- Wpca.plotResults$varpropvarmx
 print("Proportions of variance accounted for and their sum:")
 print(round(c(varprop,sum(varprop)),3))
 #  plot a three-dimension version of manifold curve
-WfdList    <- Quantshort_parList$WfdList
-theta      <- Quantshort_parList$theta
-arclength  <- Quantshort_parList$arclength 
-Wpca.plotResults <- Wpca.plot(arclength, WfdList, Quantshort_dataList$Wdim, nharm=3)
+WfdList    <- Quant_13B_problem_parList$WfdList
+theta      <- Quant_13B_problem_parList$theta
+arclength  <- Quant_13B_problem_parList$arclength 
+Wpca.plotResults <- Wpca.plot(arclength, WfdList, Quant_13B_problem_dataList$Wdim, nharm=3)
 varprop <- Wpca.plotResults$varpropvarmx
 print("Proportions of variance accounted for and their sum:")
 print(round(c(varprop,sum(varprop)),3))

@@ -55,9 +55,9 @@ http://testgardener.azurewebsites.net
 #  Example 1:  Compute the values of the objective function for locating each  
 #  examinee or respondent for the 24-item short form of the SweSAT quantitative  
 # test on the percentile score index continuum [0,100].
-WfdList <- Quantshort_parList$WfdList
-theta   <- Quantshort_parList$theta
-U       <- Quantshort_dataList$U
+WfdList <- Quant_13B_problem_parList$WfdList
+theta   <- Quant_13B_problem_parList$theta
+U       <- Quant_13B_problem_dataList$U
 Hval    <- Hfun(theta, WfdList, U)
 print(paste("Mean               of objective function =",round(mean(Hval),2)))
 print(paste("Standard deviation of objective function =",round(sqrt(var(Hval)),2)))

@@ -6,13 +6,15 @@ library(TestGardener)
 # ----------- read in data ----------- 
 
 titlestr  <- "Symptom Distress Scale"
-U         <- scan("data/SDS.txt", "o") # used from TestGardener/R
-U         <- matrix(U,473,2,byrow=TRUE)
-U         <- U[,2]
-N         <- length(U) # Number of examinees
-Umat      <- as.integer(unlist(stringr::str_split(U,"")))
-n         <- length(Umat)/N # Number of items
-U         <- matrix(Umat,N,n,byrow=TRUE)
+
+U         <- scan("SDS_U.txt", "o") # used from TestGardener/R
+U         <- matrix(U,473,13,byrow=TRUE)
+
+# U         <- U[,2]
+# N         <- length(U) # Number of examinees
+# Umat      <- as.integer(unlist(stringr::str_split(U,"")))
+# n         <- length(Umat)/N # Number of items
+# U         <- matrix(Umat,N,n,byrow=TRUE)
 
 key     <- NULL
 

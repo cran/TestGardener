@@ -3,7 +3,7 @@ theta.distn <- function(thetadens, logdensbasis,
   #  Compute cumulative density functions and probability density functions
   #  for the values in THETADENS using the basis object LOGDENSBASIS.
 
-  # Last modified 13 December 2022 by Jim Ramsay
+  # Last modified 7 March 2023 by Jim Ramsay
   
   #  check logdensfd
   
@@ -34,8 +34,7 @@ theta.distn <- function(thetadens, logdensbasis,
   #  over a fine mesh of score values
 
   pdffine  <- exp(fda::eval.fd(indfine,logdensfd))/C
-  delta    <- indfine[2] - indfine[1]
-  cdffine  <- delta*pracma::cumtrapz(pdffine)
+  cdffine  <- pracma::cumtrapz(indfine, pdffine)
   cdffine[cdffine < 0] <- 0
   cdffine[cdffine > 1] <- 1
   cdffine[1]     <- 0
@@ -54,20 +53,20 @@ theta.distn <- function(thetadens, logdensbasis,
   WfdPar  <- fdPar(Wfd)
   
   thetasort <- sort(thetadens[thetadens > indrng[1] & thetadens < indrng[2]])
-  N         <- length(thetasort)
-  prbvec    <- (1:N)/(N+1)
+  Nsort     <- length(thetasort)
+  prbvec    <- (1:Nsort)/(Nsort+1)
   
-  result    <- smooth.morph(thetasort, prbvec, c(0,1), WfdPar)
-  ysmth     <- result$ysmth 
-  thetafine <- c(indrng[1], thetasort, indrng[2])
-  yfine     <- c(0, ysmth, 1   )
+  # result    <- smooth.morph(thetasort, prbvec, c(0,1), WfdPar)
+  # ysmth     <- result$ysmth 
+  # thetafine <- c(indrng[1], thetasort, indrng[2])
+  # yfine     <- c(0, ysmth, 1   )
   
   denscdf   <- unique(cdffine)
-  indfine   <- seq(0,100,len=length(denscdf))
+  indcdf    <- seq(indrng[1],indrng[2],len=length(denscdf))
   
   # return results
   
   return(list(pdf_fd=pdf_fd, cdffine=cdffine, pdffine=pdffine, 
-              logdensfd=logdensfd, C=C))
+              logdensfd=logdensfd, C=C, indcdf=indcdf, denscdf=denscdf))
 
 }

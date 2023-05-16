@@ -54,9 +54,9 @@ http://testgardener.azurewebsites.net
 \examples{
 #  Example 1.  Compute expected sum score values for the 
 #  short SweSAT multiple choice test with 24 items and 1000 examinees
-WfdList <- Quantshort_parList$WfdList
-theta   <- Quantshort_parList$theta
-mu      <- testscore(theta, WfdList, Quantshort_dataList$optList)
+WfdList <- Quant_13B_problem_parList$WfdList
+theta   <- Quant_13B_problem_parList$theta
+mu      <- testscore(theta, WfdList, Quant_13B_problem_dataList$optList)
 par(c(1,1))
 hist(mu,11)
 #  Example 2.  Compute expected sum score values for the 

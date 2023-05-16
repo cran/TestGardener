@@ -1,11 +1,11 @@
 Wbinsmth.plot <- function(scrfine, plotindex=1:n, 
                           binctr, Qvec, dataList, WfdList, 
                           plotrange=c(min(scrfine),max(scrfine)), 
-                          twoplot=TRUE, ptsplot=TRUE, alltype=TRUE, landscape=FALSE,  
-                          Wrng=c(0,5), cnfplot=FALSE, ttlsz=NULL, 
-                          axisttl=NULL, axistxt=NULL, lgdlab=NULL) {
+                          twoplot=TRUE, ptsplot=TRUE, alltype=TRUE, 
+                          landscape=FALSE, Wrng=c(0,5), cnfplot=FALSE,  
+                          ttlsz=NULL,axisttl=NULL, axistxt=NULL, lgdlab=NULL) {
   
-  # Last modified 7 June 2022 by Jim Ramsay
+  # Last modified 5 April 2023 by Jim Ramsay
   
   n <- length(WfdList)
   if (is.null(plotindex)) plotindex <- 1:n

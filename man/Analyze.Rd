@@ -12,7 +12,8 @@
    length of the \code{parList} list vector.
 }
 \usage{
-  Analyze(theta, thetaQnt, dataList, ncycle=10, itdisp=FALSE, verbose=FALSE) 
+  Analyze(theta, thetaQnt, dataList, ncycle=10, itdisp=FALSE, 
+  verbose=FALSE) 
 }
 \arguments{
   \item{theta}{A vector of \code{N} score index values for the examinees or respondents.

@@ -1,7 +1,7 @@
 Analyze <- function(theta, thetaQnt, dataList, ncycle=10, itdisp=FALSE, 
                     verbose=FALSE) {
   
-  # Last modified 21 June 2022 by Jim Ramsay
+  # Last modified 21 February 2023 by Jim Ramsay
 
   #  set up list vector to contain all results for each cycle
   
@@ -9,7 +9,7 @@ Analyze <- function(theta, thetaQnt, dataList, ncycle=10, itdisp=FALSE,
   
   #  define the spline basis for representing the log density function
   
-  logdensbasis <- create.bspline.basis(c(0,100), 15)
+  logdensbasis <- fda::create.bspline.basis(c(0,100), 15)
   
   #  initialize surprisal curves and compute size of overspace
   
@@ -31,7 +31,8 @@ Analyze <- function(theta, thetaQnt, dataList, ncycle=10, itdisp=FALSE,
   
   for (icycle in 1:ncycle) {
     
-    if (verbose) print(paste('----------  Cycle ',icycle,'-----------'))
+    #  if (verbose) print(paste('----------  Cycle ',icycle,'-----------'))
+    print(paste('----------  Cycle ',icycle,'-----------'))
     
     #  ----------------------------------------------------------
     #  Step 1:  Bin the data, and smooth the binned data
@@ -76,19 +77,17 @@ Analyze <- function(theta, thetaQnt, dataList, ncycle=10, itdisp=FALSE,
     
     thetadens <- theta[0 < theta & theta < 100]
     theta.distnList <- theta.distn(thetadens, logdensbasis)
-    
     pdf_fd    <- theta.distnList$pdf_fd
     logdensfd <- theta.distnList$logdensfd
     cdffine   <- theta.distnList$cdffine
     C         <- theta.distnList$C
-    denscdf   <- as.numeric(cdffine)
-    denscdf   <- unique(denscdf)
-    indfine   <- seq(0,100,len=length(denscdf))
+    denscdf   <- theta.distnList$denscdf
+    indcdf    <- theta.distnList$indcdf
     markers   <- dataList$PcntMarkers/100
-    Qvec      <- pracma::interp1(denscdf, indfine, markers)
+    Qvec      <- pracma::interp1(as.numeric(denscdf), as.numeric(indcdf), markers)
     nbin      <- dataList$nbin
     bdry      <- seq(0,2*nbin,1)/(2*nbin)
-    thetaQnt  <- pracma::interp1(denscdf, indfine, bdry)
+    thetaQnt  <- pracma::interp1(as.numeric(denscdf), as.numeric(indcdf), bdry)
     
     #  ----------------------------------------------------------
     #  Step 5.  Compute arc length and its measures
@@ -103,15 +102,25 @@ Analyze <- function(theta, thetaQnt, dataList, ncycle=10, itdisp=FALSE,
       m2 = m2 + Mi
       DWfine[,m1:m2] = WListi$DWmatfine
     }
-    arclength = max(pracma::cumtrapz(sqrt(apply(DWfine^2,1,sum))))
+    indfine <- seq(0,100,len=101)
+    arclength = max(pracma::cumtrapz(indfine, sqrt(apply(DWfine^2,1,sum))))
     
     if (verbose)  print(paste('arclength in bits = ',round(arclength,1)))
     
     #  ----------------------------------------------------------
-    #  Step 6:  set up ParameterCell arrays
+    #  Step 6:  Check for mis-identications of minimum theta 
     #  ----------------------------------------------------------
-    # print("step 6")
     
+    Result <- thetasearch(WfdList, dataList$U, theta, Hval, DHval, D2Hval)
+    theta  <- Result$theta
+    Hval   <- Result$Hval
+    DHval  <- Result$DHval
+    D2Hval <- Result$D2Hval
+    
+    #  ----------------------------------------------------------
+    #  Step 7:  set up ParameterCell arrays
+    #  ----------------------------------------------------------
+
     parListi <- list(
       theta      = theta,
       thetaQnt   = thetaQnt,
@@ -123,6 +132,8 @@ Analyze <- function(theta, thetaQnt, dataList, ncycle=10, itdisp=FALSE,
       pdf_fd     = pdf_fd,
       logdensfd  = logdensfd,
       C          = C,
+      denscdf    = denscdf,
+      indcdf     = indcdf,
       Qvec       = Qvec,
       Hval       = Hval,
       DHval      = DHval,

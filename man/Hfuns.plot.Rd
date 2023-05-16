@@ -10,9 +10,10 @@ zero there, and the second derivative should be positive.  If these conditions a
 met, it may be worthwhile to use function \code{thetafun} initialized with an approximate  
 minimum value of score index theta to re-estimate the value of theta.}
 \usage{
-  Hfuns.plot(theta, WfdList, U, plotindex=1)
+  Hfuns.plot(evalarg, theta, WfdList, U, plotindex=1)
 }
 \arguments{
+  \item{evalarg}{A vector containingg the sore index values to be evaluated.}
   \item{theta}{The entire vector of estimated values of theta.}
   \item{WfdList}{The list vector of length \code{n} containing the 
     estimated surprisal curves.}
@@ -51,14 +52,15 @@ http://testgardener.azurewebsites.net
 #  Example 1.  Display fit criterion values and derivatives for the 
 #  short SweSAT multiple choice test with 24 items and 1000 examinees
 index <- 1
-theta    <- Quantshort_parList$theta
-WfdList  <- Quantshort_parList$WfdList
-U        <- Quantshort_dataList$U
+theta    <- Quant_13B_problem_parList$theta
+WfdList  <- Quant_13B_problem_parList$WfdList
+U        <- Quant_13B_problem_dataList$U
 Hval     <-  Hfun(theta[index], WfdList, U[index,])
 DHResult <- DHfun(theta[index], WfdList, U[index,])
 DHval    <- DHResult$DH
 D2Hval   <- DHResult$D2H
-Hfuns.plot(theta, WfdList, U, plotindex=index)
+evalarg  <- seq(0,100,len=101)
+Hfuns.plot(evalarg, theta, WfdList, U, plotindex=index)
 #  Example 2.  Compute score index values theta for the 
 #  Symptom Distress Scale with 13 items and 473 respondents
 #  Proceed as above changing "Quant" to "SDS".

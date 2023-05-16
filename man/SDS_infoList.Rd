@@ -11,7 +11,7 @@
   The analysis results are 10 cycles of alternating between estimating 
   surprisal curves and estimating percentile score index values.
   
-  The objects in list object \code{Quantshort_infoList} are required for plotting
+  The objects in list object \code{SDS_infoList} are required for plotting
   results over the arc length or information domain rather the score index domain.
   This domain is preferred because such plots are invariant with respect to changes 
   in the score index domain. It also has a metric structure so that differences 
@@ -20,7 +20,7 @@
 \usage{SDS_infoList}
 \format{A named list containing eight objects.}
 \value{
-  The object \code{Quantshort_parList} is a named list with these members:
+  The object \code{SDS_parList} is a named list with these members:
   \describe{
     \item{arclength:}{The total length of the information domain measured in 
     	M-bits, where \code{M } is the number of options for a question.}

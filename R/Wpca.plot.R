@@ -1,12 +1,14 @@
 Wpca.plot <- function(arclength, WfdList, Wdim=NULL, nharm=2, rotate=TRUE, 
                        dodge = 1.003, titlestr=NULL, Display=TRUE) {
   
-  #  Last modified 7 October 2022 by Jim Ramsay
+  #  Last modified 24 April 2023 by Jim Ramsay
   
   #  set up matrices of fine mesh values
   
   nfine   <- 101
   indfine <- seq(0,arclength,len=nfine)
+  
+  #  set up the dimension of the over-space containing the test info curve
   
   if (is.null(Wdim)) {
     Wdim <- 0
@@ -15,6 +17,10 @@ Wpca.plot <- function(arclength, WfdList, Wdim=NULL, nharm=2, rotate=TRUE,
       Wdim <- Wdim + WfdListi$M
     }
   }
+  
+  #  compute grid indfine the probability and surprisal values,
+  #  and the first derivative of the surprisal values for the total 
+  #  of the curves
   
   Pmat_full  <- matrix(0,nfine, Wdim)
   Wmat_full  <- matrix(0,nfine, Wdim)
@@ -28,33 +34,43 @@ Wpca.plot <- function(arclength, WfdList, Wdim=NULL, nharm=2, rotate=TRUE,
     Mi     <- WListi$M
     m1 <- m2 +  1
     m2 <- m2 + Mi
-    Wmat_full[,m1:m2]  <- eval.surp(indfine,Wfdi)
-    DWmat_full[,m1:m2] <- eval.surp(indfine,Wfdi,1)
+    Wmat_full[,m1:m2]  <- eval_surp(indfine,Wfdi)
+    DWmat_full[,m1:m2] <- eval_surp(indfine,Wfdi,1)
     Pmat_full[,m1:m2]  <- Mi^(Wmat_full[,m1:m2])
   }
   
-  #  set up basis for (smoothing over arclength
+  #  set up basis for (smoothing over arclength)
   
   Wnbasis <- 7
   Wnorder <- 4
   Wbasis  <- fda::create.bspline.basis(c(0,arclength), Wnbasis, Wnorder) 
   WfdPar  <- fda::fdPar(fd(matrix(0,Wnbasis,1),Wbasis))
   
-  #  prepare surprisal curves
-  #  fine mesh of points along manifold of length arclength
+   #  fine mesh of points along manifold of length arclength
+  
   nfine <- dim(Wmat_full)[1]
   arclengthfine <- seq(0,arclength,len=nfine)
-  #  smooth all Wdim curves to get surprisal curves
+  
+  #  smooth all Wdim surprisal curves to get best fitting fd curves
+  
   Sfd <- fda::smooth.basis(arclengthfine, Wmat_full, WfdPar)$fd
   
-  #  functional PCA of the surprisal curves
-  pcaList <- fda::pca.fd(Sfd, nharm, WfdPar, FALSE)
-  #  set up the unrotated harmonic functional data object
-  harmfd <- pcaList$harmonics
-  #  compute variance proportions for (unrotated solution
-  varprop <- pcaList$varprop
+  #  functional PCA of the fd versions of surprisal curves
+  #  the output is nharm principal component functions
   
-  #  carry out a varimax rotation
+  pcaList <- fda::pca.fd(Sfd, nharm, WfdPar, FALSE)
+  
+  #  set up the unrotated harmonic functional data object
+  
+  harmfd <- pcaList$harmonics
+  
+  #  compute variance proportions for unrotated solution
+  
+  varprop  <- pcaList$varprop
+  eigvals  <- pcaList$values
+  rooteigs <- sqrt(eigvals)[1:nharm]
+  
+  #  carry out a varimax rotation if desired
   
   if (!rotate) {
     varmxList    <- pcaList
@@ -66,12 +82,13 @@ Wpca.plot <- function(arclength, WfdList, Wdim=NULL, nharm=2, rotate=TRUE,
     varpropvarmx <- varmxList$varprop
   }
   
-  #  display test manifold curve if required
+  #  display the approximate test manifold curve if required
+  #  The coordinates of a point are the nharm harmonic values at that point
   
   if (Display) {
   
-  #  plot the first two or three harmonics
-  #  ggpot version
+  #  plot the first two or three harmonics using ggplot2
+ 
   if (nharm == 2 || nharm == 3) {
     pind   <- c(5,25,50,75,95)
     Qlabel <- c("5%","25%","50%","75%","95%")
@@ -114,7 +131,7 @@ Wpca.plot <- function(arclength, WfdList, Wdim=NULL, nharm=2, rotate=TRUE,
   }
     
   return(list(pcaplt=pcaplt, harmvarmxfd=harmvarmxfd, varpropvarmx=varpropvarmx,
-              harmmat=harmmat,Qvec_pts=Qvec_pts, Qvec_al=Qvec_al))
+              harmmat=harmmat, Qvec_pts=Qvec_pts, Qvec_al=Qvec_al))
     
   }
   

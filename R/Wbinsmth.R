@@ -2,7 +2,7 @@ Wbinsmth <- function(theta, dataList, WfdList=dataList$WfdList,
                      thetaQnt=seq(0,100, len=2*nbin+1), wtvec=matrix(1,n,1),
                      iterlim=20, conv=1e-4, dbglev=0) {
   
-  # Last modified 3 January 2023 by Jim Ramsay
+  # Last modified 24 April 2023 by Jim Ramsay
 
   #  -----------------------------------------------------------------------------
   #  Step 1.       Set up  objects required for subsequent steps
@@ -166,17 +166,25 @@ Wbinsmth <- function(theta, dataList, WfdList=dataList$WfdList,
     #  Step 4  Compute W and P values for bin point and each mesh point
     #  --------------------------------------------------------------------
      
-    Wmatfine   <- fda::eval.surp(indfine, Wfdi)
-    DWmatfine  <- fda::eval.surp(indfine, Wfdi, 1)
+    Wmatfine   <- eval_surp(indfine, Wfdi)
+    DWmatfine  <- eval_surp(indfine, Wfdi, 1)
     if (Wnbasis > 2) {
-      D2Wmatfine <- fda::eval.surp(indfine, Wfdi, 2)
+      D2Wmatfine <- eval_surp(indfine, Wfdi, 2)
     } else {
       D2Wmatfine <- NULL
     }
     Pmatfine   <- Mi^(-Wmatfine)
     
+    #  ------------------------------------------------------------------------
+    #  Step 5. Compute arc length values for equally spaced theta values.  
+    #. Integration is by the trapezoidal rule.
+    #  ------------------------------------------------------------------------
+    
+    arclengthvec <- pracma::cumtrapz(indfine,sqrt(apply(DWmatfine^2,1,sum)))
+    arclength    <- arclengthvec[101]
+    
     #  --------------------------------------------------------------------
-    #  Step 5  Compute the standard errors of the W values for each 
+    #  Step 6 Compute the standard errors of the W values for each 
     #  option.  These tend only to be used when plotting curves, and this 
     #  step can be made optional to improve speed.
     #  --------------------------------------------------------------------
@@ -205,7 +213,7 @@ Wbinsmth <- function(theta, dataList, WfdList=dataList$WfdList,
     WStdErr <- sqrt(WErrVar)        
     
     #  --------------------------------------------------------------------
-    #  Step 6 assemble list vector WList that contains results
+    #  Step 7 assemble list vector WList that contains results
     #  of step 4 for this single item.  WfdList[[item]] <- WListi
     #  --------------------------------------------------------------------
     
@@ -220,7 +228,8 @@ Wbinsmth <- function(theta, dataList, WfdList=dataList$WfdList,
       DWmatfine  = DWmatfine,  # 1st derivative of W functions over fine mesh
       D2Wmatfine = D2Wmatfine, # 2nd derivative of W functions over fine mesh
       PStdErr    = PStdErr,    # Probabilities over fine mesh
-      WStdErr    = WStdErr     # W functions over fine mesh
+      WStdErr    = WStdErr,    # W functions over fine mesh
+      arclength  = arclength   # arc length of item information curve
     )
 
     WfdList[[item]] = WListi

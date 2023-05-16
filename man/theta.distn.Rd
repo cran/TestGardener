@@ -33,13 +33,20 @@ expected scores; and for test information curve locations in the interval
 \value{
 A named list containing:
   \describe{
-    \item{cdf_fd:}{An fd object for the cumulative probability function.}
-    \item{pdf_fd:}{An fd object for the probability density function.}
+    \item{pdf_fd:}{An fd object for the probability density function
       values over the fine mesh.} 
-    \item{logdensfd:}{A functional data object (\code{fd}) representing the log of the probability 
-      function for input \code{theta}.} 
+    \item{cdffine:}{A vector of cumulative probability values beginning
+    with zero and ending with 1. It must not have ties.}
+    \item{pdffine:}{A vector of probability values.}
+    \item{logdensfd:}{A functional data object (\code{fd}) representing 
+      the log of the probability function for input \code{theta}.} 
     \item{C:}{The normalization constant for computing the probability 
-      density function with the command \code{densityfd = exp(logdensfd)/C.} 
+      density function with the command \code{densityfd = exp(logdensfd)/C.}} 
+    \item{denscdf:}{A set of unique values of the cumulative probability
+      function defined over an equally spaced mesh of score index values
+      of the same length as \code{denscdf}.}
+    \item{indcdf:}{A vector of values within [0,100] corresponding to the 
+    values in \code{denscdf}.}
   }
 }
 \references{
@@ -63,12 +70,12 @@ http://testgardener.azurewebsites.net
 #  short SweSAT multiple choice test with 24 items and 1000 examinees
 #  Assemble information for estimating theta density
 indfine   <- seq(0,100,len=101)
-WfdList   <- Quantshort_parList$WfdList
-theta     <- Quantshort_parList$theta
+WfdList   <- Quant_13B_problem_parList$WfdList
+theta     <- Quant_13B_problem_parList$theta
 N         <- length(theta)
 #  Define the density for only interior theta values
 inside    <- theta > 0 & theta < 100
-logdensbasis    <- Quantshort_parList$logdensfd$basis
+logdensbasis    <- Quant_13B_problem_parList$logdensfd$basis
 theta.distnList <- theta.distn(theta[inside], logdensbasis)
 theta.densfine  <- eval.fd(indfine, theta.distnList$pdf_fd)
 #  Add number of values at each boundary

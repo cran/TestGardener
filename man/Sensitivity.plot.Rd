@@ -109,11 +109,11 @@ http://testgardener.azurewebsites.net
 \examples{
 #  Example 1.  Display the option sensitivity curves for the 
 #  short SweSAT multiple choice test with 24 items and 1000 examinees
-WfdList <- Quantshort_parList$WfdList
-Qvec    <- Quantshort_parList$Qvec
+WfdList <- Quant_13B_problem_parList$WfdList
+Qvec    <- Quant_13B_problem_parList$Qvec
 scrfine <- seq(0,100,len=101)
 oldpar <- par(no.readonly=TRUE)
-Sensitivity.plot(scrfine, WfdList, Qvec, Quantshort_dataList, 
+Sensitivity.plot(scrfine, WfdList, Qvec, Quant_13B_problem_dataList, 
                  plotindex=1)
 par(oldpar)
 #  Example 2.  Display the option sensitivity curves for the 

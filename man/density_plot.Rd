@@ -48,8 +48,8 @@ Juan Li and James Ramsay
 #  Example 1.  Display probability density curve for the 
 #  score index values for the short SweSAT multiple choice test with 
 #  24 items and 1000 examinees
-theta   <- Quantshort_parList$theta
-Qvec    <- Quantshort_parList$Qvec
+theta   <- Quant_13B_problem_parList$theta
+Qvec    <- Quant_13B_problem_parList$Qvec
 #  plot the density for the score indices within interval c(0,100)
 oldpar <- par(no.readonly=TRUE)
 on.exit(oldpar)
@@ -58,9 +58,9 @@ density_plot(theta, c(0,100), Qvec, xlabstr="Score index",
              scrnbasis=11, nfine=101)
 #  Example 2.  Display probability density curve for the 
 #  arc length or information values
-theta_al  <- Quantshort_infoList$theta_al
-Qvec_al   <- Quantshort_infoList$Qvec_al
-arclength <- Quantshort_infoList$arclength
+theta_al  <- Quant_13B_problem_infoList$theta_al
+Qvec_al   <- Quant_13B_problem_infoList$Qvec_al
+arclength <- Quant_13B_problem_infoList$arclength
 #  plot the density for the score indices within interval c(0,arclength)
 density_plot(theta_al, c(0,arclength), Qvec_al, xlabstr="Score index", 
              titlestr="SweSAT 13B Theta Density",  

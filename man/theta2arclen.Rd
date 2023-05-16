@@ -83,10 +83,10 @@ http://testgardener.azurewebsites.net
 #  Example 1.  Display the arc length curve for the 
 #  short SweSAT multiple choice test with 24 items and 1000 examinees
 indfine       <- seq(0,100,len=101)
-WfdList       <- Quantshort_parList$WfdList
-theta         <- Quantshort_parList$theta
-Qvec          <- Quantshort_parList$Qvec
-binctr        <- Quantshort_parList$binctr
+WfdList       <- Quant_13B_problem_parList$WfdList
+theta         <- Quant_13B_problem_parList$theta
+Qvec          <- Quant_13B_problem_parList$Qvec
+binctr        <- Quant_13B_problem_parList$binctr
 arclenList    <- theta2arclen(theta, Qvec, WfdList, binctr)
 names(arclenList)
 oldpar <- par(no.readonly=TRUE)

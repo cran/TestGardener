@@ -36,9 +36,9 @@ http://testgardener.azurewebsites.net
 #  Compute a grid of values of the objective function for locating each  
 #  examinee or respondent for the 24-item short form of the SweSAT quantitative  
 # test on the percentile score index continuum [0,100].
-WfdList <- Quantshort_parList$WfdList
-theta   <- Quantshort_parList$theta
-U       <- Quantshort_dataList$U
+WfdList <- Quant_13B_problem_parList$WfdList
+theta   <- Quant_13B_problem_parList$theta
+U       <- Quant_13B_problem_dataList$U
 n       <- ncol(U)
 #  Fitting function for the first examinee
 j <- 1

@@ -49,8 +49,8 @@ http://testgardener.azurewebsites.net
 }
 \examples{
 #  Load needed objects
-U       <- Quantshort_dataList$U
-theta   <- Quantshort_parList$theta
+U       <- Quant_13B_problem_dataList$U
+theta   <- Quant_13B_problem_parList$theta
 noption <- matrix(5,24,1)
 #  compute mutual entropies for all pairs of the first 6 items
 Mvec    <- 1:6

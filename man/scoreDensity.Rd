@@ -52,9 +52,9 @@ http://testgardener.azurewebsites.net
 \examples{
 #  Example 1.  Display probability density curves for the 
 #  short SweSAT multiple choice test with 24 items and 1000 examinees
-WfdList <- Quantshort_parList$WfdList
-theta   <- Quantshort_parList$theta
-Qvec    <- Quantshort_parList$Qvec
+WfdList <- Quant_13B_problem_parList$WfdList
+theta   <- Quant_13B_problem_parList$theta
+Qvec    <- Quant_13B_problem_parList$Qvec
 #  plot the density for the score indices within interval c(0,100)
 theta_int <- theta[0 < theta & theta < 100]
 oldpar <- par(no.readonly=TRUE)

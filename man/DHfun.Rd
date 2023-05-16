@@ -63,9 +63,9 @@ http://testgardener.azurewebsites.net
 #  Compute the first and second derivative values of the objective function for 
 #  locating each examinee for the 24-item short form of the SweSAT quantitative  
 #  test on thepercentile score index continuum.
-WfdList <- Quantshort_parList$WfdList
-theta   <- Quantshort_parList$theta
-U       <- Quantshort_dataList$U
+WfdList <- Quant_13B_problem_parList$WfdList
+theta   <- Quant_13B_problem_parList$theta
+U       <- Quant_13B_problem_dataList$U
 DHfunResult <- DHfun(theta, WfdList, U)
 DHval  <- DHfunResult$DH
 D2Hval <- DHfunResult$D2H

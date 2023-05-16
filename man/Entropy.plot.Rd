@@ -85,11 +85,11 @@ http://testgardener.azurewebsites.net
 #  Example 1.  Display the item entropy curves for the 
 #  short SweSAT multiple choice test with 24 items and 1000 examinees
 #  plot the entropy curve for the first item
-WfdList <- Quantshort_parList$WfdList
-Qvec    <- Quantshort_parList$Qvec
+WfdList <- Quant_13B_problem_parList$WfdList
+Qvec    <- Quant_13B_problem_parList$Qvec
 scrfine <- seq(0,100,len=101)
 oldpar <- par(no.readonly=TRUE)
-Entropy.plot(scrfine, WfdList, Qvec, Quantshort_dataList, plotindex=1)
+Entropy.plot(scrfine, WfdList, Qvec, Quant_13B_problem_dataList, plotindex=1)
 par(oldpar)
 #  Example 2.  Display the item entropy curves for the 
 #  Symptom Distress Scale with 13 items and 473 respondents

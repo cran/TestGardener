@@ -46,7 +46,7 @@ theta2arclen <- function(theta, Qvec, WfdList, binctr, itemindex=1:n,
     # WDIM          ... The dimension of the over space containing the 
     #                   surprisal curves.
     
-    #  Last modified 22 July 2022
+    #  Last modified 7 March 2023
     
     #  ------------------------------------------------------------------------
     #                              check inputs  
@@ -59,9 +59,9 @@ theta2arclen <- function(theta, Qvec, WfdList, binctr, itemindex=1:n,
     if (!is.numeric(theta)) {
         stop("The first argument is not of class numeric.")
     }
-    
-    if (any(theta < 0) || any(theta > 100)) {
-        stop("The first argument has values outside of c(0,100).")
+  
+    if (any(theta < plotrng[1]) || any(theta > plotrng[2])) {
+        stop("The first argument has values outside of argument plotrng.")
     }
     
     #  ------------------------------------------------------------------------
@@ -74,6 +74,7 @@ theta2arclen <- function(theta, Qvec, WfdList, binctr, itemindex=1:n,
     if (!is.numeric(plotrng) || !is.numeric(itemindex)) {
         stop("Arguments plotrng or itemindex are not numeric.")
     } 
+    
     if (is.null(itemindex)) {
         stop("Argument itemindex is empty.")
     }
@@ -91,8 +92,9 @@ theta2arclen <- function(theta, Qvec, WfdList, binctr, itemindex=1:n,
     #  Here and elsewhere 'fine' implies equal spacing.
     #  ------------------------------------------------------------------------
     
-    nfine       <- 101
-    indfine.rng <- seq(plotrng[1], plotrng[2], len=nfine)
+    theta <- theta[theta >= plotrng[1] & theta <= plotrng[2]]
+    nfine <- 101
+    indfine.rng <- as.matrix(seq(plotrng[1], plotrng[2], len=nfine))
     
     #  ------------------------------------------------------------------------
     #  compute Wdim, the dimension of the overspace within which the
@@ -113,18 +115,19 @@ theta2arclen <- function(theta, Qvec, WfdList, binctr, itemindex=1:n,
     for (item in itemindex) {
         WListi <- WfdList[[item]]
         Mi     <- WListi$M
-        Wfdi   <- WListi$Wfd
         m1 <- m2 + 1
         m2 <- m2 + Mi
-        DWfine.rng[,m1:m2] <- eval.surp(indfine.rng, Wfdi, 1)
+        DWfine.rng[,m1:m2] <- WListi$DWmatfine
     }
 
     #  ------------------------------------------------------------------------
     #  Compute arc length values for equally spaced theta values over the 
-    #  items in plotindex over the plot range
+    #  items in plotindex over the plot range.  Integration is by the 
+    #. trapezoidal rule.
     #  ------------------------------------------------------------------------
     
-    arclengthvec.rng <- pracma::cumtrapz(sqrt(apply(DWfine.rng^2,1,sum)))
+    arclengthvec.rng <- 
+      pracma::cumtrapz(indfine.rng,sqrt(apply(DWfine.rng^2,1,sum)))
     arclength.rng    <- max(arclengthvec.rng)
     
     #  ------------------------------------------------------------------------
@@ -160,16 +163,25 @@ theta2arclen <- function(theta, Qvec, WfdList, binctr, itemindex=1:n,
     #  ------------------------------------------------------------------------
     
     Qvec.rng <- Qvec[Qvec >= plotrng[1] & Qvec <= plotrng[2]]
-    Qvec_al  <- pracma::interp1(as.numeric(indfine.rng), 
-                                as.numeric(arclengthvec.rng), Qvec.rng)
+    if (length(Qvec.rng) > 0) {
+      Qvec_al  <- pracma::interp1(as.numeric(indfine.rng), 
+                                  as.numeric(arclengthvec.rng), Qvec.rng)
+    } else {
+      Qvec_al <- NULL
+    }
     
     #  ------------------------------------------------------------------------
     #  compute arc length values corresponding to bin centers
     #  ------------------------------------------------------------------------
     
+    if (!is.null(binctr)) {
     binctr.rng <- binctr[binctr >= plotrng[1] & binctr <= plotrng[2]]
     binctr_al  <- pracma::interp1(as.numeric(indfine.rng), 
                                 as.numeric(arclengthvec.rng), binctr.rng)
+    } else {
+      binctr.rng <- NULL
+      binctr_al  <- NULL
+    }
     
     #  ------------------------------------------------------------------------
     #  compute arc length values corresponding to estimated theta values

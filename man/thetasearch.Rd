@@ -60,13 +60,13 @@ http://testgardener.azurewebsites.net
 #  fitting function and replace them as well as their function and
 #  derivative values associated with the fine grid value nearest the 
 #  the global minimum.
-WfdList <- Quantshort_parList$WfdList
-theta   <- Quantshort_parList$theta
-Hval    <- Quantshort_parList$Hval
-DHval   <- Quantshort_parList$DHval
-D2Hval  <- Quantshort_parList$D2Hval
-U       <- Quantshort_dataList$U
-Result  <- thetasearch(WfdList, U, theta, Hval, DHval, D2Hval, thetaind=1:1000)
+WfdList <- Quant_13B_problem_parList$WfdList
+theta   <- Quant_13B_problem_parList$theta
+Hval    <- Quant_13B_problem_parList$Hval
+DHval   <- Quant_13B_problem_parList$DHval
+D2Hval  <- Quant_13B_problem_parList$D2Hval
+Result  <- thetasearch(WfdList, Quant_13B_problem_U, theta, 
+                       Hval, DHval, D2Hval, thetaind=1:1000)
 changeindex <- Result$changeindex
 print(paste("Number changed =",length(changeindex)))
 change  <- theta[changeindex] - Result$theta[changeindex]

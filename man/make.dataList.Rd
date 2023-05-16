@@ -8,10 +8,10 @@
   in the value section below.
 }
 \usage{
-make.dataList(U, key, optList, scrrng=NULL, titlestr=NULL,  
-              nbin=nbinDefault(N),NumBasis=NULL,  WfdPar=NULL,
+make.dataList(U, key, optList, scrrng=NULL, titlestr=NULL,
+              nbin=nbinDefault(N), NumBasis=7, WfdPar=NULL,
               jitterwrd=TRUE, PcntMarkers=c( 5, 25, 50, 75, 95),
-              quadwrd=FALSE, verbose=FALSE)
+              verbose=FALSE)
 }
 \arguments{
   \item{U}{A matrix with rows corresponding to examinees or respondents, 
@@ -45,9 +45,6 @@ make.dataList(U, key, optList, scrrng=NULL, titlestr=NULL,
     to each sum score value prior to computing percent rank values.}
   \item{PcntMarkers}{Used in plots of curves to display marker or reference 
     percentage points for abscissa values in plots.}
-  \item{quadwrd}{If TRUE a default order 5 basis is constructed.
-    If FALSE the order and number of of basis functions are 3 so as to
-    support the use of the second derivative in function \code{thetafun}.}
   \item{verbose}{If TRUE details of calculations are displayed.}
 }
 \details{
@@ -84,9 +81,10 @@ make.dataList(U, key, optList, scrrng=NULL, titlestr=NULL,
   A named list with named members as follows:
   \describe{
       \item{U:}{A matrix of response data with N rows and n columns where
-        N is the number of examinees or respondents and n is the number of items.
+        N is number of examinees or respondents and n is number of items.
         Entries in the matrices are the indices of the options chosen.
-        Column i of U is expected to contain only the integers \code{1,...,noption}.}  
+        Column i of U is expected to contain only the integers 
+        \code{1,...,noption}.}  
       \item{optList:}{A list vector containing the numerical score values 
         assigned to the options for this question.}
       \item{key:}{If the data are from a test of the multiple choices type
@@ -135,14 +133,15 @@ http://testgardener.azurewebsites.net
 #  Example 1:  Input choice data and key for the short version of the 
 #  SweSAT quantitative multiple choice test with 24 items and 1000 examinees
 #  input the choice data as 1000 strings of length 24
-N <- dim(Quantshort_U)[1]
-n <- dim(Quantshort_U)[2]
+N <- dim(Quant_13B_problem_U)[1]
+n <- dim(Quant_13B_problem_U)[2]
 noption <- rep(0,n)
-for (i in 1:n) noption[i]  <- length(unique(Quantshort_U[,i]))
+for (i in 1:n) noption[i]  <- 
+    length(unique(Quant_13B_problem_U[,i]))
 ScoreList <- list() # option scores
 for (item in 1:n){
   scorei <- rep(0,noption[item])
-  scorei[Quantshort_key[item]] <- 1
+  scorei[Quant_13B_problem_key[item]] <- 1
   ScoreList[[item]] <- scorei
 }
 optList <- list(itemLab=NULL, optLab=NULL, optScr=ScoreList)
@@ -150,7 +149,8 @@ optList <- list(itemLab=NULL, optLab=NULL, optScr=ScoreList)
 #  Set up the dataList object containing the objects necessary
 #  for further display and analyses
 
-Quantshort_dataList <- make.dataList(Quantshort_U, Quantshort_key, optList)
+Quant_13B_problem_dataList <- 
+    make.dataList(Quant_13B_problem_U, Quant_13B_problem_key, optList)
 
 #  Example 2:  Input choice data and key for the Symptom Distress Scale 
 #  with 13 items and 473 examinees.

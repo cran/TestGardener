@@ -1,29 +1,50 @@
 
 make.dataList <- function(U, key, optList, scrrng=NULL, titlestr=NULL,
-                          nbin=nbinDefault(N), NumBasis=NULL, WfdPar=NULL,
+                          nbin=nbinDefault(N), NumBasis=7, WfdPar=NULL,
                           jitterwrd=TRUE, PcntMarkers=c( 5, 25, 50, 75, 95),
-                          quadwrd=FALSE, verbose=FALSE) {
+                          verbose=FALSE) {
   
   #' This function sets up the information required to analyze a set of data.
   #' The information is stored in the struct object dataStr.
   #' The information set up here is not meant to be modified by later code
   #' in the analysis.
   
-  #  Last modified 19 December 2022 by Jim Ramsay
+  #  Last modified 15 May 2023 by Jim Ramsay
   
   N <- nrow(U)
   n <- ncol(U)
   
-  # check U for having only positive integer values
+  # check U 
   
-  if (min(U) < 1) stop("Zero data values encountered in data.  Are they score values?")
+  if (min(U) < 1) stop(paste("Zero data values encountered in U.",
+                             "Are they score values?"))
+  Unumeric <- is.numeric(U)
+  if (max(abs(floor(Unumeric)-Unumeric)) > 0) 
+    stop("Non-integer values found in U.")
   
   #  check key
   
-  if (length(key) != n && length(key) > 0) {
-    stop("length of key is neither n or 0") 
-  } 
+  if (!is.null(key)) {
+    if (!is.numeric(key)) stop("Argument key is not numeric.")
+    if (min(key) < 1) stop(paste("Zero data values encountered in key.",
+                                 "Are they score values?"))
+    if (max(abs(as.integer(key)-key)) > 0) 
+      stop("Non-integer values found in key.")
+   if (length(key) != n && length(key) > 0) 
+      stop("length of key is neither n or 0") 
+  }
   
+  #  check optList
+  
+  if (!is.list(optList)) stop("Argument optList is not a list object.")
+  if (length(optList) != 3) stop("Argument optList is not of length 3.")
+  
+  #  check scrrng
+  
+  if (!is.null(scrrng) & !is.numeric(scrrng))
+    stop("Argument scrrng is neither NULL nor numeric.")
+  if (is.numeric(scrrng) & length(scrrng) != 2) 
+    stop("Argument scrrng is not of length 2.")
   
   ##  Set up noption using optList$optScr
   
@@ -60,7 +81,8 @@ make.dataList <- function(U, key, optList, scrrng=NULL, titlestr=NULL,
   itmvec <- matrix(0,n,1)
   for (item in 1:n) {
     for (j in 1:N) {
-      scoreij <- optList$optScr[[item]][U[j,item]]
+      scorevec  <- optList$optScr[[item]]
+      scoreij   <- scorevec[U[j,item]]
       scrvec[j] <- scrvec[j] + scoreij
       itmvec[item] <- itmvec[item] + scoreij
     }
@@ -68,7 +90,6 @@ make.dataList <- function(U, key, optList, scrrng=NULL, titlestr=NULL,
   
   scrmin  <- min(scrvec)
   scrmax  <- max(scrvec)
-  scrrng  <- c(scrmin, scrmax)
   if (is.null(scrrng)) scrrng <- c(scrmin,scrmax)
   nfine   <- 101
   scrfine <- seq(scrrng[1],scrrng[2],len=nfine)
@@ -95,35 +116,26 @@ make.dataList <- function(U, key, optList, scrrng=NULL, titlestr=NULL,
   
   #  number of basis functions.  If NULL, this is assigned according to size of N
   
-  if (is.null(NumBasis)) {
-    NumBasis=NumBasisDefault(N)
-  }
-  
   if (is.null(WfdPar)) {
-    #  Defaualt fdPar objects for representing functions
-    #  Two options are available: order 5 or order 3 (quadratic basis functions)
-    if (quadwrd) {
-      #  The order of the B-splines is 2 and the two basis functions are
-      #  quad.  No smoothing is used.
-      Wnorder <- 3  #  Order of the basis functions
-      Wnbasis <- 3  #  Three basis functions
-      # Set up the basis object
+    #  Default fdPar objects for representing functions
+    if (round(NumBasis) == NumBasis) {
+      #  NumBasis is an integer
+      if (NumBasis < 3) 
+        stop("There must be at least three spline basis functions.")
+      if (NumBasis > 7) 
+        warning("More than 7 basis functions may cause instability 
+                in optimization.")
+      Wnbasis <- NumBasis
+      Wnorder <- min(Wnbasis, 5)
       Wbasis  <- fda::create.bspline.basis(c(0,100), Wnbasis, Wnorder) 
       WfdPar  <- fdPar(Wbasis)
     } else {
-      #  The order of the B-splines is 5 because we need a 
-      #  smooth first derivative.
-      Wnorder <- 5  #  Order of the basis functions
-      Wnbasis <- NumBasis  #  NumBasis basis functions
-      # Set up the basis object
-      Wbasis  <- fda::create.bspline.basis(c(0,100), Wnbasis, Wnorder) 
-      Wlambda <- 1e4   #  smoothing parameter
-      #  Compute the penalty matrix for the third derivative
-      Wnderiv <- 3  
-      Wpenmat <- fda::eval.penalty(Wbasis, Wnderiv)
-      #  Assemble this information into a fdPar object.
-      WfdPar  <- fdPar(Wbasis, Wnderiv, Wlambda, TRUE, Wpenmat)
-    } 
+      stop("Number of basis functions is not an integer.")
+    }
+  } else {
+    if (inherits(WfdPar, "basisfd") || inherits(WfdPar, "fd"))
+      WfdPar <- fdPar(WfdPar)
+    if (!inherits(WfdPar, "fdPar")) stop("WfdPar is not an fdPar object.")
   }
   
   ##  Wbinsmth.init computes an approximation to optimal Bmat
@@ -251,7 +263,7 @@ Wbinsmth.init <- function(percntrnk, nbin, WfdPar, grbg, optList, U) {
       root2 <- sqrt(2)
       Zmati <- matrix(1/c(root2,-root2),2,1)
     } else {
-      Zmati <- zerobasis(Mi)
+      Zmati <- fda::zerobasis(Mi)
     }
     
     #  apply conventional smoothing of surprisal values
@@ -265,7 +277,7 @@ Wbinsmth.init <- function(percntrnk, nbin, WfdPar, grbg, optList, U) {
     #  regress the centred data on the negative of basis values
     Result <- lsfit(-Phimati, Smatctri, intercept=FALSE)
     Bmati  <- Result$coefficient
-    Wfdi   <- fd(Bmati, Wbasis)
+    Wfdi   <- fda::fd(Bmati, Wbasis)
     
     #  store objects in WListi
     
@@ -296,14 +308,6 @@ nbinDefault <- function(N) {
   return(nbin)
 }
   
-#  ---------------------------------------------------------------
-
-NumBasisDefault <- function(N) {
-  if (N <= 500)               NumBasis <- 7                          
-  if (N >  500 && N <= 1e4)   NumBasis <- round(-14.7 + 8*log10(N))  
-  if (N >  1e4)               NumBasis <-  24                        
-  return(NumBasis)
-}
 
 
 
