@@ -111,11 +111,14 @@ Analyze <- function(theta, thetaQnt, dataList, ncycle=10, itdisp=FALSE,
     #  Step 6:  Check for mis-identications of minimum theta 
     #  ----------------------------------------------------------
     
-    Result <- thetasearch(WfdList, dataList$U, theta, Hval, DHval, D2Hval)
-    theta  <- Result$theta
-    Hval   <- Result$Hval
-    DHval  <- Result$DHval
-    D2Hval <- Result$D2Hval
+    if (dataList$WfdPar$fd$basis$nbasis > 2) {
+      Result <- thetasearch(WfdList, dataList$U, theta, Hval, DHval, D2Hval)
+      theta  <- Result$theta
+      Hval   <- Result$Hval
+      DHval  <- Result$DHval
+      D2Hval <- Result$D2Hval
+    }
+    print("thetasearch done")
     
     #  ----------------------------------------------------------
     #  Step 7:  set up ParameterCell arrays

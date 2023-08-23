@@ -1,32 +1,35 @@
-export(Analyze)
-export(ArcLength.plot)
-export(dataSimulation)
-export(density_plot)
-export(DHfun)
-export(entropies)
-export(Entropy.plot)
-export(eval_surp)
-export(Hcurve)
-export(Hfun)
-export(Hfuns.plot)
-export(ICC.plot)
-export(make.dataList)
-export(mu.plot)
-export(Power.plot)
-export(scoreDensity)
-export(scorePerformance)
-export(Sensitivity.plot)
-export(testscore)
-export(TestInfo_svd)
-export(TG_density.fd)
-export(theta.distn)
-export(theta2arclen)
-export(thetafun)
-export(thetasearch)
-export(Usimulate)
-export(Wpca.plot)
-export(Wbinsmth)
-export(Wbinsmth_nom)
+export(Analyze, 
+  ArcLength.plot, 
+  dataSimulation, 
+  density_plot, 
+  DHfun, 
+  entropies,
+  Entropy.plot, 
+  eval.surp, 
+  Hcurve, 
+  Hfun, 
+  Hfuns.plot, 
+  ICC.plot, 
+  make.dataList,
+  mu.plot, 
+  plotCore, 
+  plotICC, 
+  Power.plot, 
+  scoreDensity, 
+  scorePerformance, 
+  Sensitivity.plot, 
+  smooth.surp, 
+  testscore, 
+  TestInfo_svd, 
+  TG_density.fd,
+  theta.distn, 
+  theta2arclen, 
+  thetafun, 
+  thetasearch, 
+  Usimulate, 
+  Wpca.plot, 
+  Wbinsmth, 
+  Wbinsmth_nom)
 
 import(fda)
 import(splines)
@@ -38,12 +41,12 @@ import(ggplot2)
 import(ggpubr)
 import(tidyr)
 import(utf8)
+import(rgl)
+import(plotly, except = c(last_plot, select))
 
-importFrom("grDevices", "dev.off", "rainbow", "tiff", "pdf", "png")
+importFrom("grDevices", "dev.off", "rainbow", "tiff", "pdf", "png", "rgb")
 importFrom("graphics", "lines", "par", "text", "title", "legend", "points")
 importFrom("stats", "coef", "rmultinom", "approx", "lsfit", "rnorm", "var")
-importFrom("rgl", "open3d", "points3d", "texts3d", "axes3d", "aspect3d", "title3d")
 importFrom("tidyr", "gather")
 importFrom("pracma", "interp1", "cumtrapz")
-importFrom("fda", "density.fd")
 

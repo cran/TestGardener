@@ -120,8 +120,8 @@ make.dataList <- function(U, key, optList, scrrng=NULL, titlestr=NULL,
     #  Default fdPar objects for representing functions
     if (round(NumBasis) == NumBasis) {
       #  NumBasis is an integer
-      if (NumBasis < 3) 
-        stop("There must be at least three spline basis functions.")
+      if (NumBasis < 2) 
+        stop("There must be at least two spline basis functions.")
       if (NumBasis > 7) 
         warning("More than 7 basis functions may cause instability 
                 in optimization.")

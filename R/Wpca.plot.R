@@ -1,7 +1,9 @@
+library(plotly)
+
 Wpca.plot <- function(arclength, WfdList, Wdim=NULL, nharm=2, rotate=TRUE, 
-                       dodge = 1.003, titlestr=NULL, Display=TRUE) {
+                       titlestr=NULL) {
   
-  #  Last modified 24 April 2023 by Jim Ramsay
+  #  Last modified 13 July 2023 by Juan Li
   
   #  set up matrices of fine mesh values
   
@@ -34,8 +36,8 @@ Wpca.plot <- function(arclength, WfdList, Wdim=NULL, nharm=2, rotate=TRUE,
     Mi     <- WListi$M
     m1 <- m2 +  1
     m2 <- m2 + Mi
-    Wmat_full[,m1:m2]  <- eval_surp(indfine,Wfdi)
-    DWmat_full[,m1:m2] <- eval_surp(indfine,Wfdi,1)
+    Wmat_full[,m1:m2]  <- eval.surp(indfine,Wfdi)
+    DWmat_full[,m1:m2] <- eval.surp(indfine,Wfdi,1)
     Pmat_full[,m1:m2]  <- Mi^(Wmat_full[,m1:m2])
   }
   
@@ -85,10 +87,8 @@ Wpca.plot <- function(arclength, WfdList, Wdim=NULL, nharm=2, rotate=TRUE,
   #  display the approximate test manifold curve if required
   #  The coordinates of a point are the nharm harmonic values at that point
   
-  if (Display) {
+  #  plot the first two or three harmonics using ggplot2 or plotly
   
-  #  plot the first two or three harmonics using ggplot2
- 
   if (nharm == 2 || nharm == 3) {
     pind   <- c(5,25,50,75,95)
     Qlabel <- c("5%","25%","50%","75%","95%")
@@ -97,43 +97,44 @@ Wpca.plot <- function(arclength, WfdList, Wdim=NULL, nharm=2, rotate=TRUE,
     Qvec_al  <-  arclengthfine[ceiling(nfine*c(0.05, 0.25, 0.50, 0.75, 0.95))]
     Qvec_pts <- -fda::eval.fd(Qvec_al, harmvarmxfd)
     if (nharm == 2) {
-      df1 <- data.frame(harmmat)
-      df2 <- data.frame(Qvec_pts)
-      pcaplt <- ggplot2::ggplot(df1, ggplot2::aes(harmmat[,1],harmmat[,2])) +
-                ggplot2::geom_point(size=2) +
-                ggplot2::geom_point(data=df2, ggplot2::aes(Qvec_pts[,1],Qvec_pts[,2], size=2)) +
-                xlab('Rotated Component 1') +
-                ylab('Rotated Component 2') +
-                annotate("text", x=Qvec_pts[1,1]*dodge, y=Qvec_pts[1,2], label=Qlabel[1]) +
-                annotate("text", x=Qvec_pts[2,1]*dodge, y=Qvec_pts[2,2], label=Qlabel[2]) +
-                annotate("text", x=Qvec_pts[3,1]*dodge, y=Qvec_pts[3,2], label=Qlabel[3]) +
-                annotate("text", x=Qvec_pts[4,1]*dodge, y=Qvec_pts[4,2], label=Qlabel[4]) +
-                annotate("text", x=Qvec_pts[5,1]*dodge, y=Qvec_pts[5,2], label=Qlabel[5]) +
-                theme(legend.position = "none",
-                      axis.title=element_text(size=16,face="bold"))
-      if (!is.null(titlestr))
-      {
-        pcaplt <- pcaplt + labs(title=titlestr)
+      df_harmmat <- as.data.frame(harmmat)
+      fig <- plot_ly(df_harmmat, x = ~PC1, y = ~PC2, type = 'scatter', 
+                     mode = 'lines',
+                     opacity = 1, 
+                     line = list(width = 6, color = "black", reverscale = FALSE))%>% 
+        layout(title = titlestr,
+               showlegend = FALSE)
+      
+      df_Q <- as.data.frame(Qvec_pts)
+      df_Q$label <- Qlabel
+      for (i in 1:5) {
+        fig <- fig %>% 
+          add_trace(x = df_Q$PC1[i], y = df_Q$PC2[i], 
+                    type = "scatter", text = df_Q$label[i], mode = "text")
       }
       
-      print(pcaplt)
-      
     } else {
-      rgl::open3d()
-      rgl::points3d( harmmat[,1],        harmmat[,2],  -harmmat[,3], color = "black", size=5) 
-      rgl::points3d(Qvec_pts[,1],       Qvec_pts[,2], -Qvec_pts[,3], color = "black", size=8)
-      rgl::texts3d( Qvec_pts[,1]*dodge, Qvec_pts[,2], -Qvec_pts[,3], texts = Qlabel)
-      rgl::axes3d(expand=5, nticks=3)
-      rgl::aspect3d(1,1,1)
-      rgl::title3d(xlab="I", ylab="II", zlab="III")
-      pcaplt <- NULL
+      df_harmmat <- as.data.frame(harmmat)
+      fig <- plot_ly(df_harmmat, x = ~PC1, y = ~PC2, z = ~PC3, type = 'scatter3d', 
+                     mode = 'lines',
+                     opacity = 1, 
+                     line = list(width = 6, color = "black", reverscale = FALSE))%>% 
+        layout(title = titlestr,
+               showlegend = FALSE)
+      
+      df_Q <- as.data.frame(Qvec_pts)
+      df_Q$label <- Qlabel
+      for (i in 1:5) {
+        fig <- fig %>% 
+          add_trace(x = df_Q$PC1[i], y = df_Q$PC2[i], z = df_Q$PC3[i], 
+                    type = "scatter3d", text = df_Q$label[i], mode = "text")
+      }
     }
-  }
-    
-  return(list(pcaplt=pcaplt, harmvarmxfd=harmvarmxfd, varpropvarmx=varpropvarmx,
-              harmmat=harmmat, Qvec_pts=Qvec_pts, Qvec_al=Qvec_al))
-    
+  } else {
+    stop("The current Wpca.plot only works with 2 or 3 dimension.")
   }
   
+  return(list(pcaplt=fig, harmvarmxfd=harmvarmxfd, varpropvarmx=varpropvarmx,
+              harmmat=harmmat, Qvec_pts=Qvec_pts, Qvec_al=Qvec_al))
   
 }

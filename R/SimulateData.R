@@ -1,6 +1,6 @@
 SimulateData <- function(nsim, indfine, denscdf, WfdList) {
 
-  # Last modified 24 April 2023 by Jim Ramsay
+  # Last modified 7 August 2023 by Jim Ramsay
   
   n       <- length(WfdList)
   noption <- rep(0,n)
@@ -23,7 +23,7 @@ SimulateData <- function(nsim, indfine, denscdf, WfdList) {
       WListi <- WfdList[[i]]
       Mi <- WListi$M
       ind <- 1:Mi
-      surpij <- eval_surp(thetaj, WListi$Wfd)
+      surpij <- eval.surp(thetaj, WListi$Wfd)
       probij <- Mi^(-surpij)
       for (k in 1:nthetaj) {
         choiceij <- rmultinom(1, Mi, probij)

@@ -8,7 +8,7 @@ plotCore   <- function(iplot, scrfine, WfdList, dataList, Qvec,
                        ttlsz, axisttl, axistxt,
                        lgdlab, lgdpos) {
   
-  # Last modified 10 May 2023 by Juan Li
+  # Last modified 10 July 2023 by Juan Li
   
   optionList <- dataList$optList 
   
@@ -121,8 +121,8 @@ plotCore   <- function(iplot, scrfine, WfdList, dataList, Qvec,
       ylabel[itype] = "Sensitivity"
     }
   }
-  if (length(ylab) == nplot & nplot > 1) {
-    ylabel = ylab
+  if (length(ylab) == nplot) { # 2023-05-28,  & nplot > 1
+    ylabel[1] = ylab
   }
   
   #  Call plotICC
@@ -159,7 +159,11 @@ plotCore   <- function(iplot, scrfine, WfdList, dataList, Qvec,
     }
   }
   
-  p <- ggpubr::ggarrange(plotlist = pList, ncol = 1, common.legend = TRUE,legend="bottom")
+  if (nplot > 1) {
+    p <- ggpubr::ggarrange(plotlist = pList, ncol = 1)
+  } else {
+    p <- pList[[1]]
+  }
   
   return(p)
 }

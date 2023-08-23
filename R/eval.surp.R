@@ -1,7 +1,7 @@
-eval_surp <- function(evalarg, Wfdobj, nderiv=0) {
+eval.surp <- function(evalarg, Wfdobj, nderiv=0) {
   #  Evaluates a value of a surprisal coordinate functional data object. 
-  # #  Evaluates a value or a derivative of a surprisal coordinate functional  
-  # #  data object. 
+  #  Evaluates a value or a derivative of a surprisal coordinate functional  
+  #  data object. 
   #  A positive functional data object h  is <- the form
   #           h(x) <- (exp Wfdobj)(x)
   #  Note that the first two arguments may be interchanged.
@@ -16,7 +16,7 @@ eval_surp <- function(evalarg, Wfdobj, nderiv=0) {
   #  Returns:  An array of function values corresponding to the 
   #              argument values in EVALARG
   
-  #  Last modified 24 April 2023 by Jim Ramsay
+  #  Last modified 25 April 2025 by Jim Ramsay
   
   #  check arguments
   
@@ -54,7 +54,7 @@ eval_surp <- function(evalarg, Wfdobj, nderiv=0) {
   
   if (evaldim[1] > 1 && evaldim[2] > 1) 
     stop('Argument EVALARG is not a vector.')
-  
+    
   evalarg  <- as.vector(evalarg)
   basisfd  <- Wfdobj$basis
   rangeval <- basisfd$rangeval
@@ -62,15 +62,14 @@ eval_surp <- function(evalarg, Wfdobj, nderiv=0) {
   evalarg[evalarg > rangeval[2]+1e-10] <- NA
   
   #  check FDOBJ
-  
+    
   if (!fda::is.fd(Wfdobj)) 
-    stop('Argument FD is not a functional data object.')
+        stop('Argument FD is not a functional data object.')
   
   #  compute Zmat, a M by M-1 orthonormal matrix
   
   Bmat <- Wfdobj$coefs
   M    <- dim(Bmat)[2] + 1
-  logM <- log(M)
   if (M == 2) {
     root2 <- sqrt(2)
     Zmat <- matrix(1/c(root2,-root2),2,1)
@@ -87,9 +86,12 @@ eval_surp <- function(evalarg, Wfdobj, nderiv=0) {
   SumMXmat <- matrix(rep(sum0,each=M), ncol=M, byrow=TRUE)
   
   #  Case where EVALARG is a vector of values to be used for all curves
+  #  NB:  Resist the temptation of use /log(M) anywhere else.  
+  #  This code sets up Smat as defined with log basis M, and no further
+  #  definition of log basis is required.
   
   if (nderiv == 0) {
-    Smat   <- -Xmat + log(SumMXmat)/logM
+    Smat   <- -Xmat + log(SumMXmat)/log(M)
     return(Smat)
   }
   

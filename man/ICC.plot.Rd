@@ -8,7 +8,7 @@
            plotType = "P", 
            Wrng=c(0,5), DWrng=c(-0.2, 0.2),
            plotindex=1:n, 
-           titlestr = NULL, plotTitle = TRUE, xlab = "Score Index", ylab = "Probability",
+           titlestr = NULL, plotTitle = TRUE, xlab = "Score Index", ylab = "NULL",
            autoplot = FALSE,
            plotMissing = TRUE, 
            plotrange=c(min(scrfine),max(scrfine)), shaderange = NULL,  

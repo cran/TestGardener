@@ -3,7 +3,7 @@ ICC.plot <- function(scrfine, WfdList, dataList, Qvec,
                      plotType = "P", 
                      Wrng=c(0,5), DWrng=c(-0.2, 0.2),
                      plotindex=1:n, 
-                     titlestr = NULL, plotTitle = TRUE, xlab = "Score Index", ylab = "Probability",
+                     titlestr = NULL, plotTitle = TRUE, xlab = "Score Index", ylab = NULL,
                      autoplot = FALSE,
                      plotMissing = TRUE, 
                      plotrange=c(min(scrfine),max(scrfine)), shaderange = NULL,  
@@ -46,7 +46,7 @@ ICC.plot <- function(scrfine, WfdList, dataList, Qvec,
   # lgdlab     font size of legend labels
   # lgdpos     legend position, could be set as "None" to remove the legend
   
-  # Last modified May 10 2023 by Juan Li
+  # Last modified July 10 2023 by Juan Li
   
   n <- length(WfdList)
   
@@ -83,10 +83,11 @@ ICC.plot <- function(scrfine, WfdList, dataList, Qvec,
 
   #   Invoke plotCore that actually controls the plotting
   plotlist <- list() # 2022-06-17
-  if (autoplot) {
+  if (autoplot | length(plotindex) == 1) { # 2023-05-28
     #  plot all items in a batch
-    for (iplot in plotindex)
+    for (i in seq_len(length(plotindex)))# 2023-05-28
     {
+      iplot <- plotindex[i]
       p <- plotCore(iplot, scrfine, WfdList, dataList, Qvec, 
                     binctr, data_point, ci, 
                     plotType,
@@ -97,7 +98,7 @@ ICC.plot <- function(scrfine, WfdList, dataList, Qvec,
                     ttlsz, axisttl, axistxt,
                     lgdlab, lgdpos)    
       #print(p)
-      plotlist[[iplot]] <- p
+      plotlist[[i]] <- p
     }
   } else {
     #  Usual case of user control of plotting
@@ -146,6 +147,6 @@ ICC.plot <- function(scrfine, WfdList, dataList, Qvec,
     }
   } # end iplot
   
-  return(p)
+  return(plotlist)
 }
 

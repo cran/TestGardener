@@ -128,14 +128,15 @@ print(paste("Arc length =", round(arclength,2)))
 TestGardener::ArcLength.plot(arclength, arclengthvec, titlestr)
 
 ## ---- setup-------------------------------------------------------------------
-library(rgl)
-options(rgl.useNULL = TRUE) # Suppress the separate window.
+# library(rgl)
+# options(rgl.useNULL = TRUE) # Suppress the separate window.
 
-## ----fig.width = 7,webgl=TRUE-------------------------------------------------
-Result <- TestGardener::Wpca.plot(arclength, WfdList, Math_dataList$Wdim, 3,
-                                  rotate=FALSE, titlestr=titlestr)
-rglwidget()
+## ---- eval=TRUE, fig.width = 7, webgl=TRUE------------------------------------
+Result <- TestGardener::Wpca.plot(arclength, WfdList,
+                                  Math_dataList$Wdim, nharm=3,
+                                  rotate=FALSE, titlestr = titlestr)
+print(Result$pcaplt)
 
-## ----fig.width = 7------------------------------------------------------------
-TestGardener::Hfuns.plot(indfine, theta, WfdList, U, plotindex=1:5)
+## ---- eval = TRUE, fig.width = 7----------------------------------------------
+TestGardener::Hfuns.plot(indfine, theta, WfdList, U, plotindex=1)
 

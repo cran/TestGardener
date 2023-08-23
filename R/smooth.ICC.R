@@ -15,7 +15,7 @@ smooth.ICC <- function(x, item, theta, dataList,
   #  conv     ... Criterion for convergence for smoothing function
   #  dbglev   ... Output level during smoothing (0, 1, 2)
   
-  # Last modified 24 April 2023 by Jim Ramsay
+  # Last modified 7 August 2023 by Jim Ramsay
 
   ICC <- x
   
@@ -176,10 +176,10 @@ smooth.ICC <- function(x, item, theta, dataList,
     #  --------------------------------------------------------------------
      
     Sarray <- array(0, c(101,M,3))
-    Sarray[,,1]   <- eval_surp(indfine, Sfd)
-    Sarray[,,2]  <- eval_surp(indfine, Sfd, 1)
+    Sarray[,,1]   <- eval.surp(indfine, Sfd)
+    Sarray[,,2]  <- eval.surp(indfine, Sfd, 1)
     if (Wnbasis > 2) {
-      Sarray[,,3] <- eval_surp(indfine, Sfd, 2)
+      Sarray[,,3] <- eval.surp(indfine, Sfd, 2)
     } else {
       Sarray[,,3] <- NULL
     }

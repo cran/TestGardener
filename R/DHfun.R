@@ -1,6 +1,6 @@
 DHfun <- function(theta, WfdList, Umat) {
 
-# Last modified 24 April 2023 by Jim Ramsay
+# Last modified 7 August 2023 by Jim Ramsay
 
   if (is.null(ncol(Umat)))
   {
@@ -46,8 +46,8 @@ DHfun <- function(theta, WfdList, Umat) {
       Wfdi      <- WStri$Wfd
       Mi        <- WStri$M
       #  evaluate surprisal curves at the score index values in theta
-      DWmati    <- eval_surp(theta, Wfdi, 1)
-      D2Wmati   <- eval_surp(theta, Wfdi, 2)
+      DWmati    <- eval.surp(theta, Wfdi, 1)
+      D2Wmati   <- eval.surp(theta, Wfdi, 2)
       #  Mi must be greater than 1, if not, abort
       if (Mi > 1) {
         #  select values of first and second derivatives of curve for the selected option

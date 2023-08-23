@@ -19,7 +19,7 @@ titlestr  <- "SweSAT-Q_13B_problem"
 #. The stringr package is used to convert the strings to 
 #. integer vectors
 
-U         <- scan("Quant_13B_full.txt", "o") 
+U         <- scan("../Quant_13B_full.txt", "o") 
 N         <- length(U) # Number of examinees
 Umat      <- as.integer(unlist(stringr::str_split(U,"")))
 n         <- length(Umat)/N # Number of items
@@ -127,10 +127,17 @@ for (item in 1:n) {
 
 optList <- list(itemLab=NULL, optLab=NULL, optScr=ScoreList)
 
+# ----------------  Externally define WfdPar object  -----------
+
+Wnbasis <- 2
+Wnorder <- min(Wnbasis, 5)
+Wbasis  <- fda::create.bspline.basis(c(0,100), Wnbasis, Wnorder) 
+WfdPar  <- fdPar(Wbasis)
+
 # ----------------  Initialization Steps  ------------------------
 
 Quant_13B_problem_dataList <- 
-  make.dataList(U, key, optList, scrrng, titlestr)
+  make.dataList(U, key, optList, scrrng, titlestr, NumBasis=2, WfdPar=NULL)
 
 #  save this list object in the data folder
 
@@ -166,11 +173,11 @@ binctr  <- WfdResult$aves
 Qvec    <- c(5,25,50,75,95)
 
 indfine   <- seq(0,100,len=101)
-plotindex <- 1:n
+plotindex <- 1
 plotrange <- c(0,100)
 
 ICC.plot(indfine, WfdList, Quant_13B_problem_dataList, Qvec, binctr,  
-         Wrng=c(0,3))
+         Wrng=c(0,3), plotindex=plotindex)
 
 #  ----------------------------------------------------------------------------
 #                Proceed through the cycles, returning system time
@@ -181,7 +188,7 @@ ICC.plot(indfine, WfdList, Quant_13B_problem_dataList, Qvec, binctr,
 ncycle <- 10
 system.time(
 AnalyzeResult <- Analyze(theta, thetaQnt, Quant_13B_problem_dataList, ncycle, 
-                         itdisp=FALSE, verbose=FALSE) 
+                         itdisp=TRUE, verbose=TRUE) 
 )
 
 #  10 cycles:  mean H = 16.4,  arc length = 53.5
@@ -263,11 +270,10 @@ plotrange <- c(0,100)
 
 #  over score index theta
 
+plotindex=6
 ICC.plot(indfine, WfdList, Quant_13B_problem_dataList, Qvec, binctr, 
-         data_point=TRUE, plotType=c("P","W"), Wrng=c(0,4))
-
-ICC.plot(indfine, WfdList, Quant_13B_problem_dataList, Qvec, binctr, 
-         data_point=TRUE, plotType=c("P","W"), plotindex = 61, Wrng=c(0,4))
+         data_point=TRUE, plotType=c("P","W"), Wrng=c(0,4), 
+         DWrng=c(-0.2, 0.2), plotindex=plotindex)
 
 #  over arclength or information
 
@@ -369,7 +375,7 @@ Entropy.plot(indfine, WfdList, Qvec, Quant_13B_problem_dataList, height=1)
 
 index <- 1:5
 
-Hfuns.plot(theta, WfdList, Quant_13B_problem_dataList$U, plotindex=1:5)
+Hfuns.plot(indfine, theta, WfdList, Quant_13B_problem_dataList$U, plotindex=100:200)
 
 #  ----------------------------------------------------------------------------
 #             simulate data samples and analyze simulated samples

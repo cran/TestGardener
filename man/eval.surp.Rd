@@ -1,5 +1,5 @@
-\name{eval_surp}
-\alias{eval_surp}
+\name{eval.surp}
+\alias{eval.surp}
 \title{Values of a Functional Data Object Defining Surprisal Curves.}
 \description{
 A surprisal vector of length \code{M} is minus the log to a positive integer 
@@ -9,7 +9,7 @@ value of the index set the values of the curves are a surprisal vector.
 See Details below for further explanations.
 }
 \usage{
-eval_surp(evalarg, Wfdobj, nderiv = 0)
+eval.surp(evalarg, Wfdobj, nderiv = 0)
 }
 \arguments{
   \item{evalarg}{a vector or matrix of argument values at which the functional data

@@ -166,10 +166,10 @@ Wbinsmth <- function(theta, dataList, WfdList=dataList$WfdList,
     #  Step 4  Compute W and P values for bin point and each mesh point
     #  --------------------------------------------------------------------
      
-    Wmatfine   <- eval_surp(indfine, Wfdi)
-    DWmatfine  <- eval_surp(indfine, Wfdi, 1)
+    Wmatfine   <- eval.surp(indfine, Wfdi)
+    DWmatfine  <- eval.surp(indfine, Wfdi, 1)
     if (Wnbasis > 2) {
-      D2Wmatfine <- eval_surp(indfine, Wfdi, 2)
+      D2Wmatfine <- eval.surp(indfine, Wfdi, 2)
     } else {
       D2Wmatfine <- NULL
     }

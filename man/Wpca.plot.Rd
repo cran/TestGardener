@@ -10,8 +10,8 @@ Plot the test information or scale curve in either two or three dimensions.
   can be fixed by using functional principal components analysis.
 }
 \usage{
-  Wpca.plot(arclength, WfdList, Wdim, nharm=2, rotate=TRUE, dodge=1.003, 
-  titlestr=NULL, Display=TRUE)
+  Wpca.plot(arclength, WfdList, Wdim=NULL, nharm=2, rotate=TRUE, 
+  titlestr=NULL)
 }
 \arguments{
   \item{arclength}{The total length of the test information or scale curve as computed by function 
@@ -40,11 +40,7 @@ Plot the test information or scale curve in either two or three dimensions.
   curve to be used to display the curve.  Must be either 2 or 3.}
   \item{rotate}{If true, rotate principal components of the test information or 
   scale curve to be used to display the curve to VARIMAX orientation.}
-  \item{dodge}{A constant greater than 1 required by ggplot2.  
-  Defaults to 1.003.}
   \item{titlestr}{A string for the title of the plot.  Defaults to NULL. }
-  \item{Display}{A logical value that is TRUE if the test information manifold
-    is to be displayed.}
 }
 \value{
 A named list with these members:

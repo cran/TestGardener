@@ -5,18 +5,18 @@ thetasearch <- function(WfdList, U, theta, Hval, DHval, D2Hval, thetaind=1:N) {
   #  index of the point and Hval, DHval, and D2Hval are revised.
   #  Integer changecount indicate the number of values changed.
   
-  #  Last modified 18 January 2023
+  #  Last modified 14 August 2023
   
   # determine the number of rows in data matrix U and if (there is no subset
   #  specified in argument thetaind, search all of the rows of U.
   
   N <- nrow(U)
   n <- ncol(U)
-  thetafine   <- seq(0,100,len=101)
+  evalarg     <- seq(0,100,len=101)
   changeindex <- NULL
   for (j in thetaind) {
     #  identify the minima
-    Hfine    <- as.matrix(Hcurve(WfdList, t(as.matrix(U[j,]))))
+    Hfine    <- Hcurve(WfdList, U[j,])
     Hfind    <- which.min(min(Hfine) == Hfine)
     Hminind  <- 0
     if (Hfind ==   1) Hminind <- Hfind
@@ -33,7 +33,7 @@ thetasearch <- function(WfdList, U, theta, Hval, DHval, D2Hval, thetaind=1:N) {
       }
       if (sum(Hdiff < 0) < 100 && sum(Hdiff > 0) < 100) {
         #  normal case:  find the minimum with the lowest value
-        thetagrid <- thetafine[Hfine == min(Hfine)]
+        thetagrid <- evalarg[Hfine == min(Hfine)]
         Hvalgrid  <- Hfine[thetagrid+1]
       }
       #  now check that the input value of theta is close to thetagrid

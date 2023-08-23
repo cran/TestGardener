@@ -1,7 +1,7 @@
 
 Hfun <- function(theta, WfdList, Umat) {
 	
-# Last modified 24 April 2023 by Jim Ramsay
+# Last modified 7 August 2023 by Jim Ramsay
 
   if (is.null(ncol(Umat))) {
     N <- 1
@@ -43,7 +43,7 @@ Hfun <- function(theta, WfdList, Umat) {
       Wfdi      <- WStri$Wfd
       Mi        <- WStri$M
       #  evaluate surprisal curves at the score index values in theta
-      Wmati     <- eval_surp(theta, Wfdi)
+      Wmati     <- eval.surp(theta, Wfdi)
       #  Mi must be greater than 1, if not, abort
       if (Mi > 1) {
         #  select values of curve for the selected option

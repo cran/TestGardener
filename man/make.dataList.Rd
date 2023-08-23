@@ -1,10 +1,15 @@
 \name{make.dataList}
 \alias{make.dataList}
 \title{
-  Make a list object containing information required for analysis of choice data.
+  Make a list object containing information required for analysis of choice 
+  data.
 }
 \description{
-  The returned named list object contains 11 named members, which are described 
+  The list object \code{dataList} contains 22 objects that supply all of the 
+  information required to analyze the data.  
+  Initial values of the score indices in object \code{theta} and the bin 
+  boundaries and centres in object \code{thetaQnt}.
+  The returned named list object contains 22 named members, which are described 
   in the value section below.
 }
 \usage{
@@ -35,7 +40,8 @@ make.dataList(U, key, optList, scrrng=NULL, titlestr=NULL,
     number of examinees.}
   \item{NumBasis}{The number of spline basis functions used to represent 
     surprisal curves. The default is computed by a function that uses the 
-    number of examinees.}
+    number of examinees.  
+    }
   \item{WfdPar}{A functional parameter object specifying a basis, a linear 
     differential operator, a smoothing parameter, a boolian constant
     indicating estimation, and a penalty matrix.  The default object defines
@@ -61,11 +67,18 @@ make.dataList(U, key, optList, scrrng=NULL, titlestr=NULL,
   
   The number of spline basis functions used to represent a surprisal curve 
   should be small for small sample sizes, but can be larger when larger samples 
-  are involved.  A minimum of 7 and maximum of 24 basis functions is assigned 
-  by default.  The number of basis function can be set by the user or otherwise
-  by a simple algorithm  used to adjust the number of bins to the number 
-  \code{N} of examinees.
+  are involved.  
   
+  There must be at least two basis functions, corresponding to two 
+  straight lines.  The norder of this simple spline would
+  not exceed 1, corresponding to taking only a single derivative of 
+  the resulting spline.  But this rule is bent here to allow higher
+  higher derivatives, which will autmatically have values of zero, in 
+  order to allow these simple linear basis functions to be used.  This 
+  permits direct comparisons of TestGardener models with the many classic 
+  item response models that use two or less parameters per item response 
+  curve.
+    
   Adding a small value to discrete values before computing ranks is considered 
   a useful way of avoiding any biasses that might arise from the way the data 
   are stored.  The small values used leave the rounded jittered values fixed, 
