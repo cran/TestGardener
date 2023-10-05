@@ -1,5 +1,31 @@
 \name{NEWS}
 \title{Recent changes to the TestGardner package}
+\section{Changes in TestGardener version 3.2.5 (2023-04-10)}{
+\itemize{
+  \item{Extensive work on the test vignette Quant_13B_problem.Rmd and on the 
+  clinical rating scale vignette hads_dep_3.Rmd (not included in vignette 
+  folder, but in inst/HADS) led to detecting multiple problems with the 
+  plotting codes using ggplot2 and plotly packages.  
+  The argument lists in ICC.plot.R and Wpca.plot.R have been changed.  
+  Hopefully these are now safe to use.}
+  }
+}
+\section{Changes in TestGardener version 3.2.4 (2023-23-08)}{
+\itemize{
+  \item{TestGardener has evolved substantially over 2023 and since 
+  the last news item.  There are now 38 functions, only 9 of which have
+  not been altered over this period.  The major changes have been
+  in the graphical displays because we have switched to ggplot2 and
+  plotly to construct them.  Juan Li has become an expert in these
+  two packages, and demonstrated a real talent for statistical 
+  graphics.  We transported all functions having to do with surprisal
+  curves in the fda package to versions in TestGardener.  Unfortunately,
+  we have beenb reduced to havingonly only one vignette,
+  Quant_13B_problem.Rmd, to CRAN restrictions on time taken to 
+  install TestGardener.  We have two large papers under review, one
+  for testing data, and the other for rating scales.}
+  }
+}
 \section{Changes in TestGardener version 3.1.3 (2022-20-12)}{
 \itemize{
   \item{We observe that the function used to define the best estimate of 
@@ -10,8 +36,7 @@
     New function thetasearch uses a fast grid search to identify the
     lowest point, and replaces the location identified by thetafun where
     required by the integer closest to the global minimum.  This is 
-    usually done after the cycles are completed as a final step.
-    }
+    usually done after the cycles are completed as a final step.}
   }
 }
 \section{Changes in TestGardener version 3.1.2 (2022-20-12)}{

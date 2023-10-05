@@ -12,8 +12,6 @@ export(Analyze,
   ICC.plot, 
   make.dataList,
   mu.plot, 
-  plotCore, 
-  plotICC, 
   Power.plot, 
   scoreDensity, 
   scorePerformance, 
@@ -37,12 +35,12 @@ import(knitr)
 import(rmarkdown)
 import(dplyr)
 import(stringr)
-import(ggplot2)
+import(ggplot2, except = c(last_plot, select))
 import(ggpubr)
 import(tidyr)
 import(utf8)
 import(rgl)
-import(plotly, except = c(last_plot, select))
+import(plotly)
 
 importFrom("grDevices", "dev.off", "rainbow", "tiff", "pdf", "png", "rgb")
 importFrom("graphics", "lines", "par", "text", "title", "legend", "points")
