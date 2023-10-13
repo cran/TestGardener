@@ -30,17 +30,15 @@ first two derivatives are also replaced.}
 \value{
 A named list object containing objects produced from analyzing the simulations,
 one set for each simulation:
-  \describe{
-    \item{theta:}{A vector containing all the score index values
+  \item{theta:}{A vector containing all the score index values
     including those that are altered.}
-    \item{Hval:}{A vector containing the N function values
+  \item{Hval:}{A vector containing the N function values
     included those that are altered.}
-    \item{DHval:}{A vector containing the N first derivative values
+  \item{DHval:}{A vector containing the N first derivative values
     included those that are altered.}
-    \item{D2Hval:}{A vector containing the N second derivative values
+  \item{D2Hval:}{A vector containing the N second derivative values
     included those that are altered.}
-    \item{changeindex:}{Indices of the theta values that are altered}
-  }
+  \item{changeindex:}{Indices of the theta values that are altered}
 }
 \references{
 Ramsay, J. O., Li J. and Wiberg, M. (2020) Full information optimal scoring. 

@@ -55,9 +55,9 @@ make.dataList(U, key, optList, scrrng=NULL, titlestr=NULL,
 }
 \details{
   The score range defined \code{scrrng} should contain all of the sum score 
-  values, but can go beyond them if desired.  For example, it may be that no 
-  examinee gets a zero sum score, but for reporting and display purposes using 
-  zero as the lower limit seems desirable.
+  values, but can go beyond their boundaries if desired.  For example, 
+  it may be that no examinee gets a zero sum score, but for reporting and 
+  display purposes using zero as the lower limit seems desirable.
   
   The number of bins is chosen so that a minimum of at least about 25 initial 
   percentage ranks fall within a bin.  For larger samples, the number per bin 
@@ -92,42 +92,40 @@ make.dataList(U, key, optList, scrrng=NULL, titlestr=NULL,
 }
 \value{
   A named list with named members as follows:
-  \describe{
-      \item{U:}{A matrix of response data with N rows and n columns where
-        N is number of examinees or respondents and n is number of items.
-        Entries in the matrices are the indices of the options chosen.
-        Column i of U is expected to contain only the integers 
-        \code{1,...,noption}.}  
-      \item{optList:}{A list vector containing the numerical score values 
-        assigned to the options for this question.}
-      \item{key:}{If the data are from a test of the multiple choices type
-       	where the right answer is scored 1 and the wrong answers 0, this is 
-       	a numeric vector of length n containing the indices the right answers.  
-       	Otherwise, it is NULL.}
-      \item{WfdPar:}{An fdPar object for the defining the surprisal curves.}
-      \item{noption:}{A numeric vector of length n containing the numbers of 
-        options for each item.}
-      \item{nbin:}{The number of bins for binning the data.}
-      \item{scrrng:}{A vector of length 2 containing the limits of observed 
-        sum scores.}
-      \item{scrfine:}{A fine mesh of test score values for plotting.}
-      \item{scrvec:}{A vector of length N containing the examinee or 
-        respondent sum scores.}
-      \item{itemvec:}{A vector of length n containing the question or item 
-        sum scores.}
-      \item{percntrnk:}{A vector length N containing the sum score 
-        percentile ranks.}
-      \item{thetaQnt:}{A numeric vector of length 2*nbin + 1 containing 
-        the bin boundaries alternating with the bin centers. These are initially 
-        defined as \code{seq(0,100,len=2*nbin+1)}.}
-      \item{Wdim:}{The total dimension of the surprisal scores.}
-      \item{PcntMarkers:}{The marker percentages for plotting: 
-        5, 25, 50, 75 and 95.}
-       \item{grbg:}{A logical vector of length number of questions. 
-       TRUE for an item indicates that a garbage option must be added to the  
-       score values, and FALSE indicates that there are no illegal or missing 
-       responses and the number of options is equal to number of score values.}
-  }
+  \item{U:}{A matrix of response data with N rows and n columns where
+    N is number of examinees or respondents and n is number of items.
+    Entries in the matrices are the indices of the options chosen.
+    Column i of U is expected to contain only the integers 
+    \code{1,...,noption}.}  
+  \item{optList:}{A list vector containing the numerical score values 
+    assigned to the options for this question.}
+  \item{key:}{If the data are from a test of the multiple choices type
+      where the right answer is scored 1 and the wrong answers 0, this is 
+      a numeric vector of length n containing the indices the right answers.  
+      Otherwise, it is NULL.}
+  \item{WfdPar:}{An fdPar object for the defining the surprisal curves.}
+  \item{noption:}{A numeric vector of length n containing the numbers of 
+    options for each item.}
+  \item{nbin:}{The number of bins for binning the data.}
+  \item{scrrng:}{A vector of length 2 containing the limits of observed 
+    sum scores.}
+  \item{scrfine:}{A fine mesh of test score values for plotting.}
+  \item{scrvec:}{A vector of length N containing the examinee or 
+    respondent sum scores.}
+  \item{itemvec:}{A vector of length n containing the question or item 
+    sum scores.}
+  \item{percntrnk:}{A vector length N containing the sum score 
+    percentile ranks.}
+  \item{thetaQnt:}{A numeric vector of length 2*nbin + 1 containing 
+    the bin boundaries alternating with the bin centers. These are initially 
+    defined as \code{seq(0,100,len=2*nbin+1)}.}
+  \item{Wdim:}{The total dimension of the surprisal scores.}
+  \item{PcntMarkers:}{The marker percentages for plotting: 
+    5, 25, 50, 75 and 95.}
+  \item{grbg:}{A logical vector of length number of questions. 
+    TRUE for an item indicates that a garbage option must be added to the  
+    score values, and FALSE indicates that there are no illegal or missing 
+    responses and the number of options is equal to number of score values.}
 }
 \references{
 Ramsay, J. O., Li J. and Wiberg, M. (2020) Full information optimal scoring. 

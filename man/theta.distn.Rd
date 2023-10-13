@@ -31,23 +31,21 @@ expected scores; and for test information curve locations in the interval
 [0,\code{arclength}].
 }
 \value{
-A named list containing:
-  \describe{
-    \item{pdf_fd:}{An fd object for the probability density function
-      values over the fine mesh.} 
-    \item{cdffine:}{A vector of cumulative probability values beginning
+  A named list containing:
+  \item{pdf_fd:}{An fd object for the probability density function
+    values over the fine mesh.} 
+  \item{cdffine:}{A vector of cumulative probability values beginning
     with zero and ending with 1. It must not have ties.}
-    \item{pdffine:}{A vector of probability values.}
-    \item{logdensfd:}{A functional data object (\code{fd}) representing 
-      the log of the probability function for input \code{theta}.} 
-    \item{C:}{The normalization constant for computing the probability 
-      density function with the command \code{densityfd = exp(logdensfd)/C.}} 
-    \item{denscdf:}{A set of unique values of the cumulative probability
-      function defined over an equally spaced mesh of score index values
-      of the same length as \code{denscdf}.}
-    \item{indcdf:}{A vector of values within [0,100] corresponding to the 
+   \item{pdffine:}{A vector of probability values.}
+  \item{logdensfd:}{A functional data object (\code{fd}) representing 
+    the log of the probability function for input \code{theta}.} 
+  \item{C:}{The normalization constant for computing the probability 
+     density function with the command \code{densityfd = exp(logdensfd)/C.}} 
+  \item{denscdf:}{A set of unique values of the cumulative probability
+    function defined over an equally spaced mesh of score index values
+    of the same length as \code{denscdf}.}
+  \item{indcdf:}{A vector of values within [0,100] corresponding to the 
     values in \code{denscdf}.}
-  }
 }
 \references{
 Ramsay, J. O., Li J. and Wiberg, M. (2020) Full information optimal scoring. 

@@ -10,7 +10,8 @@
   defined by a functional parameter object \code{logdensfdPar} along with a
   normalizing constant \code{C}.
 
-  The density function $p(thetadens)$ has the form \code{p(thetadens) = C exp[W(thetadens)]}
+  The density function $p(thetadens)$ has the form 
+  \code{p(thetadens) = C exp[W(thetadens)]}
   where function $W(thetadens)$ is defined by the functional data object
   \code{logdensfdPar}.
 }

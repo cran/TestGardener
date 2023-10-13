@@ -13,27 +13,12 @@
   Usimulate(theta.pop, WfdList)
 }
 \arguments{
-  \item{theta.pop}{A vector containing population score index values at which data
-    are to be simulated.}
-  \item{WfdList}{
-    A numbered list object produced by a TestGardener analysis of a test.  Its length
-    is equal to the number of items in the test or questions in the scale.  
-    Each member of \code{WfdList} is a named list containing information computed during the analysis.
-    These named lists contain these objects:
-    \describe{
-      \item{Wfd:}{A functional data object containing the \code{M} surprisal curves
-      f. or a question.}
-      \item{M:}{The number of options.}
-      \item{Pbin:}{A matrix containing proportions at each bin.}
-      \item{Wbin:}{A matrix containing surprisal values at each bin.}
-      \item{Pmatfine:}{A matrix of probabilities over a fine mesh.}
-      \item{Wmatfine:}{A matrix of surprisal values over a fine mesh.}
-      \item{DWmatfine:}{A matrix of the values of the first derivative of 
-        surprisal curves over fine mesh.}
-      \item{D2Wmatfine:}{A matrix of the values of the second derivative of 
-        surprisal curves over fine mesh.}
-    }
-  }
+  \item{theta.pop}{A vector containing population score index values at which 
+    data are to be simulated.}
+  \item{WfdList}{A numbered list object produced by a TestGardener analysis of 
+  a test.  Its length is equal to the number of items in the test or questions 
+  in the scale.  Each member of \code{WfdList} is a named list containing 
+  information computed during the analysis.}
 }
 \details{For each question and each examinee a vector of random multinomial 
 integer values is generated using the probability transforms of the surprisal 

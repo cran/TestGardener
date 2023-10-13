@@ -13,22 +13,7 @@ Binary items assumed coded as two choice items.}
     A numbered list object produced by a TestGardener analysis of a test.  Its length
     is equal to the number of items in the test or questions in the scale.  
     Each member of \code{WfdList} is a named list containing information computed 
-    during the analysis.
-    These named list in each member contains these objects:
-    \describe{
-      \item{Wfd:}{A functional data object containing the \code{M} surprisal curves
-        for a question.}
-      \item{M:}{The number of options.}
-      \item{Pbin:}{A matrix containing proportions at each bin.}
-      \item{Wbin:}{A matrix containing surprisal values at each bin.}
-      \item{Pmatfine:}{A matrix of probabilities over a fine mesh.}
-      \item{Wmatfine:}{A matrix of surprisal values over a fine mesh.}
-      \item{DWmatfine:}{A matrix of the values of the first derivative of 
-        surprisal curves over fine mesh.}
-      \item{D2Wmatfine:}{A matrix of the values of the second derivative of 
-        surprisal curves over fine mesh.}
-    }
-  }
+    during the analysis.}
   \item{optList}{A numbered list of length n.  Each member contains the weights
     assigned to each option for that item or question.}
 }

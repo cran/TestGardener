@@ -18,34 +18,18 @@ arbitrarily close to this state.}
 \arguments{
   \item{scrfine}{A vector of length nfine (usually 101) containing equally spaced
   	points spanning the plotrange.  Used for plotting.}
-  \item{WfdList}{
-  A numbered list object produced by a TestGardener analysis of a test.  Its length
-  is equal to the number of items in the test or questions in the scale.  
-  Each member of \code{WfdList} is a named list containing information computed during the analysis.
-  These named lists contain these objects:
-    \describe{
-      \item{Wfd:}{A functional data object containing the \code{M} surprisal curves
-      for a question.}
-      \item{M:}{The number of options.}
-      \item{Pbin:}{A matrix containing proportions at each bin.}
-      \item{Wbin:}{A matrix containing surprisal values at each bin.}
-      \item{Pmatfine:}{A matrix of probabilities over a fine mesh.}
-      \item{Wmatfine:}{A matrix of surprisal values over a fine mesh.}
-      \item{DWmatfine:}{A matrix of the values of the first derivative of 
-      surprisal curves over fine mesh.}
-      \item{D2Wmatfine:}{A matrix of the values of the second derivative of 
-      surprisal curves over fine mesh.}
-    }
-  }
+  \item{WfdList}{A numbered list object produced by a TestGardener analysis of  
+  a test.  Its length is equal to the number of items in the test or questions 
+  in the scale.  Each member of \code{WfdList} is a named list containing 
+  information computed during the analysis.}
   \item{Qvec}{The five marker percentile values.}
   \item{dataList}{A list vector containing objects essential to an analysis.}
-  \item{plotindex}{A set of integers specifying the numbers of the items or questions to be 
-  displayed.}
+  \item{plotindex}{A set of integers specifying the numbers of the items or 
+  questions to be displayed.}
   \item{plotrange}{A vector of length 2 containing the plot boundaries within or
         over the score index interval c(0,100).}
-  \item{height}{
-  A positive real number defining the upper limit on the ordinate for the plots.
-  }
+  \item{height}{A positive real number defining the upper limit on the ordinate 
+  for the plots.}
   \item{value}{Number required by ggplot2.  Defaults to 0.}
   \item{ttlsz}{Title font size.}
   \item{axisttl}{Axis title font size.}

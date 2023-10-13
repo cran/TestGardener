@@ -1,6 +1,6 @@
 Package: TestGardener
-Version: 3.2.5
-Date: 2023-10-04
+Version: 3.2.6
+Date: 2023-10-12
 Type: Package
 Title: Optimal Analysis of Test and Rating Scale Data
 Authors@R: c(person("James", "Ramsay", 
@@ -42,6 +42,6 @@ LazyData: true
 Imports: dplyr, ggpubr, stringr, tidyr, pracma, utf8, knitr, rmarkdown,
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2023-10-05 17:52:55 UTC; jimramsay
+Packaged: 2023-10-13 19:38:20 UTC; jimramsay
 Repository: CRAN
-Date/Publication: 2023-10-05 21:40:02 UTC
+Date/Publication: 2023-10-13 20:00:02 UTC

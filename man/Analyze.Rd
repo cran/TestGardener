@@ -64,48 +64,46 @@
 \value{
   The list vector \code{parList} where each member is a named list object containing 
   the results of an analysis cycle.  These results are:
-    \describe{
-      \item{theta:}{The optimal estimates of the score index values for the 
-      	examinees/respondents.  This is a vector of length \code{N}.}
-      \item{thetaQnt:}{A vector of length 2*nbin+1 containing bin boundaries alternating
-      	with bin edges.}
-      \item{WfdList:}{A list vector containing results from the estimation of surprisal 
-      	curves. The list vector is of length \code{n}, the number of questions or items in 
-      	the test of rating scale.  For details concerning these results, see function 
-      	\code{Wbinsmth()}.}
-      \item{logdensfd:}{A functional data object defining the estimate of the log of the 
-        probability density function for the distribution of the score index values.}
-      \item{C:}{The normalizing value for probability density functions.  
-      	A density value is computed by dividing the exponential of the log density value 
-      	by this constant.}
-      \item{densfine:}{The value of the probability density function over a fine mesh 
-      	of 101 equally spaced score index values.}
-      \item{denscdf:}{The values over a fine mesh of the cumulative probability 
-      	distribution function. These values start at 0 and end with 1 and are increasing.  
-      	Ties are often found at the upper boundary, so that using these values for 
-      	interpolation purposes may require using the vector \code{unique(denscdf)}.}
-      \item{binctr:}{A vector of length \code{nbin} containing the bin centers within 
-      	the interval [0,100].}
-      \item{bdry:}{A vector of length \code{nbin+1} containing the bin boundaries.}
-      \item{freq:}{A vector of length \code{nbin} containing the number of score 
-      	index values in the bins.  An score index value is within a bin if it is less than 
-      	or equal to the upper boundary and greater than the lower boundary.  The first 
-      	boundary also contains zero values.}
-      \item{Hval:}{A vector of length N containing the values of the negative log 
-      	likelihood fitting criterion.}
-      \item{DHval:}{A vector of length N containing the values of the first
-      	derivative of the negative log likelihood fitting criterion.}
-      \item{D2Hval:}{A vector of length N containing the values of the second
-      	derivative of the negative log likelihood fitting criterion.}
-      \item{active:}{A vector of length N of the activity status of the 
-      	values of theta.  If convergence was not achieved, the value is TRUE,
-      	otherwise FALSE.}  
-      \item{arclength:}{The length of the space curve defined by the surprisal curves.}
-      \item{alfine:}{A vector of length 101 of arclengths corresponding to 
-      	equally spaced values of theta.}
-      \item{theta_al:}{A vector of length N of arclengths corresponding to 
-      	estimated values of theta.}
-    }
+  \item{theta:}{The optimal estimates of the score index values for the 
+    examinees/respondents.  This is a vector of length \code{N}.}
+  \item{thetaQnt:}{A vector of length 2*nbin+1 containing bin boundaries alternating
+    with bin edges.}
+  \item{WfdList:}{A list vector containing results from the estimation of surprisal 
+    curves. The list vector is of length \code{n}, the number of questions or items in 
+    the test of rating scale.  For details concerning these results, see function 
+    \code{Wbinsmth()}.}
+  \item{logdensfd:}{A functional data object defining the estimate of the log of the 
+    probability density function for the distribution of the score index values.}
+  \item{C:}{The normalizing value for probability density functions.  
+    A density value is computed by dividing the exponential of the log density value 
+    by this constant.}
+  \item{densfine:}{The value of the probability density function over a fine mesh 
+    of 101 equally spaced score index values.}
+  \item{denscdf:}{The values over a fine mesh of the cumulative probability 
+    distribution function. These values start at 0 and end with 1 and are increasing.  
+    Ties are often found at the upper boundary, so that using these values for 
+    interpolation purposes may require using the vector \code{unique(denscdf)}.}
+  \item{binctr:}{A vector of length \code{nbin} containing the bin centers within 
+    the interval [0,100].}
+  \item{bdry:}{A vector of length \code{nbin+1} containing the bin boundaries.}
+  \item{freq:}{A vector of length \code{nbin} containing the number of score 
+    index values in the bins.  An score index value is within a bin if it is less than 
+    or equal to the upper boundary and greater than the lower boundary.  The first 
+    boundary also contains zero values.}
+  \item{Hval:}{A vector of length N containing the values of the negative log 
+    likelihood fitting criterion.}
+  \item{DHval:}{A vector of length N containing the values of the first
+    derivative of the negative log likelihood fitting criterion.}
+  \item{D2Hval:}{A vector of length N containing the values of the second
+    derivative of the negative log likelihood fitting criterion.}
+  \item{active:}{A vector of length N of the activity status of the 
+    values of theta.  If convergence was not achieved, the value is TRUE,
+    otherwise FALSE.}  
+  \item{arclength:}{The length of the space curve defined by the surprisal curves.}
+  \item{alfine:}{A vector of length 101 of arclengths corresponding to 
+    equally spaced values of theta.}
+  \item{theta_al:}{A vector of length N of arclengths corresponding to 
+    estimated values of theta.}
 }
 \references{
   Ramsay, J. O., Li J. and Wiberg, M. (2020) Full information optimal scoring. 

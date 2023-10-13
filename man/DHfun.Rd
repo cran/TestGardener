@@ -11,36 +11,21 @@ The analysis is within the closed interval [0,100].
   DHfun(theta, WfdList, Umat)
 }
 \arguments{
-  \item{theta}{Initial values for score indices in [0,n]/[0,100]. Vector of size N.}
-  \item{WfdList}{A numbered list object produced by a TestGardener analysis of a test.  Its length
-    is equal to the number of items in the test or questions in the scale.  
-     Each member of \code{WfdList} is a named list containing information computed during the analysis.
-    These named lists contain these objects:
-    \describe{
-      \item{Wfd:}{A functional data object containing the \code{M} surprisal curves
-      for a question.}
-      \item{M:}{The number of options.}
-      \item{Pbin:}{A matrix containing proportions at each bin.}
-      \item{Wbin:}{A matrix containing surprisal values at each bin.}
-      \item{Pmatfine:}{A matrix of probabilities over a fine mesh.}
-      \item{Wmatfine:}{A matrix of surprisal values over a fine mesh.}
-      \item{DWmatfine:}{A matrix of the values of the first derivative of 
-      surprisal curves over fine mesh.}
-      \item{D2Wmatfine:}{A matrix of the values of the second derivative of 
-      surprisal curves over fine mesh.}
-    }
-  }
+  \item{theta}{Initial values for score indices in [0,n]/[0,100]. 
+  Vector of size N.}
+  \item{WfdList}{A numbered list object produced by a TestGardener analysis of 
+  a test.  Its length is equal to the number of items in the test or questions 
+  in the scale. Each member of \code{WfdList} is a named list containing 
+  information computed during the analysis.}
   \item{Umat}{An \code{N} by \code{n} matrix of responses.  If \code{N} = 1, it 
   can be a vector of length \code{n}.}
 }
 \value{
 A named list for results \code{DH} and \code{D2H}:
-  \describe{
-    \item{DH:}{ First derivatives of the negative log likelihood values, 
-      vector of size N}
-    \item{D2H:}{Second derivatives of the negative log likelihood values, 
-      vector of size N}
-  }
+\item{DH:}{ First derivatives of the negative log likelihood values, 
+   vector of size N}
+\item{D2H:}{Second derivatives of the negative log likelihood values, 
+   vector of size N}
 }
 \references{
 Ramsay, J. O., Li J. and Wiberg, M. (2020) Full information optimal scoring. 

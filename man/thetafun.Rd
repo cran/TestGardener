@@ -27,26 +27,9 @@ are printed for each iteration.
 \arguments{
   \item{theta}{A vector of size \code{N} containing initial values for score 
     indices in the interval [0,100].}
-  \item{WfdList}{
-    A numbered list object produced by a TestGardener analysis of a test.  
-    Its length is equal to the number of items in the test or questions in the 
-    scale.  Each member of \code{WfdList} is a named list containing information 
-    computed during the analysis.
-    The named list in each member contains these objects:
-    \itemize{
-      \item{Wfd:} {A functional data object containing the \code{M} 
-        surprisal curves for a question.}
-      \item{M:} {The number of options.}
-      \item{Pbin:} {A matrix containing proportions at each bin.}
-      \item{Wbin:} {A matrix containing surprisal values at each bin.}
-      \item{Pmatfine:} {A matrix of probabilities over a fine mesh.}
-      \item{Wmatfine:} {A matrix of surprisal values over a fine mesh.}
-      \item{DWmatfine:} {A matrix of the values of the first derivative of 
-        surprisal curves over fine mesh.}
-      \item{D2Wmatfine:} {A matrix of the values of the second derivative of 
-        surprisal curves over fine mesh.}
-    }
-  }
+  \item{WfdList}{A list vector of length equal to the number of questions.  
+    Each member contains eight results for the surprisal curves 
+    associated with a question.}
   \item{U}{A matrix number of rows equal to the number of examinees or 
     respondents, and number of columns equal to number of items.  The 
     values in the matrix are indices of choices made by each respondent
@@ -58,13 +41,11 @@ are printed for each iteration.
 }
 \value{
 A named list with these members:
-  \describe{
-    \item{theta_out:}{A vector of optimized score index value.} 
-    \item{Hval:}{The negative log likelihood criterion.}
-    \item{DHval:}{The first derivative of the negative likelihood.} 
-    \item{D2Hval:}{The second derivative of the negative likelihood.} 
-    \item{iter:}{The number iterations used.}
-  }
+  \item{theta_out: }{A vector of optimized score index value.} 
+  \item{Hval: }{The negative log likelihood criterion.}
+  \item{DHval: }{The first derivative of the negative likelihood.} 
+  \item{D2Hval: }{The second derivative of the negative likelihood.} 
+  \item{iter: }{The number iterations used.}
 }
 \references{
 Ramsay, J. O., Li J. and Wiberg, M. (2020) Full information optimal scoring. 

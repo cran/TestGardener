@@ -1,7 +1,7 @@
-\name{Wpca.plot}
-\alias{Wpca.plot}
+\name{Wpca}
+\alias{Wpca}
 \title{
-Plot the test information or scale curve in either two or three dimensions.
+Functional principal components analysis of information curve
 }
 \description{
   A test or scale analysis produces a space curve that varies with in the space of 
@@ -10,18 +10,25 @@ Plot the test information or scale curve in either two or three dimensions.
   can be fixed by using functional principal components analysis.
 }
 \usage{
-  Wpca.plot(harmvarmxfd, nharm=2, titlestr=NULL)
+  Wpca(WfdList, Wdim=NULL, nharm=2, rotate=TRUE)
 }
 \arguments{
-  \item{harmvarmxfd}{Functional data objects for the principal
-    components of the curve shape.} 
-  \item{nharm}{Number of principal components.} 
-  \item{titlestr}{A string for the title of the plot.  Defaults to NULL. }
+  \item{WfdList}{A numbered list object produced by a TestGardener analysis 
+  of a test.  Its length is equal to the number of items in the test or 
+  questions in the scale.  Each member of \code{WfdList} is a named list 
+  containing information computed during the analysis.}
+  \item{Wdim}{Interval over which curve is plotted. All if Wdim == NULL.}
+  \item{nharm}{The number of principal components of the test information or scale 
+  curve to be used to display the curve.  Must be either 2 or 3.}
+  \item{rotate}{If true, rotate principal components of the test information or 
+  scale curve to be used to display the curve to VARIMAX orientation.}
 }
 \value{
-Side effect is a two or three-dimensional plot of the principal component
-approximation of the information curve using the plotly package.  Function
-\code{plot_ly} does not return a value, but does render the graphic.
+A named list with these members:
+  \item{harmvarmxfd}{Functional data objects for the principal
+    components of the curve shape.} 
+  \item{varpropvarmx}{Proportions of variance accounted for by the principal 
+    components}
 }
 \references{
 Ramsay, J. O., Li J. and Wiberg, M. (2020) Full information optimal scoring. 
@@ -34,7 +41,7 @@ http://testgardener.azurewebsites.net
 }
 \author{Juan Li and James Ramsay}
 \seealso{
-  \code{\link{Wpca}}
+  \code{\link{Wpca.plot}}
 }
 \examples{
 #  Example 1.  Display the test information curve for the 
@@ -43,21 +50,18 @@ http://testgardener.azurewebsites.net
 WfdList    <- Quant_13B_problem_parList$WfdList
 theta      <- Quant_13B_problem_parList$theta
 arclength  <- Quant_13B_problem_parList$arclength 
-Results    <- Wpca(WfdList,  nharm=2, rotate=TRUE)
-varprop    <- Results$varpropvarmx
-titlestr   <- "SweSAT problem items"
 oldpar <- par(no.readonly=TRUE)
 on.exit(oldpar)
-Wpca.plot(Results$harmvarmxfd, nharm=2, titlestr)
+Results <- Wpca(WfdList, nharm=2, rotate=FALSE)
+varprop <- Results$varpropvarmx
 print("Proportions of variance accounted for and their sum:")
 print(round(100*c(varprop,sum(varprop)),1))
 #  plot a three-dimension version of manifold curve
 WfdList    <- Quant_13B_problem_parList$WfdList
 theta      <- Quant_13B_problem_parList$theta
 arclength  <- Quant_13B_problem_parList$arclength 
-Results    <- Wpca(WfdList,  nharm=3, rotate=TRUE)
-varprop    <- Results$varpropvarmx
-Wpca.plot(Results$harmvarmxfd, nharm=3, titlestr)
+Results <- Wpca(WfdList, nharm=3, rotate=FALSE)
+varprop <- Results$varpropvarmx
 print("Proportions of variance accounted for and their sum:")
 print(round(100*c(varprop,sum(varprop)),1))
 #  Example 2.  Display the test information curve for the 

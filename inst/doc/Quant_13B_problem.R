@@ -119,16 +119,6 @@ TestGardener::mu.plot(mufine, Math_dataList$scrrng, titlestr)
 print(paste("Arc length =", round(arclength,2)))
 TestGardener::ArcLength.plot(arclength, arclengthvec, titlestr)
 
-## ----compute and display test information curve, chunk=27, eval=TRUE, fig.width = 7, webgl=TRUE----
-Result <- TestGardener::Wpca.plot(WfdList, nharm=3,
-                                  rotate=FALSE, titlestr = titlestr)
-print(Result$pcaplt)
-print("Percentagess of variance for principal components:")
-print(round(100*Result$varpropvarmx,1))
-print("Total percentage of variation:")
-print(round(sum(100*Result$varpropvarmx,1)))
-
-
 ## ----plot the first five examinee data fits, chunk=28, eval = TRUE, fig.width = 7----
 TestGardener::Hfuns.plot(indfine, theta, WfdList, U, plotindex=1:5)
 
