@@ -9,13 +9,13 @@ value of the index set the values of the curves are a surprisal vector.
 See Details below for further explanations.
 }
 \usage{
-eval.surp(evalarg, Wfdobj, nderiv = 0)
+eval.surp(evalarg, Sfdobj, nderiv = 0)
 }
 \arguments{
   \item{evalarg}{a vector or matrix of argument values at which the functional data
     object is to be evaluated.}
-  \item{Wfdobj}{a functional data object of dimension \code{M-1} to be evaluated.}
-  \item{nderiv}{An integer defining a derivatve of \code{Wfdobj} in
+  \item{Sfdobj}{a functional data object of dimension \code{M-1} to be evaluated.}
+  \item{nderiv}{An integer defining a derivatve of \code{Sfdobj} in
   the set \code{c(0,1,2)}.}
 }
 \details{A surprisal \code{M}-vector is information measured in \code{M}-bits.
@@ -53,8 +53,6 @@ Journal of Educational and Behavioral Statistics, 45, 297-315.
 
 Ramsay, J. O., Li J. and Wiberg, M. (2020) Better rating scale scores with information-based 
 psychometrics.  Psych, 2, 347-360.
-
-http://testgardener.azurewebsites.net
 }
 \author{Juan Li and James Ramsay}
 \seealso{
