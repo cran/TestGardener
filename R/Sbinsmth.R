@@ -2,7 +2,7 @@ Sbinsmth <- function(index, dataList, SfdList=dataList$SfdList,
                      indexQnt=seq(0,100, len=2*nbin+1), wtvec=matrix(1,n,1),
                      iterlim=20, conv=1e-4, dbglev=0) {
   
-  # Last modified 3 November 2023 by Jim Ramsay
+  # Last modified 28 November 2023 by Jim Ramsay
 
   #  -----------------------------------------------------------------------------
   #  Step 1.       Set up  objects required for subsequent steps

@@ -1,4 +1,4 @@
-3a5ccf6a55555afa97cd8543987b394a *DESCRIPTION
+7e6355b27eaf3a084be33b41c3dd56eb *DESCRIPTION
 6f003ec1d002471e26fc238c9f2b25cc *NAMESPACE
 73eff91b6ffb8697d6fa390ac5638ba5 *R/Analyze.R
 7d6ad01ca023bb18f31baa9441b15769 *R/DFfun.R
@@ -6,16 +6,16 @@ bedc6f4ec5dee41d3cbff867450a9a56 *R/Entropy_plot.R
 7bc8b3669ad97c83584953bb914b774a *R/Fcurve.R
 889e6564da2b182cee4e2dc4e02ebd38 *R/Ffun.R
 677936d5a4c0bb7a52b939a74723b03c *R/Ffuns_plot.R
-597f067298153fc159f61a67e67271d1 *R/ICC_plot.R
+f0c449da6712227f1e8fc6664d6f5227 *R/ICC_plot.R
 ecc04c2ead6db9a87e01b693812baff8 *R/Power_plot.R
-711993a552e9d0b3dac370ae33139fb6 *R/Sbinsmth.R
+0e01668b695459adf4097790113b10d1 *R/Sbinsmth.R
 56f515a3f82601226f76436a31c87079 *R/Sbinsmth_nom.R
 dda41d83d0fafb731c660fb69df86d04 *R/Scope_plot.R
 c3b9f8a74337f309c89aaf7b5007b7fb *R/Sensitivity_plot.R
 3b4f34e2a1728c6ed55e60edd49c1764 *R/SimulateData.R
 8fe0d7453bd3075c20d880c1b644eb8f *R/Spca.R
 c02d8de1f5668429a22b6ed876cf22df *R/Spca_plot.R
-7cb783f4e0ec377fca5d029a0bf8500f *R/TG_analysis.R
+75ca4ec5fb4a7e19c2e8313863977ce3 *R/TG_analysis.R
 49109fb0b9bc3394a097b2bed2492115 *R/TG_density.fd.R
 4547823a852d3c1dac814a9b6e214508 *R/TestInfo_svd.R
 231a351d5838f3ced7a880c3091ea50b *R/chce_simulate.R
@@ -28,7 +28,7 @@ c02734d64e9195577d72f59b03bb00d7 *R/index2info.R
 7491e690972c8addbeda392627daa4cf *R/index_distn.R
 8168bf9be825cefb0baf33abf7c26c3f *R/index_fun.R
 b1c47664afa1c7eaab6608b9a6530149 *R/index_search.R
-ec9c8bcd0da7208a2ada8d00598e7d13 *R/make_dataList.R
+b22bfc96bb16b651af4ca093eff2ac34 *R/make_dataList.R
 72bb36dc632e7593ba72be96509c5260 *R/mu.R
 211ce9ce5ac531f9714c9879fe8e834e *R/mu_plot.R
 eee8e7944a6e769a6d49f32e4dfca1b7 *R/scoreDensity.R

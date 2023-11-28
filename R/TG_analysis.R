@@ -59,16 +59,19 @@ TG_analysis <- function(chcemat, scoreList, noption, sumscr_rng=NULL,
   #.                 used to represent the TestGardener results.  
   #.                 Defaults to ncycle.
 
-    #  Last modified 3 November 2023 by Jim Ramsay
+  #  Last modified 3 November 2023 by Jim Ramsay
   
   N <- nrow(chcemat)
   n <- ncol(chcemat)
   
-  dataList <- make_dataList(chcemat, scoreList, noption, sumscr_rng=NULL, 
-                            titlestr, itemlabvec, optlabList,
-                            nbin, NumBasis, SfdPar,
-                            jitterwrd, PcntMarkers)
+  print(paste("Number of basis functions =",NumBasis))
   
+  dataList <- make_dataList(chcemat, scoreList, noption, sumscr_rng=sumscr_rng,
+                            titlestr=titlestr, itemlabvec=itemlabvec, 
+                            optlabList=optlabList,
+                            nbin, NumBasis=NumBasis, SfdPar=SfdPar,
+                            jitterwrd=jitterwrd, PcntMarkers=PcntMarkers)
+
   #  ----------------------------------------------------------------------------
   #  compute the initial option surprisal curves using the 
   #  percentage ranks as initial estimates of index
@@ -82,7 +85,7 @@ TG_analysis <- function(chcemat, scoreList, noption, sumscr_rng=NULL,
   #  ----------------------------------------------------------------------------
   
   parmListvec <- Analyze(index, indexQnt, dataList,   
-                         ncycle, itdisp, verbose) 
+                         ncycle=ncycle, itdisp=itdisp, verbose=verbose) 
   
   # print("Analyze complete")
   #  ----------------------------------------------------------------------------
