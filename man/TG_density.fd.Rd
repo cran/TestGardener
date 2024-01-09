@@ -16,7 +16,7 @@
   \code{logdensfdPar}.
 }
 \usage{
-\method{TG_density}{fd}(indexdens, logdensfdPar, conv=0.0001, iterlim=20,
+\method{TG_density}{fd}(indexdens, logdensfd, conv=0.0001, iterlim=20,
            active=1:nbasis, dbglev=0)
 }
 \arguments{
@@ -29,8 +29,8 @@ a set observations, which may be one of two forms:
 }
 The first option corresponds to all $f_i = 1$.
 }
-\item{logdensfdPar}{
-a functional parameter object specifying the initial
+\item{logdensfd}{
+a functional data object specifying the initial
 value, basis object, roughness penalty and smoothing
 parameter defining function $W(t).$
 }

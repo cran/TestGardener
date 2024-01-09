@@ -1,6 +1,6 @@
 Ffun <- function(index, SfdList, chcemat) {
 	
-# Last modified 16 November 2023 by Jim Ramsay
+# Last modified 19 December 2023 by Jim Ramsay
 
   if (is.null(ncol(chcemat))) {
     N <- 1
@@ -30,32 +30,31 @@ Ffun <- function(index, SfdList, chcemat) {
   for (item in 1:n) {
     #  be sure that chcemat contains only integers
     if (N == 1) {
-      chcematveci <- as.integer(chcemat[item])
+      chceveci <- as.integer(chcemat[item])
     } else {
-      chcematveci <- as.integer(chcemat[,item])
+      chceveci <- as.integer(chcemat[,item])
     }
     #  Now compute increment to fit values for this item
-    #  provided chcematveci is not NchcematLL
-    if (!is.null(chcematveci)) {
+    #  provided chceveci is not NULL
+    if (!is.null(chceveci)) {
       #  extract the surprisal curves for this item
       SStri     <- SfdList[[item]]
       Sfdi      <- SStri$Sfd
       Mi        <- SStri$M
+      Zmati     <- SStri$Zmat
       #  evaluate surprisal curves at the score index values in theta
-      Smati     <- eval.surp(index, Sfdi)
+      Smati     <- eval.surp(index, Sfdi, Zmati)
       #  Mi must be greater than 1, if not, abort
       if (Mi > 1) {
         #  select values of curve for the selected option
         if (N == 1) {
-          Sveci <- Smati[chcematveci]
+          Sveci <- Smati[chceveci]
         } else {
-          for (j in 1:N)
-          {
-            if (chcematveci[j] > Mi)
-            {
-              stop(paste("Item: ", item, " chcematveci(",j,") > Mi",sep = ""))
-            }
-            Sveci[j] <- Smati[j,chcematveci[j]]
+          for (j in 1:N) {
+            # if (chceveci[j] > Mi) {
+            #   stop(paste("Item: ", item, " chceveci(",j,") > Mi",sep = ""))
+            # }
+            Sveci[j] <- Smati[j,chceveci[j]]
           }
         }
         # update fit values

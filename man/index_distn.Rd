@@ -10,8 +10,8 @@
     In the score index case, these are usually only the values in the interior of 
     the interval [0,100].}
   \item{logdensbasis}{A functional basis object for representing the log density 
-    function.  The argument may also be a functional parameter object 
-    (\code{fdPar}) or a functional basis object (\code{Sbasis}).}
+    function.  The argument may also be a functional data object 
+    (\code{fd}) or a functional basis object (\code{Sbasis}).}
   \item{pvec}{A vector length NL containing the marker percentages.}
   \item{nfine}{The number of values in a fine grid, default as 101.}
 }
@@ -71,18 +71,13 @@ index     <- Quant_13B_problem_parmList$index
 N         <- length(index)
 #  Define the density for only interior index values
 inside    <- index > 0 & index < 100
-logdensbasis    <- Quant_13B_problem_parmList$logdensfd$basis
+indexdens <- index[inside]
+logdensbasis <- fda::create.bspline.basis(c(0,100), 15)
 index_distnList <- index_distn(index[inside], logdensbasis)
-index.densfine  <- eval.fd(indfine, index_distnList$pdf_fd)
-#  Add number of values at each boundary
-indexzero       <- length(index[index == 0])
-indexcent       <- length(index[index == 100])
-#  Plot both the interior density and the boundary proportions
-oldpar <- par(no.readonly=TRUE)
-on.exit(oldpar)
-plot(indfine, index.densfine, type="l", lwd=2, ylim=c(0,0.025), 
-     xlab="Percentile Index", ylab="Density")
-lines(c(  0,100), c(1/100,1/100), lty=2)
-lines(c(  0,  0), c(0,indexzero/N), lty=1, lwd=4)
-lines(c(100,100), c(0,indexcent/N), lty=1, lwd=4)
+denscdf         <- as.numeric(index_distnList$denscdf)
+indcdf          <- as.numeric(index_distnList$indcdf)
+# adjusted marker score index values are computed by interpolation
+markers <- c(.05, .25, .50, .75, .95)
+Qvec    <- pracma::interp1(denscdf, indcdf, markers)
+result  <- density_plot(indexdens, c(0,100), Qvec)
 }

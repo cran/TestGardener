@@ -51,7 +51,7 @@ index_search <- function(SfdList, chcemat, index, Fval, DFval, D2Fval,
         for (item in 1:n) {
           SListi      <- SfdList[[item]]
           DSmatfinei  <- SListi$DSmatfine
-          DFval[j]    <-  DFval[j] +  DSmatfinei[indexgrid+1,chcemat[j,item]]
+          DFval[j]    <- DFval[j] +  DSmatfinei[indexgrid+1,chcemat[j,item]]
           D2Smatfinei <- SListi$D2Smatfine
           D2Fval[j]   <- D2Fval[j] + D2Smatfinei[indexgrid+1,chcemat[j,item]]
         }

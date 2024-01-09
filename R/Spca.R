@@ -1,6 +1,6 @@
-Spca <- function(SfdList, Sdim=NULL, nharm=2, rotate=TRUE) {
+Spca <- function(SfdList, nharm=2, Sdim=NULL, rotate=TRUE) {
   
-  #  Last modified 10 October 2023 by Jim Ramsay
+  #  Last modified 12 December 2023 by Jim Ramsay
   
   #  set up the dimension of the over-space containing the test info curve
   
@@ -29,10 +29,11 @@ Spca <- function(SfdList, Sdim=NULL, nharm=2, rotate=TRUE) {
     SListi <- SfdList[[item]]
     Sfdi   <- SListi$Sfd
     Mi     <- SListi$M
+    Zmati  <- SListi$Zmat
     m1 <- m2 +  1
     m2 <- m2 + Mi
-    Smat_full[,m1:m2]  <- eval.surp(indfine, Sfdi)
-    DSmat_full[,m1:m2] <- eval.surp(indfine, Sfdi,1)
+    Smat_full[,m1:m2]  <- eval.surp(indfine, Sfdi, Zmati)
+    DSmat_full[,m1:m2] <- eval.surp(indfine, Sfdi, Zmati, 1)
     Pmat_full[,m1:m2]  <- Mi^(Smat_full[,m1:m2])
   }
   
