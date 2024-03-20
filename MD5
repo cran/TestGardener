@@ -1,6 +1,6 @@
-6142dea05b050febbb3e0faf4ec96069 *DESCRIPTION
+1ebac6f0d6324106a515cd412f508c94 *DESCRIPTION
 15bca59e9f54bd8a25ded5f05f401f33 *NAMESPACE
-e05ef2ca86ed1b963f6974381eae5481 *R/Analyze.R
+0d617832d3f8e366bfd163e771fb0ee7 *R/Analyze.R
 ca23466589fbccb8f0d729efe43090fe *R/DFfun.R
 bedc6f4ec5dee41d3cbff867450a9a56 *R/Entropy_plot.R
 adb49c4472a6d0919c5c3f071d645a9f *R/Fcurve.R
@@ -16,7 +16,7 @@ c3b9f8a74337f309c89aaf7b5007b7fb *R/Sensitivity_plot.R
 3b4f34e2a1728c6ed55e60edd49c1764 *R/SimulateData.R
 01f669bbf855bf5de78aee3931397870 *R/Spca.R
 c02d8de1f5668429a22b6ed876cf22df *R/Spca_plot.R
-bfa3b1e95f0518dec9f1554db6532fe0 *R/TG_analysis.R
+5b156930caf5670fd0b5188c52196d3f *R/TG_analysis.R
 6be38eb4ef174704c0a7f79613432488 *R/TG_density.fd.R
 4547823a852d3c1dac814a9b6e214508 *R/TestInfo_svd.R
 231a351d5838f3ced7a880c3091ea50b *R/chce_simulate.R
@@ -29,7 +29,7 @@ a03e8ad05d52fc7fd63ad106b3d5e9a4 *R/entropies.R
 cfda3f830a39f7b28073918444413d4f *R/index_distn.R
 d5a9cf00cd63ff63589b406b3302b58f *R/index_fun.R
 77c647ea3ce265a42d36dd48158f1abe *R/index_search.R
-ff460a0f67b73cfcfb870bf7c5f32472 *R/make_dataList.R
+668cd64dc7ce1d58e6e041c9d682ef63 *R/make_dataList.R
 3bcbc5dae3a45e996fd63d884f38118a *R/mu.R
 211ce9ce5ac531f9714c9879fe8e834e *R/mu_plot.R
 eee8e7944a6e769a6d49f32e4dfca1b7 *R/scoreDensity.R
@@ -45,7 +45,7 @@ c5bfa7ccd05963cad8bed95802c63b66 *README.md
 043cee6e469716be8520929e48856df3 *data/Quant_13B_problem_key.rda
 3399eeb06f5b9e4b1b940e36abebc1a7 *data/Quant_13B_problem_parmList.rda
 a36e3e7e3fa2ae2bd504fdea49bcbe83 *inst/NEWS.Rd
-88e3dcf9bf1ae169fe5f42ed11d94a32 *man/Analyze.Rd
+921ec75b82d0575896907536d9e7858a *man/Analyze.Rd
 5e79d4e87d34e52c68a3aab9a374748e *man/DFfun.Rd
 ca504017eaccb65f3bc43dd098b64f7f *man/Entropy_plot.Rd
 0305a4f0664420c53ce88c2d784bf82a *man/Fcurve.Rd
@@ -66,7 +66,7 @@ d7b3ef4330bd9841830051d7cb100770 *man/Sensitivity_plot.Rd
 19bd7d229fdaab56907fc8c1d42e6f67 *man/SimulateData.Rd
 b11bee53a7cff0628c38076073236b8b *man/Spca.Rd
 f3099c2e251bbb7c2d049b2aae062657 *man/Spca_plot.Rd
-bbf108b29512918e85d30cc5702b0acd *man/TG_analysis.Rd
+839aaacf1660428247e17ecdcca344be *man/TG_analysis.Rd
 300a678431304d04af25e895fb15ef67 *man/TG_density.fd.Rd
 f4007c391714db4b0296436e19703b91 *man/TestGardener-package.Rd
 f354970fa4dc63d6edebbd756774d11e *man/TestInfo_svd.Rd
