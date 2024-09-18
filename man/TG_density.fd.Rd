@@ -103,6 +103,3 @@ turn off the output buffering option in S-PLUS.
   information-based psychometrics.  Psych, 2, 347-360.
  }
 \author{Juan Li and James Ramsay}
-\seealso{
-  \code{\link{intensity.fd}}
-}

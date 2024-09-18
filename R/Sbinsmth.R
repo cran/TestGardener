@@ -15,9 +15,9 @@ Sbinsmth <- function(index, dataList,
   
   # Last modified 15 January 2024 by Jim Ramsay
 
-  #  -----------------------------------------------------------------------------
+  #  ---------------------------------------------------------------------------
   #  Step 1.       Set up  objects required for subsequent steps
-  #  -----------------------------------------------------------------------------
+  #  ---------------------------------------------------------------------------
 
   #  check dataList
   
@@ -45,10 +45,10 @@ Sbinsmth <- function(index, dataList,
   if (is.null(noption)) stop("noption is null.")
   if (is.null(nbin))    stop("nbin is null.")
   
-  #  -----------------------------------------------------------------------------
+  #  ---------------------------------------------------------------------------
   #  Step 2. Bin the locations in index into bins defined by the
   #          bin edge and boundary vector indexQnt
-  #  -----------------------------------------------------------------------------
+  #  ---------------------------------------------------------------------------
 
   #  bin centers
   
@@ -62,22 +62,23 @@ Sbinsmth <- function(index, dataList,
   
   indfine <- seq(0,100,len=101)
   
-  #  -----------------------------------------------------------------------------
+  #  ---------------------------------------------------------------------------
   #  Step 3A.  Loop through the items to define the negative-surprisal S-curves
   #           for each question.
-  #  -----------------------------------------------------------------------------
+  #  ---------------------------------------------------------------------------
   
+  RMSE <- matrix(0,nbin,1)
   for (item in 1:n) {
 
-        SListi <- SfdList[[item]]
+    SListi <- SfdList[[item]]
     Mi     <- SListi$M
     logMi  <- log(Mi)
     Sfdi   <- SListi$Sfd
     Zmati  <- SListi$Zmat
+    binctri <- SListi$binctr
     
     #  set up bin probabilities and surprisals
     
-    # print("entering binSP on line 80")
     result   <- binSP(item, index, dataList, bdry) 
     Pbin     <- result$Pbin
     Sbin     <- result$Sbin
@@ -86,8 +87,8 @@ Sbinsmth <- function(index, dataList,
     
     #  Set up SurprisalMax to replace NA's
 
-    # print("entering surp.max on line 88")
-    result <- surp.max(item, Mi, logMi, nbin, binctr, Pbin, Sbin, meanfreq, grbgvec)
+    result <- surp.max(item, Mi, logMi, nbin, binctr, Pbin, Sbin,meanfreq, 
+                       grbgvec)
     Pbin   <- result$Pbin
     Sbin   <- result$Sbin
     SurprisalMax <- result$SurprisalMax
@@ -100,32 +101,30 @@ Sbinsmth <- function(index, dataList,
     #  apply surprisal smoothing
     #  --------------------------------------------------------------------
     
-    Bmat0   <- Sfdi$coefs
+    Bmati   <- Sfdi$coefs
     Sbasis  <- Sfdi$basis
+    Snbasis <- Sbasis$nbasis
+    Phimati <- fda::eval.basis(binctr, Sbasis)
+    npar    <- Snbasis*(Mi-1)
+    Kmat    <- matrix(0,npar,npar)
     #  suprisal smooth
-    # if (outputwrd) dbglev <- 1 else dbglev <- 0
     #  optimize fit of smooth surprisal curves
-    # print("entering smooth.surp on line 106")
-    result  <- smooth.surp(binctr, Sbin, Bmat0, Sfdi, Zmati)
-    #  retrieve results
-    Sfdi    <- result$Sfd
-    Bmati   <- result$Bmat
-    # if (outputwrd) print(round(Zmati %*% t(Bmati),1))
-    SSE     <- result$SSE
-    hmat    <- result$hmat
+    result  <- smooth.surp(binctr, Sbin, Bmati, Sbasis, Zmati)
+    Bmati         <- result$Bmat
+    SSE           <- result$SSE
+    hmat          <- result$hmat
     DvecSmatDvecB <- result$DvecSmatDvecB
+    RMSEi         <- result$RMSE
+    Entropyi      <- result$Entropy
     
     #  --------------------------------------------------------------------
     #  Step 4  Compute S and P values for bin point and each mesh point
     #  --------------------------------------------------------------------
     
     indfine   <- seq(0,100,len=101)
-    # print("calling eval.surp line 120")
     Smatfine  <- eval.surp(indfine, Sfdi, Zmati)
-    # print("calling eval.surp line 122")
     DSmatfine <- eval.surp(indfine, Sfdi, Zmati, 1)
     if (Sbasis$nbasis > 2) {
-      # print("calling eval.surp line 125")
       D2Smatfine <- eval.surp(indfine, Sfdi, Zmati, 2)
     } else {
       D2Smatfine <- NULL
@@ -161,7 +160,8 @@ Sbinsmth <- function(index, dataList,
     Pbinfit <- matrix(0,nbin,Mi)
     DPbinDS <- matrix(0,nbin,Mi)
     for (m in 1:Mi) {
-      Pbinfit[,m] <- pracma::interp1(as.numeric(indfine), as.numeric(Pmatfine[,m]), 
+      Pbinfit[,m] <- pracma::interp1(as.numeric(indfine), 
+                                     as.numeric(Pmatfine[,m]), 
                                      as.numeric(binctr))
     }
     #  compute derivatives for all options (except for diagonal)
@@ -174,7 +174,11 @@ Sbinsmth <- function(index, dataList,
     #  of step 4 for this single item.  SfdList[[item]] <- SListi
     #  --------------------------------------------------------------------
     
+    surpList <- list(binctr=binctr, Sbin=Sbin, wtvec=wtvec, 
+                     Kmat=Kmat, Zmat=Zmati, Phimat=Phimati, M=Mi)
+    
     SListi  <- list(
+      surpList   = surpList,
       M          = Mi,         # the number of options
       Sfd        = Sfdi,       # functional data object for surprisal smooth
       Zmat       = Zmati,
@@ -187,15 +191,15 @@ Sbinsmth <- function(index, dataList,
       D2Smatfine = D2Smatfine, # 2nd derivative of S functions over fine mesh
       PStdErr    = PStdErr,    # Std error for probabilities over fine mesh
       SStdErr    = SStdErr,    # Std error for surprisals    over fine mesh
-      infoSurp   = infoSurp    # arc length of item information curve
+      infoSurp   = infoSurp,   # arc length of item information curve
+      RMSEi      = RMSEi,      # sum of bin surprisal squared residuals
+      Entropyi   = Entropyi    # entropy
     )
 
     SfdList[[item]] = SListi
+    RMSE <- RMSE + RMSEi/n
     
-  }
-  
-  # print("After loop through items")
-  # print(class(SfdList))
+  }  # end of item in 1:n
   
   #  -----------------------------------------------------------------------------
   #  Step 3B.  Define the negative-surprisal S-curves for the extra question.
@@ -252,7 +256,7 @@ Sbinsmth <- function(index, dataList,
     #  suprisal smooth
     # if (outputwrd) dbglev <- 1 else dbglev <- 0
     #  optimize fit of smooth surprisal curves
-    result  <- smooth.surp(binctr, Sbin, Bmat0, Sfdi, Zmati)
+    result  <- smooth.surp(binctr, Pbin, Sbin, Bmat0, Sfdi, Zmati)
     #  retrieve results
     Sfdi    <- result$Sfd
     Bmati   <- result$Bmat
@@ -262,12 +266,9 @@ Sbinsmth <- function(index, dataList,
     DvecSmatDvecB <- result$DvecSmatDvecB
     
     indfine   <- seq(0,100,len=101)
-    # print("calling eval.surp line 262")
     Smatfine  <- eval.surp(indfine, Sfdi, Zmati)
-    # print("calling eval.surp line 264")
     DSmatfine <- eval.surp(indfine, Sfdi, Zmati, 1)
     if (Sbasis$nbasis > 2) {
-      # print("calling eval.surp line 267")
       D2Smatfine <- eval.surp(indfine, Sfdi, Zmati, 2)
     } else {
       D2Smatfine <- NULL
@@ -302,29 +303,30 @@ Sbinsmth <- function(index, dataList,
     #  --------------------------------------------------------------------
     
     SListi  <- list(
-      M          = Mi,         # the number of options
-      Sfd        = Sfdi,       # functional data object for surprisal smooth
-      Zmat       = Zmati,
-      Pbin       = Pbin,       # proportions at each bin
-      Sbin       = Sbin,       # negative surprisals at each bin
-      indfine    = indfine,    # 101 equally spaced plotting points
-      Pmatfine   = Pmatfine,   # Probabilities over fine mesh
-      Smatfine   = Smatfine,   # S functions over fine mesh
-      DSmatfine  = DSmatfine,  # 1st derivative of S functions over fine mesh
-      D2Smatfine = D2Smatfine, # 2nd derivative of S functions over fine mesh
-      PStdErr    = PStdErr,    # Probabilities over fine mesh
-      SStdErr    = SStdErr,    # S functions over fine mesh
-      infoSurp   = infoSurp    # arc length of item information curve
+      M           = Mi,         # the number of options
+      Sfd         = Sfdi,       # functional data object for surprisal smooth
+      Zmat        = Zmati,
+      Pbin        = Pbin,       # proportions at each bin
+      Sbin        = Sbin,       # negative surprisals at each bin
+      indfine     = indfine,    # 101 equally spaced plotting points
+      Pmatfine    = Pmatfine,   # Probabilities over fine mesh
+      Smatfine    = Smatfine,   # S functions over fine mesh
+      DSmatfine   = DSmatfine,  # 1st derivative of S functions over fine mesh
+      D2Smatfine  = D2Smatfine, # 2nd derivative of S functions over fine mesh
+      PStdErr     = PStdErr,    # Probabilities over fine mesh
+      SStdErr     = SStdErr,    # S functions over fine mesh
+      infoSurp    = infoSurp,   # arc length of item information curve
+      RMSEi       = RMSEi,
+      Entropyi    = Entropyi
     )
     
     SfdList[[nitem]] = SListi
     
-    # print("After extra item")
-    # print(class(SfdList))
-    
-  }
+  }  # end of nitem == n+1
   
-  return(list(SfdList=SfdList, binctr=binctr, bdry=bdry, freq=freq))
+  return(
+    list(SfdList=SfdList, binctr=binctr, bdry=bdry, freq=freq, RMSEi=RMSEi, Entropyi=Entropyi)
+  )
 }
 
 #. ----------------------------------------------------------------------------

@@ -59,7 +59,7 @@ make_dataList <- function(chcemat, scoreList, noption, sumscr_rng=NULL,
   #                   in plots.  Defaults to c(5, 25, 50, 75, 95).
   #. verbose     ...  Extra displays are provided.  Defaults to FALSE.
   
-  #  Last modified 18 March 2024 by Jim Ramsay
+  #  Last modified 16 September 2024 by Jim Ramsay
   
   # Default parameter values
   
@@ -107,7 +107,7 @@ make_dataList <- function(chcemat, scoreList, noption, sumscr_rng=NULL,
   Sdim  <- sum(noption) 
   
   #  Check if scoreList is.numeric and the test is all multiple choice items
-  
+  key <- NULL
   if (is.numeric(scoreList)) {
     #. scoreList is in key format, numeric vector
     print(paste("Argument scoreList is numeric,",

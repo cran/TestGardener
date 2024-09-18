@@ -1,5 +1,5 @@
-Analyze <- function(index, indexQnt, dataList, NumDensBasis = 7, ncycle = 10, itdisp = FALSE, 
-                    verbose = FALSE) {
+Analyze <- function(index, indexQnt, dataList, NumDensBasis = 7, norder = 4,  
+                    ncycle = 10, itdisp = FALSE, verbose = FALSE) {
   
   #' This function analyses a set of data by cycling ncycle numbers of 
   #' times between estimating probability and surprisal curves and 
@@ -24,7 +24,7 @@ Analyze <- function(index, indexQnt, dataList, NumDensBasis = 7, ncycle = 10, it
   #. verbose      ... A logical value that determines whether severalresults  
   #                   within each cycle are displayed. 
 
-  # Last modified 19 March 2024 by Jim Ramsay
+  # Last modified 16 September 2024 by Jim Ramsay
 
   nbin    <- dataList$nbin            # number of bins
   markers <- dataList$PcntMarkers/100 # marker probabilities
@@ -38,7 +38,7 @@ Analyze <- function(index, indexQnt, dataList, NumDensBasis = 7, ncycle = 10, it
   
   #  define the spline basis for representing the log density function
   
-  logdensbasis <- fda::create.bspline.basis(c(0,100), NumDensBasis)
+  logdensbasis <- fda::create.bspline.basis(c(0,100), NumDensBasis, norder)
   
   #  extract information about surprisal smoothing for each item
   
@@ -66,6 +66,10 @@ Analyze <- function(index, indexQnt, dataList, NumDensBasis = 7, ncycle = 10, it
   
   HALmat <- matrix(0,ncycle,2)
   
+  RMSEmat <- matrix(0,nbin,ncycle)
+  
+  Entropy <- array(0,c(nbin,n,ncycle))
+  
   #  ----------------------------------------------------------
   #                       main cycle loop
   #  ----------------------------------------------------------
@@ -90,11 +94,13 @@ Analyze <- function(index, indexQnt, dataList, NumDensBasis = 7, ncycle = 10, it
     #  After score index values are computed, bin boundaries and 
     #  and centres are adjusted in Step 4.
     
-    SfdResult <- Sbinsmth(index, dataList)
-    SfdList   <- SfdResult$SfdList
-    binctr    <- SfdResult$binctr
-    bdry      <- SfdResult$bdry
-    freq      <- SfdResult$freq
+    SfdResult   <- Sbinsmth(index, dataList)
+    SfdList     <- SfdResult$SfdList
+    binctr      <- SfdResult$binctr
+    bdry        <- SfdResult$bdry
+    freq        <- SfdResult$freq
+    RMSEi       <- SfdResult$RMSEi
+    Entropyi    <- SfdResult$Entropyi
     
     # print("Step 1 finished")
     
@@ -105,6 +111,7 @@ Analyze <- function(index, indexQnt, dataList, NumDensBasis = 7, ncycle = 10, it
           
     #  ----------------------------------------------------------
     #  Step 2:  compute mean value of objective function 
+    #     mean value of bin squared residuals
     #  ----------------------------------------------------------
     
     # print("step 2")
@@ -116,6 +123,10 @@ Analyze <- function(index, indexQnt, dataList, NumDensBasis = 7, ncycle = 10, it
     HALmat[icycle,1] <- meanF
     
     if (verbose) print(paste('Mean data fit = ', round(meanF,3)))
+    
+    RMSEmat[,icycle] <- sqrt(RMSEi)
+    
+    Entropy[,,icycle] <- Entropyi
     
     # print("Step 2 finished")
     
@@ -275,7 +286,14 @@ Analyze <- function(index, indexQnt, dataList, NumDensBasis = 7, ncycle = 10, it
   #. return the list object parmListvec of length ncycle
   #. containing parameter results for each cycle
   
-  return(list(parmListvec=parmListvec, pdffinemat=pdffinemat, Qvecmat=Qvecmat,
-              HALmat=HALmat))
+  return(
+    list(parmListvec = parmListvec,
+         pdffinemat  = pdffinemat,
+         Qvecmat     = Qvecmat,
+         HALmat      = HALmat,
+         RMSEmat     = RMSEmat,
+         Entropy     = Entropy
+    )
+  )
   
 }

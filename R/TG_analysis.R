@@ -81,18 +81,23 @@ TG_analysis <- function(chcemat, scoreList, noption, sumscr_rng=NULL,
   #                      Proceed through the cycles
   #  ----------------------------------------------------------------------------
   
-  AnalyzeResult <- Analyze(index, indexQnt, dataList, ncycle=ncycle,   
-                             NumDensBasis, itdisp=itdisp, verbose=verbose) 
+  AnalyzeResult <- Analyze(index, indexQnt, dataList, NumDensBasis,    
+                           ncycle=ncycle, itdisp=itdisp, verbose=verbose) 
   parmListvec <- AnalyzeResult$parmListvec
   pdffinemat  <- AnalyzeResult$pdffinemat
   Qvecmat     <- AnalyzeResult$Qvecmat
   HALmat      <- AnalyzeResult$HALmat
+  RMSEmat     <- AnalyzeResult$RMSEmat
+  Entropy     <- AnalyzeResult$Entropy
   
   # print("Analyze complete")
   # readline(prompt = "Analysis complete, press return to continue ")
   
-  return(list(dataList=dataList, parmListvec=parmListvec, HALmat=HALmat,
-              pdffinemat=pdffinemat, Qvecmat=Qvecmat))
+  return(
+    list(dataList=dataList, parmListvec=parmListvec, HALmat=HALmat,
+         RMSEmat=RMSEmat, Entropy=Entropy, pdffinemat=pdffinemat, 
+         Qvecmat=Qvecmat)
+    )
   
 }
 

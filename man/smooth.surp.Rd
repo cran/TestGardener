@@ -12,26 +12,26 @@
   vectors.
 }
 \usage{
-smooth.surp(argvals, y, Bmat0, Sfd, Zmat, wtvec=NULL, conv=1e-4,
+smooth.surp(binctr, Sbin, Bmat, Sbasis, Zmat, wtvec=NULL, conv=1e-4,
             iterlim=50, dbglev=0)
 }
 \arguments{
-  \item{argvals}{
+  \item{binctr}{
     Argument value array of length N, where N is the number of observed
     curve values for each curve.  It is assumed that that these argument
     values are common to all observed curves.  If this is not the case,
     you will need to run this function inside one or more loops,
     smoothing each curve separately.
   }
-  \item{y}{
+  \item{Sbin}{
     A \code{nbin} by \code{M_i} matrix of surprisal values to be fit.  
   }
-  \item{Bmat0}{A \code{Snbasis} by \code{M_i - 1} matrix containing starting
+  \item{Bmat}{A \code{Snbasis} by \code{M_i - 1} matrix containing starting
   values for the iterative optimization of the least squares fit of the 
   surprisal curves to the surprisal data.
   }
-  \item{Sfd}{
-    A functional data object used toinitialize the optimization process.  
+  \item{Sbasis}{
+    A functional data basis object.  
   }
   \item{Zmat}{An \code{M by M-1} matrix satisfying \code{Zmat'Zmat <- I} and 
     \code{Zmat'1 <- 0}.}
@@ -78,40 +78,31 @@ information-based psychometrics.  Psych, 2, 347-360.
 }
 \examples{
   oldpar <- par(no.readonly=TRUE)
-  #  evaluation points
-  x <- seq(-2,2,len=11)
-  #  evaluate a standard normal distribution function
-  p <- pnorm(x)
-  #  combine with 1-p
-  mnormp <- cbind(p,1-p)
-  M <- 2
-  #  convert to surprisal values
-  mnorms <- -log2(mnormp)
-  #  plot the surprisal values
-  matplot(x, mnorms, type="l", lty=c(1,1), col=c(1,1), 
-          ylab="Surprisal (2-bits)")
-  # add some log-normal error
-  mnormdata <- exp(log(mnorms) + rnorm(11)*0.1)
-  #  set up a b-spline basis object
-  nbasis <- 7
-  sbasis <- create.bspline.basis(c(-2,2),nbasis)
-  #  define an initial coefficient matrix
-  cmat <- matrix(0,7,1)
-  #  set up a fd object for suprisal smoothing
-  Sfd <- fd(cmat, sbasis)
-  Zmat <- matrix(c(1,-1),2,1)
-  #  smooth the noisy data
-  result <- smooth.surp(x, mnormdata, cmat, Sfd, Zmat)
-  #  plot the data and the fits of the two surprisal curves
-  xfine <- seq(-2,2,len=51)
-  sfine <- eval.surp(xfine, result$Sfd, Zmat)
-  matplot(xfine, sfine, type="l", lty=c(1,1), col=c(1,1))
-  points(x, mnormdata[,1])
-  points(x, mnormdata[,2])
-  #  convert the surprisal fit values to probabilities
-  pfine <- 2^(-sfine)
-  #  check that they sum to one
-  apply(pfine,1,sum)
+  # Assemble the objects in the list arguments Bmat and surpList
+  SfdList1 <- Quant_13B_problem_parmList$SfdList[[1]]
+  binctr   <- Quant_13B_problem_parmList$binctr
+  M        <- SfdList1$M
+  Bmat     <- SfdList1$Sfd$coef
+  Sbasis   <- SfdList1$Sfd$basis
+  Snbasis  <- Sbasis$nbasis
+  Phimat   <- fda::eval.basis(binctr, Sbasis)
+  Zmat     <- SfdList1$Zmat
+  Sbin     <- SfdList1$Sbin
+  # add some noise by rounding
+  Bmat     <- round(Bmat,0)
+  Kmat     <- matrix(0,Snbasis,Snbasis)
+  wtvec    <- NULL
+  surpList <- list(binctr=binctr, Sbin=Sbin, wtvec=wtvec, 
+                 Kmat=Kmat, Zmat=Zmat, Phimat=Phimat, M=M)
+  Bvec     <- matrix(Bmat,Sbasis$nbasis*(M-1),1,byrow=TRUE)
+  #  run surp.fit to get initial values
+  result   <- surp.fit(Bvec, surpList)
+  print(paste("Initial error sum of squares =",round(result$SSE,3)))
+  print(paste("Initial gradient norm =",round(norm(result$DSSE),5)))
+  #  optimize SSE
+  result   <- smooth.surp(binctr, Sbin, Bmat, Sbasis, Zmat)
+  print(paste("Optimal error sum of squares =",round(result$SSE,3)))
+  print(paste("Optimal gradient norm =",round(norm(result$DSSE),5)))
   par(oldpar)
 }
 

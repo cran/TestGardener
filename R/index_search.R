@@ -6,7 +6,7 @@ index_search <- function(SfdList, chcemat, index, Fval, DFval, D2Fval,
   #  index of the point and Fval, DFval, and D2Fval are revised.
   #  Integer changecount indicate the number of values changed.
   
-  #  Last modified 21 November 2023
+  #  Last modified 16 September 2024
   
   # determine the number of rows in data matrix chcemat and if (there is no 
   #  subset specified in argument indexind, search all of the rows of chcemat.
@@ -53,7 +53,10 @@ index_search <- function(SfdList, chcemat, index, Fval, DFval, D2Fval,
           DSmatfinei  <- SListi$DSmatfine
           DFval[j]    <- DFval[j] +  DSmatfinei[indexgrid+1,chcemat[j,item]]
           D2Smatfinei <- SListi$D2Smatfine
-          D2Fval[j]   <- D2Fval[j] + D2Smatfinei[indexgrid+1,chcemat[j,item]]
+          if (!is.null(D2Smatfinei)) {
+              D2Fval[j]   <- D2Fval[j] + 
+                    D2Smatfinei[indexgrid+1,chcemat[j,item]]
+          }
         }
         changeindex <- c(changeindex,j)
       }

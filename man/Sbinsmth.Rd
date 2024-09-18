@@ -102,7 +102,7 @@ information-based psychometrics. Psych, 2, 347-360.
 \author{Juan Li and James Ramsay}
 \seealso{
   \code{\link{ICC_plot}},
-  \code{\link{Sbinsmth}}
+  \code{\link{Sbinsmth.init}}
 }
 \examples{
 #  Example 1.  Display the initial probability and surprisal curves for the 
