@@ -43,7 +43,6 @@ import(ggplot2, except = c(last_plot, select))
 import(ggpubr)
 import(tidyr)
 import(utf8)
-import(rgl)
 import(plotly)
 
 importFrom("grDevices", "dev.off", "rainbow", "tiff", "pdf", "png", "rgb")

@@ -41,7 +41,7 @@ Ffuns_plot <- function(evalarg, index, SfdList, chcemat, plotindex=1) {
                           linewidth=linesize, linetype = 2) +
       ggplot2::xlab(expression(Score(index))) +
       ggplot2::ylab(expression(D2F(index))) +
-      ggplot2::labs(paste("Second derivative =",round(D2Fj,4)))
+      ggplot2::labs(title=paste("Second derivative =",round(D2Fj,4)))
     p <- ggpubr::ggarrange(p1, p2, ncol = 1, nrow = 2)
     print(p)
     plot_list[[j]] <- p

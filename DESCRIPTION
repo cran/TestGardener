@@ -1,6 +1,6 @@
 Package: TestGardener
-Version: 3.3.5
-Date: 2024-09-18
+Version: 3.3.6
+Date: 2025-10-14
 Type: Package
 Title: Information Analysis for Test and Rating Scale Data
 Authors@R: c(person("James", "Ramsay", role=c("aut","cre"),
@@ -19,7 +19,7 @@ Author: James Ramsay [aut, cre],
   Joakim Wallmark [ctb],
   Spencer Graves [ctb]
 Maintainer: James Ramsay <james.ramsay@mcgill.ca>
-Depends: R (>= 3.5), fda, rgl, ggplot2, plotly
+Depends: R (>= 3.5), fda, ggplot2, plotly
 Description: Develop, evaluate, and score multiple choice examinations, 
  psychological scales, questionnaires, and similar types of data involving
  sequences of choices among one or more sets of answers.
@@ -36,6 +36,6 @@ License: GPL (>= 2)
 Imports: dplyr, ggpubr, stringr, tidyr, pracma, utf8, knitr, rmarkdown,
 LazyData: true
 NeedsCompilation: no
-Packaged: 2024-09-18 17:12:32 UTC; jamesramsay
+Packaged: 2025-10-14 21:45:35 UTC; juan
 Repository: CRAN
-Date/Publication: 2024-09-18 17:40:02 UTC
+Date/Publication: 2025-10-14 22:10:02 UTC
